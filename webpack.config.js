@@ -33,7 +33,7 @@ let excludes = /(\.#)/;
 
 module.exports = ({ mode, presets } = { mode: "production", presets: [] }) => {
   return webpackMerge({
-    entry: "./src/index.html",
+    entry: "./src/main.ts",
     mode,
     devtool: "source-map",
     module: {

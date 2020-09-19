@@ -1,34 +1,29 @@
 import * as ex from "excalibur";
-import "./normalize.css";
 
-import { LevelOne } from "./scenes/level-one/level-one";
-import { Player } from "./actors/player/player";
-import { Resources } from "./resources";
+import {Ingame} from "./scenes/ingame";
+import {Game} from "./game";
 
-class Game extends ex.Engine {
-  constructor() {
-    super({ width: 800, height: 600, displayMode: ex.DisplayMode.FullScreen });
-  }
 
-  public start(loader: ex.Loader) {
-    return super.start(loader);
-  }
-}
+
+
+document.title = "WeltraumEindringlinge";
+
+
 
 const game = new Game();
-const levelOne = new LevelOne(game);
-const player = new Player();
-player.addDrawing(Resources.Sword);
+game.add("ingame", new Ingame(game));
 
-levelOne.add(player);
 
-game.add("levelOne", levelOne);
-
+const Resources = {
+  Sword: new ex.Texture(String(require('./images/3rd/LargeAlien.png').default))
+};
 
 
 let loader = new ex.Loader();
 loader.addResource(Resources["Sword"]);
 
+
+
 game.start(loader).then(() => {
-  game.goToScene("levelOne");
+  game.goToScene("ingame");
 });

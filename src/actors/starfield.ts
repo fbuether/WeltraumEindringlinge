@@ -37,19 +37,19 @@ export class Starfield extends ex.Actor {
 
 
   private newStar(engine: ex.Engine, everywhere: boolean = false): ex.Actor {
-    var star = new ex.Actor();
+    let star = new ex.Actor();
 
-    var hw = engine.halfCanvasWidth / engine.pixelRatio;
-    var hh = engine.halfCanvasHeight / engine.pixelRatio;
+    let hw = engine.screen.viewport.width / 2;
+    let hh = engine.screen.viewport.height / 2;
     star.pos = new ex.Vector(
       this.rnd.floating(-hw, hw),
       everywhere ? this.rnd.floating(-hh, hh) : -hh);
 
     // three parallax layers, 1 is closest.
-    var distance = this.rnd.integer(1, 3);
+    let distance = this.rnd.integer(1, 3);
 
     star.vel = new ex.Vector(0, 2 + (4 - distance) * 3);
-    star.width = 3 + (4 - distance) * 2;
+    star.width = 2 + (4 - distance);
     star.height = star.width;
     star.color = ex.Color.fromHSL(0, 0, 0.4 + (0.2 * (4 - distance)));
     return star;

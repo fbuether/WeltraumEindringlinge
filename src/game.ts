@@ -7,9 +7,7 @@ export class Game extends ex.Engine {
       backgroundColor: ex.Color.fromHSL(0, 0, 0.1),
       displayMode: ex.DisplayMode.FullScreen,
       suppressPlayButton: true,
-      pointerScope: ex.Input.PointerScope.Document,
-      height: 100,
-      width: 100
+      pointerScope: ex.Input.PointerScope.Document
     });
 
     // this.isDebug = true;

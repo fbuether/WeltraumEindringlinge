@@ -1,24 +1,27 @@
 import * as ex from "excalibur";
 
 import {Bullet} from "../actors/bullet";
+import {getAssets} from "../assets";
 
 
 export class Player extends ex.Actor {
   private static readonly speed: number = 200;
+  private static readonly firingSpeed: number = 1000; // 1/s
 
-  public health: number;
+  private health: number = 5;
+  private lastShot: number = -1;
 
   public constructor() {
     super();
-    this.health = 5;
-
-    // this.pos = new ex.Vector(0, 100);
-    this.width = 50;
-    this.height = 50;
-    this.color = ex.Color.fromHSL(122, 0.2, 0.7);
 
     this.body.collider.type = ex.CollisionType.Active;
   }
+
+
+  public onInitialize(engine: ex.Engine) {
+    this.addDrawing("generic", getAssets().player);
+  }
+
 
   public onPostUpdate(engine: ex.Engine, delta: number) {
     // movement
@@ -40,12 +43,16 @@ export class Player extends ex.Actor {
     }
 
     // check if firing.
-    let fires = engine.input.keyboard.wasPressed(ex.Input.Keys.Space);
+    let fires = engine.input.keyboard.isHeld(ex.Input.Keys.Space);
 
-    if (fires) {
+    this.lastShot -= delta;
+
+    if (fires && this.lastShot <= 0) {
       let bullet = new Bullet();
-      bullet.pos = this.pos.add(new ex.Vector(0, -50));
+      bullet.pos = this.pos.add(new ex.Vector(0, -24));
       engine.add(bullet);
+
+      this.lastShot = Player.firingSpeed;
     }
   }
 }

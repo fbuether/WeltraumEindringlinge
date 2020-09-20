@@ -67,7 +67,7 @@ module.exports = ({ mode, presets } = { mode: "production", presets: [] }) => {
           loader: "html-loader",
         },
         {
-          test: /\.(png|jpg)$/,
+          test: /\.(png|jpg|woff2)$/,
           exclude: excludes,
           use: [{
             loader: "file-loader",

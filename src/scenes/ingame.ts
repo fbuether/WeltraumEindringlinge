@@ -3,10 +3,15 @@ import * as ex from 'excalibur';
 import {Player} from "../actors/player";
 import {Starfield} from "../actors/starfield";
 import {Squadron} from "../actors/squadron";
+import {IncreaseScoreEvent} from "../actors/increase-score-event";
+
+import {Score} from "../ui/score";
 
 
 export class Ingame extends ex.Scene {
   private static readonly kickoffDuration: number = 3; // 3000;
+
+  private score = 0;
 
   public onInitialize(engine: ex.Engine) {
     this.add(new Starfield());
@@ -20,9 +25,18 @@ export class Ingame extends ex.Scene {
     let squadron = new Squadron();
     this.add(squadron);
 
+    let uiScore = new Score();
+    uiScore.onScoreChanged(0);
+    this.add(uiScore);
+
 
     this.camera.zoom(0.1);
     this.camera.pos = new ex.Vector(0, 0);
+
+    this.on("increaseScore", (ev: IncreaseScoreEvent) => {
+      this.score += 1;
+      uiScore.onScoreChanged(this.score);
+    });
   }
 
   public onActivate(oldScene: ex.Scene, newScene: ex.Scene) {

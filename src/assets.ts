@@ -1,6 +1,6 @@
 import * as ex from "excalibur";
 
-let spaceInvaders = require("./images/3rd/SpaceInvaders-3.png");
+let spaceInvaders = require("../assets/images/3rd/SpaceInvaders-3.png");
 
 
 

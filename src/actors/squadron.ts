@@ -13,7 +13,7 @@ export class Squadron extends ex.Actor {
     let y = -(engine.screen.viewport.height / 2) + 100;
 
     const distance = 60;
-    let count = 11;
+    let count = 9;
 
     let start = - (distance * count / 2) + (distance / 2);
 

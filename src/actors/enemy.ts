@@ -3,6 +3,7 @@ import * as ex from "excalibur";
 import {Bullet} from "../actors/bullet";
 import {getAssets} from "../assets";
 import {Explosion} from "../actors/explosion";
+import {IncreaseScoreEvent} from "../actors/increase-score-event";
 
 
 export class Enemy extends ex.Actor {
@@ -21,6 +22,7 @@ export class Enemy extends ex.Actor {
   public onPreKill() {
     let explosion = new Explosion();
     explosion.pos = this.pos;
+    this.scene.emit("increaseScore", new IncreaseScoreEvent());
     this.scene.add(explosion);
   }
 

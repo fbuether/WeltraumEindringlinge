@@ -8,6 +8,8 @@ export class Starfield extends ex.Actor {
   private lastCheck = 0;
 
   public onInitialize(engine: ex.Engine) {
+    this.body.collider.type = ex.CollisionType.PreventCollision;
+
     while (this.children.length < Starfield.count) {
       this.add(this.newStar(engine, true));
     }
@@ -52,6 +54,7 @@ export class Starfield extends ex.Actor {
     star.width = 2 + (4 - distance);
     star.height = star.width;
     star.color = ex.Color.fromHSL(0, 0, 0.4 + (0.2 * (4 - distance)));
+    star.body.collider.type = ex.CollisionType.PreventCollision;
     return star;
   }
 }

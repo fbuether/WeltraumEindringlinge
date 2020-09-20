@@ -9,12 +9,9 @@ export class Game extends ex.Engine {
       suppressPlayButton: true,
       pointerScope: ex.Input.PointerScope.Document
     });
-
-    // this.isDebug = true;
   }
 
   public start(loader: ex.Loader) {
     return super.start(loader);
   }
-
 }

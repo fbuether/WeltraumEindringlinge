@@ -14,7 +14,7 @@ export class Player extends ex.Actor {
   public constructor() {
     super();
 
-    this.body.collider.type = ex.CollisionType.Active;
+    this.body.collider.type = ex.CollisionType.Passive;
   }
 
 

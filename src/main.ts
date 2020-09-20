@@ -25,6 +25,6 @@ ex.Physics.showMotionVectors = true;
 // game.isDebug = true;
 
 game.start(loadAssets()).then(() => {
-  createAssets();
+  createAssets(game);
   game.goToScene("ingame");
 });

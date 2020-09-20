@@ -15,7 +15,6 @@ export class Bullet extends ex.Actor {
 
 
     this.once("collisionstart", (event: ex.CollisionStartEvent) => {
-      console.log("bullet collidered!", event);
       this.kill();
       event.other.kill();
     });

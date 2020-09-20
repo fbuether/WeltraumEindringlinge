@@ -16,6 +16,7 @@ interface Assets {
   enemy1: ex.Sprite;
   enemy2: ex.Sprite;
   enemy3: ex.Sprite;
+  explosion: ex.Animation;
 }
 
 
@@ -30,7 +31,7 @@ export function loadAssets(): ex.Loader {
 }
 
 
-export function createAssets(): void {
+export function createAssets(engine: ex.Engine): void {
   assets = {
     player: new ex.Sprite({
       image: resources.units,
@@ -57,6 +58,18 @@ export function createAssets(): void {
       x: 12, y: 108,
       width: 27, height: 24
     }),
+    explosion: new ex.Animation({
+      engine: engine,
+      loop: false, speed: 200,
+      sprites: new Array<ex.Sprite>(
+        new ex.Sprite({ image: resources.units,
+                        x: 114, y: 114, width: 15, height: 15 }),
+        new ex.Sprite({ image: resources.units,
+                        x: 99, y: 156, width: 39, height: 27 }),
+        new ex.Sprite({ image: resources.units,
+                        x: 99, y: 201, width: 45, height: 33 })
+      )
+    })
   };
 }
 

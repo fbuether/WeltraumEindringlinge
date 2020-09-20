@@ -2,6 +2,7 @@ import * as ex from "excalibur";
 
 import {Bullet} from "../actors/bullet";
 import {getAssets} from "../assets";
+import {Explosion} from "../actors/explosion";
 
 
 export class Enemy extends ex.Actor {
@@ -14,6 +15,13 @@ export class Enemy extends ex.Actor {
     this.width = 30;
     this.height = 30;
     this.body.collider.type = ex.CollisionType.Active;
+  }
+
+
+  public onPreKill() {
+    let explosion = new Explosion();
+    explosion.pos = this.pos;
+    this.scene.add(explosion);
   }
 
 

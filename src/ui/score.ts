@@ -10,7 +10,7 @@ export class Score extends ex.ScreenElement {
   }
 
   public onInitialize(engine: ex.Engine) {
-    this.pos = new ex.Vector(-350, -(engine.screen.viewport.height / 2) + 50);
+    // this.pos = new ex.Vector(-350, -(engine.screen.viewport.height / 2) + 50);
 
     this.display.className = "score";
     document.getElementById("ui")?.appendChild(this.display);

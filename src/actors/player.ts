@@ -55,4 +55,8 @@ export class Player extends ex.Actor {
       this.lastShot = Player.firingSpeed;
     }
   }
+
+  public getCharge() {
+    return Math.min(1, Math.max(0, 1 - (this.lastShot / 1000)));
+  }
 }

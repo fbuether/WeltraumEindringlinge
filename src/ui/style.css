@@ -14,16 +14,52 @@ body > div#ui {
   font-size: 36px;
 }
 
-body > div#ui div.score {
+body > div#ui > div {
   color: white;
-  position: absolute;
-  background: hsla(0, 0, 0.1, 0.5);
-
-  top: 25px;
-  left: calc(50% - 350px);
+  background: hsla(240, 0%, 20%, 0.7);
+  padding: 0.2em 0.25em;
+  line-height: 1em;
 }
 
 
+/* ---------------------------
+   score
+*/
+body > div#ui > div.score {
+  position: absolute;
+  top: 1.2em;
+  left: calc(50% - 11em);
+}
+
+
+/* ---------------------------
+   energy
+*/
+body > div#ui > div.energy {
+  position: absolute;
+  bottom: 1.2em;
+  left: calc(50% - 11em);
+  width: 3em;
+}
+
+div.energy div.bar {
+  margin-top: 0.15em;
+  height: 0.7em;
+  width: 100%;
+  background: hsl(120, 0%, 100%, 0.4);
+}
+
+div.energy div.progress {
+  display: block;
+  height: 100%;
+  width: 50%;
+  background: hsl(120, 66%, 100%);
+}
+
+
+/* ---------------------------
+   Menu, buttons
+*/
 body > div#ui div#menu {
   background: hsla(240, 0%, 20%, 0.7);
   position: absolute;

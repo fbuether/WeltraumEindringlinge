@@ -6,6 +6,7 @@ import {Squadron} from "../actors/squadron";
 import {IncreaseScoreEvent} from "../actors/increase-score-event";
 
 import {Score} from "../ui/score";
+import {Energy} from "../ui/energy";
 
 
 export class Ingame extends ex.Scene {
@@ -25,10 +26,12 @@ export class Ingame extends ex.Scene {
     let squadron = new Squadron();
     this.add(squadron);
 
+    // ui.
     let uiScore = new Score();
     uiScore.onScoreChanged(0);
     this.add(uiScore);
 
+    this.add(new Energy(player));
 
     this.camera.zoom(0.1);
     this.camera.pos = new ex.Vector(0, 0);

@@ -43,4 +43,8 @@ export class Button extends ex.ScreenElement {
 
     this.pos = new ex.Vector(-350, -(engine.screen.viewport.height / 2) + 50);
   }
+
+  public onPreKill(scene: ex.Scene) {
+    document.getElementById("menu")?.removeChild(this.button);
+  }
 }

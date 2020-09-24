@@ -35,4 +35,8 @@ export class Energy extends ex.ScreenElement {
     let charge = this.player.getCharge();
     this.progress.style.width = (charge * 100) + "%";
   }
+
+  public onPreKill(scene: ex.Scene) {
+    document.getElementById("ui")?.removeChild(this.display);
+  }
 }

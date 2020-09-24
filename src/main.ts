@@ -1,7 +1,7 @@
 import * as ex from "excalibur";
 
 import {Ingame} from "./scenes/ingame";
-import {Menu} from "./scenes/menu";
+import {MainMenu} from "./scenes/main-menu";
 import {Game} from "./game";
 import {loadAssets, createAssets} from "./assets";
 import "./ui/style.css";
@@ -19,7 +19,7 @@ document.body.appendChild(uiElement);
 
 const game = new Game();
 game.add("ingame", new Ingame(game));
-game.add("menu", new Menu(game));
+game.add("main-menu", new MainMenu(game));
 
 ex.Physics.collisionResolutionStrategy = ex.CollisionResolutionStrategy.Box;
 ex.Physics.enabled = true;
@@ -32,5 +32,5 @@ ex.Physics.showMotionVectors = true;
 
 game.start(loadAssets()).then(() => {
   createAssets(game);
-  game.goToScene("ingame");
+  game.goToScene("main-menu");
 });

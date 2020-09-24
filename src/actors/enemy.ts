@@ -36,5 +36,10 @@ export class Enemy extends ex.Actor {
   public onPostUpdate(engine: ex.Engine, delta: number) {
     let movement = Enemy.speed * delta / 1000;
     this.pos = this.pos.add(new ex.Vector(0, movement));
+
+    // if below the screen
+    if (this.isOffScreen && this.pos.y > 0) {
+      this.kill();
+    }
   }
 }

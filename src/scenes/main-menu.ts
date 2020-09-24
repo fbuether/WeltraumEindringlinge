@@ -4,7 +4,7 @@ import {Starfield} from "../actors/starfield";
 import {Button} from "../ui/button";
 
 
-export class Menu extends ex.Scene {
+export class MainMenu extends ex.Scene {
 
 
   public onInitialize(engine: ex.Engine) {
@@ -14,8 +14,13 @@ export class Menu extends ex.Scene {
     this.add(new Starfield());
 
     this.add(new Button("Start", () => {
-      console.log("started!");
+      engine.goToScene("ingame");
     }));
+  }
 
+  public onDeactivate() {
+    while (this.screenElements.length > 0) {
+      this.screenElements[0].kill();
+    }
   }
 }

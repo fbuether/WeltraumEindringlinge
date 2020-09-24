@@ -7,6 +7,8 @@ import {IncreaseScoreEvent} from "../actors/increase-score-event";
 
 import {Score} from "../ui/score";
 import {Energy} from "../ui/energy";
+import {Banner} from "../ui/banner";
+import {Button} from "../ui/button";
 
 
 export class Ingame extends ex.Scene {
@@ -15,23 +17,14 @@ export class Ingame extends ex.Scene {
   private score = 0;
 
   public onInitialize(engine: ex.Engine) {
-    this.add(new Starfield());
-
-    let playerY = engine.screen.viewport.height / 2 - 100;
-
     let player = new Player();
-    player.pos = new ex.Vector(0, playerY);
-    this.add(player);
-
-    let squadron = new Squadron();
-    this.add(squadron);
 
     // ui.
     let uiScore = new Score();
     uiScore.onScoreChanged(0);
-    this.add(uiScore);
+    this.addScreenElement(uiScore);
 
-    this.add(new Energy(player));
+    this.addScreenElement(new Energy(player));
 
     this.camera.zoom(0.1);
     this.camera.pos = new ex.Vector(0, 0);
@@ -39,6 +32,32 @@ export class Ingame extends ex.Scene {
     this.on("increaseScore", (ev: IncreaseScoreEvent) => {
       this.score += 1;
       uiScore.onScoreChanged(this.score);
+    });
+
+
+    // background
+    this.add(new Starfield());
+
+    // player
+    let playerY = engine.screen.viewport.height / 2 - 100;
+
+    player.pos = new ex.Vector(0, playerY);
+    this.add(player);
+
+    // enemies
+    let squadron = new Squadron();
+    this.add(squadron);
+
+    this.on("squadron-killed", () => {
+      engine.add(new ex.Timer({
+        interval: 500,
+        repeats: false,
+        fcn: () => {
+          this.addScreenElement(new Banner("You win!"));
+          this.addScreenElement(new Button("Leave Game", () =>
+              engine.goToScene("menu")));
+        }
+      }));
     });
   }
 
@@ -48,5 +67,8 @@ export class Ingame extends ex.Scene {
   }
 
   public onDeactivate() {
+    while (this.screenElements.length > 0) {
+      this.screenElements[0].kill();
+    }
   }
 }

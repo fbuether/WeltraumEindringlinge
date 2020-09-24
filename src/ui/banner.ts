@@ -1,18 +1,17 @@
 import * as ex from "excalibur";
 
 
-export class Score extends ex.ScreenElement {
+export class Banner extends ex.ScreenElement {
   private display: HTMLElement;
 
-  private ty = "score!";
-
-  public constructor() {
+  public constructor(text: string) {
     super();
     this.display = document.createElement("div");
+    this.display.innerText = text;
   }
 
   public onInitialize(engine: ex.Engine) {
-    this.display.className = "score";
+    this.display.className = "banner";
     document.getElementById("ui")?.appendChild(this.display);
   }
 

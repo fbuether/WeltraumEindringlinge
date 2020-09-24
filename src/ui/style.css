@@ -11,7 +11,8 @@ body > div#ui {
   height: 100%;
 
   font-family: "VT323", monospace;
-  font-size: 36px;
+  font-size: 2.4em;
+  text-transform: uppercase;
 }
 
 body > div#ui > div {
@@ -25,7 +26,7 @@ body > div#ui > div {
 /* ---------------------------
    score
 */
-body > div#ui > div.score {
+div#ui > div.score {
   position: absolute;
   top: 1.2em;
   left: calc(50% - 11em);
@@ -35,7 +36,7 @@ body > div#ui > div.score {
 /* ---------------------------
    energy
 */
-body > div#ui > div.energy {
+div#ui > div.energy {
   position: absolute;
   bottom: 1.2em;
   left: calc(50% - 11em);
@@ -58,6 +59,20 @@ div.energy div.progress {
 
 
 /* ---------------------------
+   banner
+*/
+div#ui > div.banner {
+  font-size: 4em;
+  position: absolute;
+  top: 35%;
+  left: calc(50% - 8em);
+  width: 16em;
+  text-align: center;
+}
+
+
+
+/* ---------------------------
    Menu, buttons
 */
 body > div#ui div#menu {
@@ -67,13 +82,15 @@ body > div#ui div#menu {
   left: calc(50% - 6em);
   width: 10em;
   padding: 1em 0.5em;
+
   text-align: center;
-  color: white;
   font-weight: bold;
+  /* font-size: 3.6rem; */
+  color: hsl(120, 100%, 66%);
 }
 
 body > div#ui div#menu button {
-  background: hsla(240, 0%, 35%, 0.7);
+  background: hsla(0, 0%, 35%, 0.7);
   font-family: "VT323", monospace;
   font-size: 36px;
   border: 0;
@@ -81,12 +98,14 @@ body > div#ui div#menu button {
   width: 7em;
   margin: 0.3em auto;
 
-  color: green;
+  color: hsl(120, 50%, 86%);
   font-weight: normal;
+  text-transform: inherit;
 }
 
 body > div#ui div#menu button:hover {
-  color: green;
+  color: hsl(120, 100%, 66%);
+  background: hsla(120, 100%, 66%, 0.6);
 }
 
 

@@ -3,6 +3,7 @@ import * as ex from "excalibur";
 
 export class Button extends ex.ScreenElement {
   private button: HTMLElement;
+  private menu: HTMLElement | null;
 
   private label: string;
   private action: () => void;
@@ -13,38 +14,19 @@ export class Button extends ex.ScreenElement {
     this.label = label;
     this.action = action;
     this.button = document.createElement("button");
+    this.menu = null;
   }
 
-  public onInitialize(engine: ex.Engine) {
+  public initFromMenu(engine: ex.Engine, menu: HTMLElement) {
+    this.menu = menu;
+
     this.button.textContent = this.label;
     this.button.onclick = this.action;
     this.button.className = "button";
-
-    let menu = document.getElementById("menu");
-    if (menu == null) {
-
-      let ui = document.getElementById("ui");
-      if (ui == null) {
-        throw new Error("no ui element.");
-      }
-
-      menu = document.createElement("div");
-      menu.id = "menu";
-      ui.appendChild(menu);
-      menu.insertAdjacentText("afterbegin", "Weltraum-Eindringlinge");
-    }
-
-    if (menu != null) {
-      menu.appendChild(this.button);
-    }
-    else {
-      console.log("could not create menu.");
-    }
-
-    this.pos = new ex.Vector(-350, -(engine.screen.viewport.height / 2) + 50);
+    menu.appendChild(this.button);
   }
 
   public onPreKill(scene: ex.Scene) {
-    document.getElementById("menu")?.removeChild(this.button);
+    this.menu?.removeChild(this.button);
   }
 }

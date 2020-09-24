@@ -9,6 +9,7 @@ import {Score} from "../ui/score";
 import {Energy} from "../ui/energy";
 import {Banner} from "../ui/banner";
 import {Button} from "../ui/button";
+import {Menu} from "../ui/menu";
 
 
 export class Ingame extends ex.Scene {
@@ -17,7 +18,12 @@ export class Ingame extends ex.Scene {
   private score = 0;
 
   public onInitialize(engine: ex.Engine) {
+    // player
+    let playerY = engine.screen.viewport.height / 2 - 100;
     let player = new Player();
+    player.pos = new ex.Vector(0, playerY);
+    this.add(player);
+
 
     // ui.
     let uiScore = new Score();
@@ -38,12 +44,6 @@ export class Ingame extends ex.Scene {
     // background
     this.add(new Starfield());
 
-    // player
-    let playerY = engine.screen.viewport.height / 2 - 100;
-
-    player.pos = new ex.Vector(0, playerY);
-    this.add(player);
-
     // enemies
     let squadron = new Squadron();
     this.add(squadron);
@@ -54,8 +54,13 @@ export class Ingame extends ex.Scene {
         repeats: false,
         fcn: () => {
           this.addScreenElement(new Banner("You win!"));
-          this.addScreenElement(new Button("Leave Game", () =>
-              engine.goToScene("menu")));
+
+          this.addScreenElement(new Menu(
+            new Array<Button>(
+              new Button("Leave Game", () => {
+                engine.goToScene("main-menu");
+              })
+            ), false));
         }
       }));
     });

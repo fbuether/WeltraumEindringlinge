@@ -32,5 +32,5 @@ ex.Physics.showMotionVectors = true;
 
 game.start(loadAssets()).then(() => {
   createAssets(game);
-  game.goToScene("menu");
+  game.goToScene("ingame");
 });

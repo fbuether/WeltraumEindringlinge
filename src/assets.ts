@@ -13,7 +13,7 @@ let resources = {
 interface Assets {
   player: ex.Sprite;
   bullet: ex.Sprite;
-  enemy1: ex.Sprite;
+  enemy1: Array<ex.Sprite>;
   enemy2: ex.Sprite;
   enemy3: ex.Sprite;
   explosion: Array<ex.Sprite>;
@@ -31,41 +31,28 @@ export function loadAssets(): ex.Loader {
 }
 
 
+function mkSprite(x: number, y: number, width: number, height: number) {
+  return new ex.Sprite({
+    image: resources.units,
+    x: x, y: y, width: width, height: height });
+}
+
+
 export function createAssets(engine: ex.Engine): void {
   assets = {
-    player: new ex.Sprite({
-      image: resources.units,
-      x: 204, y: 12,
-      width: 27, height: 30
-    }),
-    bullet: new ex.Sprite({
-      image: resources.units,
-      x: 117, y: 15,
-      width: 3, height: 18
-    }),
-    enemy1: new ex.Sprite({
-      image: resources.units,
-      x: 9, y: 12,
-      width: 33, height: 24
-    }),
-    enemy2: new ex.Sprite({
-      image: resources.units,
-      x: 12, y: 60,
-      width: 24, height: 24
-    }),
-    enemy3: new ex.Sprite({
-      image: resources.units,
-      x: 12, y: 108,
-      width: 27, height: 24
-    }),
+    player: mkSprite(204, 12, 27, 30),
+    bullet: mkSprite(117, 15, 3, 18),
+    enemy1: new Array<ex.Sprite>(
+      mkSprite(9, 12, 33, 27),
+      mkSprite(57, 12, 33, 27)
+    ),
+    enemy2: mkSprite(12, 60, 24, 24),
+    enemy3: mkSprite(12, 108, 27, 24),
     explosion: new Array<ex.Sprite>(
-      new ex.Sprite({ image: resources.units,
-                      x: 114, y: 114, width: 15, height: 15 }),
-      new ex.Sprite({ image: resources.units,
-                      x: 99, y: 156, width: 39, height: 27 }),
-      new ex.Sprite({ image: resources.units,
-                      x: 99, y: 201, width: 45, height: 33 })
-      )
+      mkSprite(114, 114, 15, 15),
+      mkSprite(99, 156, 39, 27),
+      mkSprite(99, 201, 45, 33)
+    )
   };
 }
 

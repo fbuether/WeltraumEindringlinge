@@ -12,7 +12,13 @@ export class Enemy extends ex.Actor {
 
 
   public onInitialize(engine: ex.Engine) {
-    this.addDrawing("generic", getAssets().enemy1);
+    let anim = new ex.Animation({
+      engine: engine,
+      loop: true, speed: 900,
+      sprites: getAssets().enemy1
+    });
+
+    this.addDrawing("generic", anim);
     this.width = 30;
     this.height = 30;
     this.body.collider.type = ex.CollisionType.Active;

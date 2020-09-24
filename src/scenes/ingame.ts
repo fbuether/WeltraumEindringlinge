@@ -1,4 +1,4 @@
-import * as ex from 'excalibur';
+import * as ex from "excalibur";
 
 import {Player} from "../actors/player";
 import {Starfield} from "../actors/starfield";

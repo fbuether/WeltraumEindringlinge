@@ -13,6 +13,9 @@ export class Starfield extends ex.Actor {
     while (this.children.length < Starfield.count) {
       this.add(this.newStar(engine, true));
     }
+
+    let hw = engine.screen.viewport.width / 2;
+    let hh = engine.screen.viewport.height / 2;
   }
 
 
@@ -46,6 +49,7 @@ export class Starfield extends ex.Actor {
     star.pos = new ex.Vector(
       this.rnd.floating(-hw, hw),
       everywhere ? this.rnd.floating(-hh, hh) : -hh);
+
 
     // three parallax layers, 1 is closest.
     let distance = this.rnd.integer(1, 3);

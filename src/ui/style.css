@@ -24,6 +24,35 @@ body > div#ui div.score {
 }
 
 
+body > div#ui div#menu {
+  background: hsla(240, 0%, 20%, 0.7);
+  position: absolute;
+  top: 4em;
+  left: calc(50% - 6em);
+  width: 10em;
+  padding: 1em 0.5em;
+  text-align: center;
+  color: white;
+  font-weight: bold;
+}
+
+body > div#ui div#menu button {
+  background: hsla(240, 0%, 35%, 0.7);
+  font-family: "VT323", monospace;
+  font-size: 36px;
+  border: 0;
+  padding: 0.3em;
+  width: 7em;
+  margin: 0.3em auto;
+
+  color: green;
+  font-weight: normal;
+}
+
+body > div#ui div#menu button:hover {
+  color: green;
+}
+
 
 @font-face {
   font-family: "VT323";

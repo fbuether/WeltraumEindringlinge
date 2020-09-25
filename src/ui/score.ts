@@ -1,26 +1,13 @@
-import * as ex from "excalibur";
+import {UIComponent} from "../ui/ui-component";
 
 
-export class Score extends ex.ScreenElement {
-  private display: HTMLElement;
-
-  private ty = "score!";
-
+export class Score extends UIComponent {
   public constructor() {
-    super();
-    this.display = document.createElement("div");
-  }
-
-  public onInitialize(engine: ex.Engine) {
-    this.display.className = "score";
-    document.getElementById("ui")?.appendChild(this.display);
+    super("div", "ui");
+    this.html.className = "score";
   }
 
   public onScoreChanged(newScore: number) {
-    this.display.textContent = `Score ${newScore}`;
-  }
-
-  public onPreKill(scene: ex.Scene) {
-    document.getElementById("ui")?.removeChild(this.display);
+    this.html.textContent = `Score ${newScore}`;
   }
 }

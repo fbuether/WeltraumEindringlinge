@@ -1,41 +1,35 @@
-import * as ex from "excalibur";
-
+import {UIComponent} from "../ui/ui-component";
 import {Button} from "../ui/button";
 
 
-export class Menu extends ex.ScreenElement {
+export class Menu extends UIComponent {
   private buttons: Array<Button>;
-  private title: boolean;
-
-  private display: HTMLElement;
 
   public constructor(buttons: Array<Button>, title: boolean) {
-    super();
-    this.buttons = buttons;
-    this.title = title;
+    super("div", "ui");
+    this.html.id = "menu";
+    this.html.className = title ? "titled" : "anon";
 
-    this.display = document.createElement("div");
-  }
-
-  public onInitialize(engine: ex.Engine) {
-    this.display.id = "menu";
-    this.display.className = this.title ? "titled" : "anon";
-    document.getElementById("ui")?.appendChild(this.display);
-
-    if (this.title) {
-      this.display.insertAdjacentText("afterbegin", "Weltraum-Eindringlinge");
+    if (title) {
+      this.html.insertAdjacentText("afterbegin", "Weltraum-Eindringlinge");
     }
 
-    this.buttons.forEach(b => {
-      b.initFromMenu(engine, this.display);
-    });
+    this.buttons = buttons;
   }
 
-  public onPreKill(scene: ex.Scene) {
-    this.buttons.forEach(b => {
-      b.onPreKill(scene);
-    });
+  public activate() {
+    super.activate();
+    this.buttons.forEach(b => { b.activate(); });
+  }
 
-    document.getElementById("ui")?.removeChild(this.display);
+  public update(delta: number) {
+    super.update(delta);
+    this.buttons.forEach(b => { b.update(delta); });
+  }
+
+  public remove() {
+    // remove buttons first.
+    this.buttons.forEach(b => { b.remove(); });
+    super.remove();
   }
 }

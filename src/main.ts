@@ -30,6 +30,8 @@ ex.Physics.showMotionVectors = true;
 
 // game.isDebug = true;
 
+ex.Logger.getInstance().defaultLevel = ex.LogLevel.Debug;
+
 game.start(loadAssets()).then(() => {
   createAssets(game);
   game.goToScene("main-menu");

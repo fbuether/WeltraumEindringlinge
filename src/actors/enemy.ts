@@ -10,6 +10,14 @@ export class Enemy extends ex.Actor {
   private static readonly speed: number = 20;
   private static readonly firingSpeed: number = 1000; // 1/s
 
+  private onEnemyKilled: () => void;
+
+
+  public constructor(onEnemyKilled: () => void) {
+    super();
+    this.onEnemyKilled = onEnemyKilled;
+  }
+
 
   public onInitialize(engine: ex.Engine) {
     let anim = new ex.Animation({
@@ -28,8 +36,9 @@ export class Enemy extends ex.Actor {
   public onPreKill() {
     let explosion = new Explosion();
     explosion.pos = this.pos;
-    this.scene.emit("increaseScore", new IncreaseScoreEvent());
     this.scene.add(explosion);
+
+    this.onEnemyKilled();
   }
 
 

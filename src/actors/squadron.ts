@@ -4,8 +4,16 @@ import {Enemy} from "../actors/enemy";
 
 
 export class Squadron extends ex.Actor {
-
   private enemyCount = 0;
+  private onSquadronKilled: () => void;
+  private onEnemyKilled: () => void;
+
+  public constructor(onSquadronKilled: () => void,
+                    onEnemyKilled: () => void) {
+    super();
+    this.onSquadronKilled = onSquadronKilled;
+    this.onEnemyKilled = onEnemyKilled;
+  }
 
   public onInitialize(engine: ex.Engine) {
     this.body.collider.type = ex.CollisionType.PreventCollision;
@@ -22,7 +30,7 @@ export class Squadron extends ex.Actor {
     for (let i = 0; i < count; i++) {
       let x = start + distance * i;
 
-      let enemy = new Enemy();
+      let enemy = new Enemy(this.onEnemyKilled);
       enemy.pos = new ex.Vector(x, y);
       enemy.on("prekill", () => {
         this.enemyCount -= 1;
@@ -35,7 +43,7 @@ export class Squadron extends ex.Actor {
 
   private checkWin() {
     // if (this.enemyCount <= 0) {
-      this.scene.emit("squadron-killed", new ex.GameEvent<ex.Scene>());
+      this.onSquadronKilled();
     // }
   }
 }

@@ -17,10 +17,6 @@ document.body.appendChild(uiElement);
 
 
 
-const game = new Game();
-game.add("ingame", new Ingame(game));
-game.add("main-menu", new MainMenu(game));
-
 ex.Physics.collisionResolutionStrategy = ex.CollisionResolutionStrategy.Box;
 ex.Physics.enabled = true;
 ex.Physics.showArea = true;
@@ -28,11 +24,16 @@ ex.Physics.showBounds = true;
 ex.Physics.showContacts = true;
 ex.Physics.showMotionVectors = true;
 
-// game.isDebug = true;
 
 ex.Logger.getInstance().defaultLevel = ex.LogLevel.Debug;
 
+
+const game = new Game();
+
+// game.isDebug = true;
+
 game.start(loadAssets()).then(() => {
   createAssets(game);
+  game.add("main-menu", new MainMenu(game));
   game.goToScene("main-menu");
 });

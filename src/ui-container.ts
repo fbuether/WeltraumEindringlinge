@@ -32,5 +32,7 @@ export class UIContainer {
     this.uiComponents.forEach(c => {
       c.remove();
     });
+
+    this.uiComponents = new Array<UIComponent>();
   }
 }

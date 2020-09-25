@@ -50,7 +50,7 @@ export class Player extends ex.Actor {
     if (fires && this.lastShot <= 0) {
       let bullet = new Bullet();
       bullet.pos = this.pos.add(new ex.Vector(0, -24));
-      engine.add(bullet);
+      this.scene.add(bullet);
 
       this.lastShot = Player.firingSpeed;
     }

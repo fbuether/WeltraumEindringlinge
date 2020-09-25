@@ -27,6 +27,7 @@ export class UIComponent {
 
   public remove() {
     if (this.onScreen) {
+      console.log("removing: ", this.html, this.parent);
       this.parent?.removeChild(this.html);
     }
   }

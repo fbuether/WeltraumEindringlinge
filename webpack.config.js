@@ -1,104 +1,57 @@
-const CompressionWebpackPlugin = require("compression-webpack-plugin");
 const HtmlWebPackPlugin = require("html-webpack-plugin");
-const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
 const path = require("path");
-const webpack = require("webpack");
-const webpackMerge = require("webpack-merge");
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
-const modeConfig = env => {
-  if (env == "development") {
-    return {
-      devtool: "inline-source-map",
-      devServer: {
-        contentBase: "./dist",
-        port: 32011,
-        clientLogLevel: "warn"
+module.exports = {
+  entry: path.resolve(__dirname, "src/main.ts"),
+
+  module: {
+    rules: [
+      {
+        test: /\.ts$/,
+        use: "ts-loader",
+        exclude: /node_modules/,
       },
-    };
-  }
-  else {
-    return {
-      plugins: [
-        new UglifyJSPlugin({
-          sourceMap: true
-        }),
-        new CompressionWebpackPlugin(),
-      ]
-    };
-  }
-}
-
-let excludes = /(\.#)/;
-
-module.exports = ({ mode, presets } = { mode: "production", presets: [] }) => {
-  return webpackMerge({
-    entry: "./src/main.ts",
-    mode,
-    devtool: "source-map",
-    module: {
-      rules: [
-        {
-          test: /\.js$/,
-          exclude: excludes,
-          use: ["source-map-loader"],
-          exclude: [
-            excludes,
-            path.resolve(__dirname,"node_modules/excalibur")
-          ],
-          enforce: "pre",
-        },
-        {
-          test: /\.tsx?$/,
-          exclude: [
-            excludes,
-              /node_modules/
-          ],
-          use: "ts-loader",
-        },
-        {
-          test: /\.css$/i,
-          exclude: excludes,
-          use: ["style-loader", "css-loader"],
-        },
-        {
-          test: /\.html$/i,
-          exclude: excludes,
-          loader: "html-loader",
-        },
-        {
-          test: /\.(png|jpg|woff2)$/,
-          exclude: excludes,
-          use: [{
-            loader: "file-loader",
-            options: {
-              emitFile: true,
-              name: "[name]-[contenthash].[ext]"
-            }
-          }]
-        }
-      ]
-    },
-    resolve: {
-      extensions: [".tsx", ".ts", ".js"]
-    },
-    output: {
-      filename: "[name]-[contenthash].js",
-      sourceMapFilename: "[file].map",
-      path: path.resolve(__dirname, "dist"),
-    },
-    optimization: {
-      splitChunks: {
-        chunks: "all"
-      }
-    },
-    plugins: [
-      new CleanWebpackPlugin({}),
-      new HtmlWebPackPlugin({
-        favicon: 'src/favicon.ico'
-      })
-    ]
+    ],
   },
-                      modeConfig(mode)
-                     );
+
+  devtool: "inline-source-map",
+  mode: "development",
+
+  resolve: {
+    extensions: [".ts", ".js"],
+  },
+
+  output: {
+    filename: "[name]-[contenthash].js",
+    path: path.resolve(__dirname, "dist"),
+  },
+
+  devServer: {
+    contentBase: path.resolve(__dirname, "dist"),
+    port: 32011,
+    clientLogLevel: "warn",
+    writeToDisk: true,
+  },
+
+  plugins: [
+    new HtmlWebPackPlugin({
+      favicon: 'assets/favicon.ico'
+    }),
+    // new webpack.DefinePlugin({
+    //   "typeof CANVAS_RENDERER": JSON.stringify(true),
+    //   "typeof WEBGL_RENDERER": JSON.stringify(true),
+    // }),
+  ],
+
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        commons: {
+          test: /[\\/]node_modules[\\/]/,
+          name: "lib",
+          chunks: "all",
+        },
+      },
+    },
+  },
 };

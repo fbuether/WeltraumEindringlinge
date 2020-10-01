@@ -11,6 +11,11 @@ module.exports = {
         use: "ts-loader",
         exclude: /node_modules/,
       },
+      {
+        test: /\.png$/,
+        loader: "file-loader",
+        options: { name: "[name]-[contenthash].[ext]" },
+      },
     ],
   },
 
@@ -22,7 +27,7 @@ module.exports = {
   },
 
   output: {
-    filename: "[name]-[contenthash].js",
+    filename: "[name]-[hash].js",
     path: path.resolve(__dirname, "dist"),
   },
 
@@ -33,14 +38,13 @@ module.exports = {
     writeToDisk: true,
   },
 
+  watch: true,
+
   plugins: [
     new HtmlWebPackPlugin({
-      favicon: 'assets/favicon.ico'
+      favicon: "assets/favicon.ico",
+      template: "src/index.html"
     }),
-    // new webpack.DefinePlugin({
-    //   "typeof CANVAS_RENDERER": JSON.stringify(true),
-    //   "typeof WEBGL_RENDERER": JSON.stringify(true),
-    // }),
   ],
 
   optimization: {

@@ -3,8 +3,8 @@
     "@abraham/reflection": "^0.7.0",
     "file-loader": "^6.1.0",
     "html-webpack-plugin": "^4.5.0",
+    "planck-js": "^0.3.22",
     "ts-loader": "^8.0.4",
-    "tsyringe": "^4.3.0",
     "typescript": "^4.0.3",
     "webpack": "4.44.2",
     "webpack-cli": "^3.3.12",
@@ -12,6 +12,7 @@
     "yarn": "^1.22.5"
   },
   "dependencies": {
-    "pixi.js": "^5.3.3"
+    "pixi.js": "^5.3.3",
+    "random-js": "^2.1.0"
   }
 }

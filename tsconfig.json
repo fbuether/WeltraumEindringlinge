@@ -1,13 +1,14 @@
 {
   "compilerOptions": {
     "incremental": true,
-    "target": "es5",
+    "target": "ES2016",
     "module": "commonjs",
     "declaration": false,
     // "outFile": "./bin/circular.js",
     "outDir": "./bin",
     "tsBuildInfoFile": "./bin/tsbuildinfo",
     "sourceMap": true,
+    "lib": ["es2019", "dom"],
 
     /* Strict Type-Checking Options */
     "strict": true,
@@ -21,6 +22,7 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "resolveJsonModule": true,
 
     /* Module Resolution Options */
@@ -28,7 +30,6 @@
     "baseUrl": "./src",
     "moduleResolution": "node",
     "sourceMap": true,
-    "emitDecoratorMetadata": true,
 
     /* Advanced Options */
     "forceConsistentCasingInFileNames": true

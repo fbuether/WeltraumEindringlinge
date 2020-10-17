@@ -1,6 +1,40 @@
-import * as ex from "excalibur";
 
-import {Enemy} from "../actors/enemy";
+import {Actor} from "../engine/Actor";
+import {Sprite} from "../engine/components/Sprite";
+import {Engine} from "../engine/Engine";
+import {Loader} from "../engine/Loader";
+// import {Body} from "../engine/components/Body";
+
+import {Vector} from "../engine/Vector";
+// import {ShapeGenerator} from "../engine/ShapeGenerator";
+
+import {Enemy} from "../actors/Enemy";
+import {Scene} from "../engine/Scene";
+
+
+export class Squadron extends Actor {
+  public constructor(engine: Engine, scene: Scene) {
+    super(engine);
+
+    let y = engine.render.screen.top + 100;
+
+    let distance = 60;
+    let count = 9;
+
+    let start = engine.render.screen.left +
+        (engine.render.screen.width / 2) +
+        -(distance * count / 2) + (distance / 2);
+    for (let i = 0; i < count; i++) {
+      let x = start + distance * i;
+
+      let enemy = new Enemy(engine, new Vector(x, y));
+      scene.add(enemy);
+    }
+  }
+}
+
+
+/*
 
 
 export class Squadron extends ex.Actor {
@@ -47,3 +81,4 @@ export class Squadron extends ex.Actor {
     // }
   }
 }
+*/

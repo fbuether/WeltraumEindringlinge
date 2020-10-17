@@ -4,6 +4,7 @@ import {Scene} from "../engine/Scene";
 import {Player} from "../actors/Player";
 import {Starfield} from "../actors/Starfield";
 import {Vector} from "../engine/Vector";
+import {Squadron} from "../actors/Squadron";
 
 
 export class Ingame extends Scene {
@@ -17,14 +18,13 @@ export class Ingame extends Scene {
 
 
     let screen = engine.getScreenBounds();
-
     let player = new Player(engine, new Vector(
       screen.lowerBound.x + screen.upperBound.y / 2,
       screen.upperBound.y - 70));
     this.add(player);
 
 
-    // let squadron = new Squadron();
+    let squadron = new Squadron(engine, this);
 
 
     // ui.

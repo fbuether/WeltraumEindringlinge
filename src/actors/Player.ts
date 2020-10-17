@@ -63,8 +63,8 @@ export class Player extends Actor {
     let fires = this.engine.keyboard.isPressed(" ");
     if (fires && this.lastShot <= 0) {
       this.engine.add(new Bullet(this.engine,
-        this.body.position.add(new Vector(0, -10)),
-        new Vector(0, -1)));
+        this.body.position.add(new Vector(0, -20)),
+        new Vector(0, -0.01)));
       this.lastShot = Player.firingSpeed;
     }
   }

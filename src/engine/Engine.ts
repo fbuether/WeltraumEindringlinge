@@ -2,10 +2,12 @@ import * as px from "pixi.js";
 import * as planck from "planck-js";
 
 import {Component} from "../engine/components/Component";
+import {Actor} from "../engine/Actor";
 import {Renderable} from "../engine/components/Renderable";
+import {Deletable} from "../engine/components/Deletable";
 import {Updatable} from "../engine/components/Updatable";
-import {MainLoop} from "../engine/MainLoop";
 
+import {Vector} from "../engine/Vector";
 import {Scene, SceneConstructor} from "../engine/Scene";
 import {Keyboard} from "../engine/Keyboard";
 import {Loader, AssetTag} from "../engine/Loader";
@@ -16,8 +18,6 @@ import {Random} from "../engine/Random";
 
 
 export class Engine {
-  protected readonly mainLoop: MainLoop;
-
   public readonly render: px.Application;
 
   public readonly keyboard: Keyboard;
@@ -33,11 +33,10 @@ export class Engine {
 
 
   public static create() {
-    return new Engine(new MainLoop(), new Keyboard());
+    return new Engine(new Keyboard());
   }
 
-  constructor(mainLoop: MainLoop, keyboard: Keyboard) {
-    this.mainLoop = mainLoop;
+  constructor(keyboard: Keyboard) {
     this.keyboard = keyboard;
 
     this.render = new px.Application({
@@ -69,6 +68,12 @@ export class Engine {
     return this.resources.get(tag);
   }
 
+  public getScreenBounds(): planck.AABB {
+    return new planck.AABB(
+      new Vector(this.render.screen.left, this.render.screen.top),
+      new Vector(this.render.screen.right, this.render.screen.bottom));
+  }
+
 
   public toScene(sceneType: SceneConstructor) {
     this.loadScene(sceneType);
@@ -84,7 +89,7 @@ export class Engine {
     this.resources = await Loader.loadAll(this.render);
 
     let scene = this.loadScene(sceneConstr);
-    this.add(scene.getActors());
+    this.add(...scene.getActors());
     this.add(Array.from(scene.getActors())
       .flatMap(a => a.getComponents()));
 
@@ -96,7 +101,7 @@ export class Engine {
   private updatables = new Set<Updatable>();
   private renderables = new Set<Renderable>();
 
-  public add(components: Iterable<Component>) {
+  public add(...components: Array<Component | Actor>) {
     for (let component of components) {
       if (component instanceof Renderable) {
         this.renderables.add(component);
@@ -104,16 +109,25 @@ export class Engine {
       if (component instanceof Updatable) {
         this.updatables.add(component);
       }
+      if (component instanceof Actor) {
+        this.add(component.getComponents());
+      }
     }
   }
 
-  public remove(components: Iterable<Component>) {
+  public remove(...components: Array<Component | Actor>) {
     for (let component of components) {
       if (component instanceof Renderable) {
         this.renderables.delete(component);
       }
       if (component instanceof Updatable) {
         this.updatables.delete(component);
+      }
+      if (component instanceof Deletable) {
+        component.onDelete();
+      }
+      if (component instanceof Actor) {
+        this.remove(component.getComponents());
       }
     }
   }

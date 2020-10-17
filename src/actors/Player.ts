@@ -8,6 +8,7 @@ import {Body} from "../engine/components/Body";
 import {Vector} from "../engine/Vector";
 import {ShapeGenerator} from "../engine/ShapeGenerator";
 
+import {Bullet} from "../actors/Bullet";
 
 let spriteTex = Loader.add(require("../../assets/images/3rd/player.png"));
 
@@ -19,20 +20,17 @@ export class Player extends Actor {
   private health: number = 5;
   private lastShot: number = -1;
 
-  private engine: Engine;
   private body: Body;
 
 
-  public constructor(engine: Engine) {
-    super();
-    this.engine = engine;
+  public constructor(engine: Engine, position: Vector) {
+    super(engine);
 
     let sprite = new Sprite(engine, spriteTex);
     this.add(sprite);
 
     this.body = new Body(engine,
-      new ShapeGenerator().generateFromTexture(sprite.texture));
-    this.body.position = new Vector(20, 20);
+      new ShapeGenerator().generateFromTexture(sprite.texture), position);
     this.add(this.body);
 
     sprite.attachTo(this.body);
@@ -64,7 +62,9 @@ export class Player extends Actor {
 
     let fires = this.engine.keyboard.isPressed(" ");
     if (fires && this.lastShot <= 0) {
-      // new bullet!
+      this.engine.add(new Bullet(this.engine,
+        this.body.position.add(new Vector(0, -10)),
+        new Vector(0, -1)));
       this.lastShot = Player.firingSpeed;
     }
   }

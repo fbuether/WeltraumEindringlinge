@@ -45,13 +45,11 @@ export class Starfield extends Actor {
   private static readonly StarCount = 40;
 
   private rnd: Random;
-  private engine: Engine;
 
   private stars = new Array<Star>();
 
   public constructor(engine: Engine) {
-    super();
-    this.engine = engine;
+    super(engine);
     this.rnd = engine.random.fork();
 
     while (this.stars.length <= Starfield.StarCount) {
@@ -84,7 +82,7 @@ export class Starfield extends Actor {
       everywhere ? this.rnd.real(0, height) : 0);
 
     let star = new Star(position, distance);
-    this.engine.add([star]);
+    this.engine.add(star);
     this.engine.render.stage.addChild(star.graphics);
     return star;
   }
@@ -95,7 +93,7 @@ export class Starfield extends Actor {
         // out of view.
         this.components.delete(star);
         this.engine.render.stage.removeChild(star.graphics);
-        this.engine.remove([star]);
+        this.engine.remove(star);
         star.graphics.destroy();
         this.stars.splice(this.stars.indexOf(star), 1);
       }

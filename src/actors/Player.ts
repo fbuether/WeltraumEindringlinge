@@ -14,7 +14,7 @@ let spriteTex = Loader.add(require("../../assets/images/3rd/player.png"));
 
 
 export class Player extends Actor {
-  private static readonly speed: number = 2400;
+  private static readonly speed: number = 240;
   private static readonly firingSpeed: number = 1000; // 1/s
 
   private health: number = 5;

@@ -18,7 +18,7 @@ export abstract class Scene {
 
   public add(actor: Actor): void {
     this.actors.push(actor);
-    this.engine.add(actor.getComponents());
+    this.engine.add(actor);
   }
 
 

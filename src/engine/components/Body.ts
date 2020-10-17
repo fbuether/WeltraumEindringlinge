@@ -15,12 +15,14 @@ export class Body extends Deletable implements Positioned {
   private engine: Engine;
   private eventEmitter: EventEmitter<"collision">;
 
+  // Getter/Setter from the outside, so game-scale values.
   get position(): Vector {
-    return this.body.getPosition();
+    return this.body.getPosition().clone().mul(1 / Engine.PhysicsScale);
   }
 
-  set position(target: Vector) {
-    this.body.setPosition(target);
+  set position(position: Vector) {
+    let phyPosition = position.clone().mul(Engine.PhysicsScale);
+    this.body.setPosition(phyPosition);
   }
 
 
@@ -29,9 +31,10 @@ export class Body extends Deletable implements Positioned {
     this.engine = engine;
     this.eventEmitter = new EventEmitter<"collision">();
 
+    let phyPosition = position.clone().mul(Engine.PhysicsScale);
     this.body = engine.physics.createBody({
       type: "dynamic",
-      position: position
+      position: phyPosition
     });
 
     this.body.createFixture(shape);
@@ -50,13 +53,12 @@ export class Body extends Deletable implements Positioned {
 
   public moveBy(delta: Vector): void {
     let phyDelta = delta.mul(Engine.PhysicsScale);
-    this.body.setTransform(this.body.getPosition().add(delta), 0);
+    this.body.setTransform(this.body.getPosition().add(phyDelta), 0);
   }
 
 
   public isOnScreen(): boolean {
     let screenBounds = this.engine.getScreenBounds();
-    console.log("screen:", screenBounds);
 
     let fixture = this.body.getFixtureList();
     while (fixture != null) {

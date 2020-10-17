@@ -23,6 +23,7 @@ export class Engine {
   public readonly keyboard: Keyboard;
 
   // One pixel corresponds to this many physics units (1m).
+  // multiply Game-Coordinates with this to get physics coordinates.
   public static readonly PhysicsScale: number = 1 / 10;
   public readonly physics: planck.World;
 
@@ -110,7 +111,7 @@ export class Engine {
         this.updatables.add(component);
       }
       if (component instanceof Actor) {
-        this.add(component.getComponents());
+        this.add(...component.getComponents());
       }
     }
   }

@@ -64,7 +64,7 @@ export class Player extends Actor {
     if (fires && this.lastShot <= 0) {
       this.engine.add(new Bullet(this.engine,
         this.body.position.add(new Vector(0, -25)),
-        new Vector(0, -0.01)));
+        new Vector(0, -0.02)));
       this.lastShot = Player.firingSpeed;
     }
   }

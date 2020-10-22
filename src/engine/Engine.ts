@@ -113,7 +113,7 @@ export class Engine {
     }
   }
 
-  public remove(...components: Array<Component | Actor>) {
+  public remove(...components: Array<Component>) {
     for (let component of components) {
       if (component instanceof Renderable) {
         this.renderables.delete(component);
@@ -121,16 +121,25 @@ export class Engine {
       if (component instanceof Updatable) {
         this.updatables.delete(component);
       }
-      if (component instanceof Deletable) {
-        component.onDelete();
+      if ((component as Deletable).onDelete !== undefined) {
+        (component as Deletable).onDelete();
       }
       if (component instanceof Actor) {
-        this.remove(component.getComponents());
+        this.remove(...component.getComponents());
       }
     }
   }
 
+
+  private nextUpdates = new Array<Function>();
+
   private doUpdate(delta: number) {
+    for (let action of this.nextUpdates) {
+      action();
+    }
+
+    this.nextUpdates = new Array<Function>();
+
     for (let updatable of this.updatables) {
       updatable.update(delta);
     }
@@ -140,6 +149,10 @@ export class Engine {
     for (let renderable of this.renderables) {
       renderable.render();
     }
+  }
+
+  public onNextUpdate(action: Function) {
+    this.nextUpdates.push(action);
   }
 
 

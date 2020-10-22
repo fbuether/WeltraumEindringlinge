@@ -36,13 +36,18 @@ export class Body extends Deletable implements Positioned {
     let phyPosition = position.clone().mul(Engine.PhysicsScale);
     this.body = engine.physics.createBody({
       type: "dynamic",
-      position: phyPosition
+      position: phyPosition,
+      bullet: isBullet
     });
 
     this.body.createFixture(shape);
+
+    // attach us to this body.
+    (this.body as any)["component"] = this;
   }
 
   public onDelete() {
+    this.engine.physics.destroyBody(this.body);
     this.eventEmitter.removeAllListeners();
   }
 
@@ -74,7 +79,34 @@ export class Body extends Deletable implements Positioned {
     return false;
   }
 
+
+  private hasCollisionHandler: boolean = false;
+
+  private checkCollision(bodyA: planck.Body, bodyB: planck.Body) {
+    if (this.body == bodyA) {
+      // bleeeeeeh.
+      let other = (bodyB as any)["component"] as Component;
+      if (other !== undefined) {
+        this.engine.onNextUpdate(() => {
+          this.eventEmitter.emit("collision", other.getActor());
+        });
+      }
+    }
+  }
+
   public onCollision(handler: (other: Actor) => void) {
     this.eventEmitter.on("collision", handler);
+
+    if (!this.hasCollisionHandler) {
+      this.engine.physics.on("pre-solve", (contact: planck.Contact) => {
+        let bodyA = contact.getFixtureA().getBody();
+        let bodyB = contact.getFixtureB().getBody();
+
+        this.checkCollision(bodyA, bodyB);
+        this.checkCollision(bodyB, bodyA);
+      });
+
+      this.hasCollisionHandler = true;
+    }
   }
 }

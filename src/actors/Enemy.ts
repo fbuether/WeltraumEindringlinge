@@ -7,9 +7,15 @@ import {Body} from "../engine/components/Body";
 
 import {Vector} from "../engine/Vector";
 import {ShapeGenerator} from "../engine/ShapeGenerator";
+import {Explosion} from "../actors/Explosion";
 
 
-let spriteTex = Loader.add(require("../../assets/images/3rd/alien1-1.png"));
+let texture = Loader.addSpritesheet(
+  require("../../assets/images/3rd/SpaceInvaders-3.png"), {
+    frames: {
+      "alien-1-1": { frame: {x: 9, y: 12, w: 33, h: 24 } }
+    }
+  });
 
 
 export class Enemy extends Actor {
@@ -20,7 +26,7 @@ export class Enemy extends Actor {
   public constructor(engine: Engine, position: Vector) {
     super("enemy", engine);
 
-    let sprite = new Sprite(engine, this, spriteTex);
+    let sprite = new Sprite(engine, this, texture, "alien-1-1");
     this.add(sprite);
 
     this.body = new Body(engine, this,
@@ -38,6 +44,11 @@ export class Enemy extends Actor {
       // this.scene.looseGame();
       this.kill();
     }
+  }
+
+  public kill() {
+    this.engine.add(new Explosion(this.engine, this.body.position));
+    super.kill();
   }
 }
 

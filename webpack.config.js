@@ -34,8 +34,7 @@ module.exports = {
   devServer: {
     contentBase: path.resolve(__dirname, "dist"),
     port: 32011,
-    clientLogLevel: "warn",
-    writeToDisk: true,
+    clientLogLevel: "warn"
   },
 
   watch: true,

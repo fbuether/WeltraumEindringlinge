@@ -27,7 +27,7 @@ export class Engine {
   public static readonly PhysicsScale: number = 1 / 10;
   public readonly physics: planck.World;
 
-  private resources: Loader | null = null;
+  private _loader: Loader | null = null;
 
   public readonly random: Random = new Random();
 
@@ -61,13 +61,14 @@ export class Engine {
   }
 
 
-  public getResource(tag: AssetTag): px.LoaderResource {
-    if (this.resources == null) {
-      throw new Error("Requested resource before loading.");
+  public get loader(): Loader {
+    if (this._loader == null) {
+      throw new Error("Requested loader before loading.");
     }
 
-    return this.resources.get(tag);
+    return this._loader;
   }
+
 
   public getScreenBounds(): planck.AABB {
     return new planck.AABB(
@@ -87,7 +88,7 @@ export class Engine {
 
 
   public async start(sceneConstr: SceneConstructor) {
-    this.resources = await Loader.loadAll(this.render);
+    this._loader = await Loader.loadAll(this.render);
 
     let scene = this.loadScene(sceneConstr);
     this.add(...scene.getActors());

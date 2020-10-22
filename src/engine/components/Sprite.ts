@@ -17,11 +17,18 @@ export class Sprite extends Renderable implements Deletable {
     return this.pxSprite.texture;
   }
 
-  public constructor(engine: Engine, parent: Component, asset: AssetTag) {
+  public constructor(engine: Engine, parent: Component, asset: AssetTag,
+      sheetTextureName: string | null = null) {
     super("sprite", parent);
     this.pxApp = engine.render;
 
-    this.image = engine.getResource(asset).texture;
+    if (sheetTextureName != null) {
+      this.image = engine.loader.getSpritesheet(asset)
+        .sheet.textures[sheetTextureName];
+    }
+    else {
+      this.image = engine.loader.getSprite(asset).resource.texture;
+    }
 
     this.pxSprite = px.Sprite.from(this.image);
     this.pxSprite.anchor.set(0.5, 0.5);

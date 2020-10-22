@@ -9,7 +9,12 @@ import {Vector} from "../engine/Vector";
 import {ShapeGenerator} from "../engine/ShapeGenerator";
 
 
-let spriteTex = Loader.add(require("../../assets/images/3rd/bullet.png"));
+let texture = Loader.addSpritesheet(
+  require("../../assets/images/3rd/SpaceInvaders-3.png"), {
+    frames: {
+      "bullet": { frame: {x: 117, y: 15, w: 3, h: 18 } }
+    }
+  });
 
 
 export class Bullet extends Actor {
@@ -17,9 +22,8 @@ export class Bullet extends Actor {
 
   public constructor(engine: Engine, position: Vector, direction: Vector) {
     super("bullet", engine);
-    // this.engine = engine;
 
-    let sprite = new Sprite(engine, this, spriteTex);
+    let sprite = new Sprite(engine, this, texture, "bullet");
     this.add(sprite);
 
     this.body = new Body(engine, this,

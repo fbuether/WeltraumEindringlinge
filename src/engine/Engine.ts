@@ -9,7 +9,7 @@ import {Updatable} from "../engine/components/Updatable";
 
 import {Vector} from "../engine/Vector";
 import {Scene, SceneConstructor} from "../engine/Scene";
-import {Keyboard} from "../engine/Keyboard";
+import {Key, Keyboard} from "../engine/Keyboard";
 import {Loader, AssetTag} from "../engine/Loader";
 import {Random} from "../engine/Random";
 
@@ -167,7 +167,7 @@ export class Engine {
 
   private requestNextDraw() {
     if (this.run) {
-      if (this.keyboard.isPressed("x")) {
+      if (this.keyboard.isPressed(Key.X)) {
         console.warn("x pressed. canceling animation.");
         this.run = false;
         return;

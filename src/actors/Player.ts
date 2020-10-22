@@ -7,7 +7,7 @@ import {Body} from "../engine/components/Body";
 
 import {Vector} from "../engine/Vector";
 import {ShapeGenerator} from "../engine/ShapeGenerator";
-
+import {Key} from "../engine/Keyboard";
 import {Bullet} from "../actors/Bullet";
 
 let spriteTex = Loader.add(require("../../assets/images/3rd/player.png"));
@@ -45,8 +45,10 @@ export class Player extends Actor {
   public update(delta: number) {
     let movement = Player.speed * delta / 1000;
 
-    let moveRight = this.engine.keyboard.isPressed("d");
-    let moveLeft = this.engine.keyboard.isPressed("a");
+    let moveRight = this.engine.keyboard.isPressed(Key.D)
+        || this.engine.keyboard.isPressed(Key.Right);
+    let moveLeft = this.engine.keyboard.isPressed(Key.A)
+        || this.engine.keyboard.isPressed(Key.Left);
     if (moveRight && !moveLeft) {
       this.body.moveBy(new Vector(movement, 0));
     }
@@ -60,7 +62,7 @@ export class Player extends Actor {
       this.lastShot -= delta;
     }
 
-    let fires = this.engine.keyboard.isPressed(" ");
+    let fires = this.engine.keyboard.isPressed(Key.Space);
     if (fires && this.lastShot <= 0) {
       this.engine.add(new Bullet(this.engine,
         this.body.position.add(new Vector(0, -25)),

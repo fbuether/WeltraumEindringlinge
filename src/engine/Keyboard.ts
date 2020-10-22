@@ -1,5 +1,15 @@
 
 
+export enum Key {
+  A = "a",
+  D = "d",
+  X = "x",
+  Left = "ArrowLeft",
+  Right = "ArrowRight",
+  Space = " ",
+};
+
+
 export class Keyboard {
   private pressed = new Set<string>();
 
@@ -16,7 +26,7 @@ export class Keyboard {
     this.pressed.delete(event.key);
   }
 
-  public isPressed(key: string): boolean {
+  public isPressed(key: Key): boolean {
     return this.pressed.has(key);
   }
 }

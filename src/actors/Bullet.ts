@@ -16,13 +16,13 @@ export class Bullet extends Actor {
   private body: Body;
 
   public constructor(engine: Engine, position: Vector, direction: Vector) {
-    super(engine);
+    super("bullet", engine);
     // this.engine = engine;
 
-    let sprite = new Sprite(engine, spriteTex);
+    let sprite = new Sprite(engine, this, spriteTex);
     this.add(sprite);
 
-    this.body = new Body(engine,
+    this.body = new Body(engine, this,
       new ShapeGenerator().generateFromTexture(sprite.texture), position);
     this.body.applyForce(direction);
 

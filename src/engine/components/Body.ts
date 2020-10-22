@@ -6,6 +6,7 @@ import * as EventEmitter from "eventemitter3";
 import {Engine} from "../../engine/Engine";
 import {Vector} from "../../engine/Vector";
 import {Positioned} from "../../engine/components/Positioned";
+import {Component} from "../../engine/components/Component";
 import {Deletable} from "../../engine/components/Deletable";
 import {Actor} from "../../engine/Actor";
 
@@ -26,8 +27,9 @@ export class Body extends Deletable implements Positioned {
   }
 
 
-  constructor(engine: Engine, shape: planckShape, position: Vector) {
-    super();
+  constructor(engine: Engine, parent: Component, shape: planckShape,
+      position: Vector, isBullet: boolean = false) {
+    super("body", parent);
     this.engine = engine;
     this.eventEmitter = new EventEmitter<"collision">();
 

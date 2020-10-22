@@ -16,8 +16,8 @@ class Star extends Geometry {
 
   public readonly graphics: px.Graphics;
 
-  public constructor(pos: Vector, distance: number) {
-    super();
+  public constructor(starfield: Starfield, pos: Vector, distance: number) {
+    super("star", starfield);
     this.graphics = new px.Graphics();
 
     this.position = pos;
@@ -49,7 +49,7 @@ export class Starfield extends Actor {
   private stars = new Array<Star>();
 
   public constructor(engine: Engine) {
-    super(engine);
+    super("starfield", engine);
     this.rnd = engine.random.fork();
 
     while (this.stars.length <= Starfield.StarCount) {
@@ -81,7 +81,7 @@ export class Starfield extends Actor {
       this.rnd.real(0, width),
       everywhere ? this.rnd.real(0, height) : 0);
 
-    let star = new Star(position, distance);
+    let star = new Star(this, position, distance);
     this.engine.add(star);
     this.engine.render.stage.addChild(star.graphics);
     return star;

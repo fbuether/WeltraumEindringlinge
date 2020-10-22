@@ -24,12 +24,12 @@ export class Player extends Actor {
 
 
   public constructor(engine: Engine, position: Vector) {
-    super(engine);
+    super("player", engine);
 
-    let sprite = new Sprite(engine, spriteTex);
+    let sprite = new Sprite(engine, this, spriteTex);
     this.add(sprite);
 
-    this.body = new Body(engine,
+    this.body = new Body(engine, this,
       new ShapeGenerator().generateFromTexture(sprite.texture), position);
     this.add(this.body);
 
@@ -63,7 +63,7 @@ export class Player extends Actor {
     let fires = this.engine.keyboard.isPressed(" ");
     if (fires && this.lastShot <= 0) {
       this.engine.add(new Bullet(this.engine,
-        this.body.position.add(new Vector(0, -20)),
+        this.body.position.add(new Vector(0, -25)),
         new Vector(0, -0.01)));
       this.lastShot = Player.firingSpeed;
     }

@@ -14,7 +14,7 @@ import {Scene} from "../engine/Scene";
 
 export class Squadron extends Actor {
   public constructor(engine: Engine, scene: Scene) {
-    super(engine);
+    super("squadron", engine);
 
     let y = engine.render.screen.top + 100;
 

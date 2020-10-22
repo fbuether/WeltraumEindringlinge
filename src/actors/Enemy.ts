@@ -18,12 +18,12 @@ export class Enemy extends Actor {
   private body: Body;
 
   public constructor(engine: Engine, position: Vector) {
-    super(engine);
+    super("enemy", engine);
 
-    let sprite = new Sprite(engine, spriteTex);
+    let sprite = new Sprite(engine, this, spriteTex);
     this.add(sprite);
 
-    this.body = new Body(engine,
+    this.body = new Body(engine, this,
       new ShapeGenerator().generateFromTexture(sprite.texture), position);
     this.add(this.body);
 

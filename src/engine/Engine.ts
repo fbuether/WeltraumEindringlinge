@@ -91,9 +91,6 @@ export class Engine {
 
     let scene = this.loadScene(sceneConstr);
     this.add(...scene.getActors());
-    this.add(Array.from(scene.getActors())
-      .flatMap(a => a.getComponents()));
-
     this.startDraw();
   }
 

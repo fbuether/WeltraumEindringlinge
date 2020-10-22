@@ -9,8 +9,8 @@ export class Actor extends Updatable {
 
   protected engine: Engine;
 
-  constructor(engine: Engine) {
-    super();
+  constructor(name: string, engine: Engine) {
+    super(name, null);
     this.engine = engine;
   }
 

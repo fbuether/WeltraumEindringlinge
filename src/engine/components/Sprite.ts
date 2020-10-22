@@ -15,8 +15,10 @@ export class Sprite extends Renderable
     return this.pxSprite.texture;
   }
 
-  public constructor(engine: Engine, asset: AssetTag) {
-    super();
+  public constructor(engine: Engine, parent: Component, asset: AssetTag) {
+    super("sprite", parent);
+    this.pxApp = engine.render;
+
     this.image = engine.getResource(asset).texture;
 
     this.pxSprite = px.Sprite.from(this.image);

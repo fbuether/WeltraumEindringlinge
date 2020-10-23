@@ -7,6 +7,7 @@ import {Renderable} from "../engine/components/Renderable";
 import {Deletable} from "../engine/components/Deletable";
 import {Updatable} from "../engine/components/Updatable";
 import {Body} from "../engine/components/Body";
+import {Gui} from "../engine/Gui";
 
 import {Vector} from "../engine/Vector";
 import {Scene, SceneConstructor} from "../engine/Scene";
@@ -113,6 +114,7 @@ export class Engine {
 
   public async start(sceneConstr: SceneConstructor) {
     this._loader = await Loader.loadAll(this.render);
+    await Gui.loadFonts();
 
     let scene = this.loadScene(sceneConstr);
     this.add(...scene.getActors());

@@ -69,7 +69,7 @@ export class Body extends Deletable implements Positioned {
 
     let fixture = this.body.getFixtureList();
     while (fixture != null) {
-      if (planck.AABB.testOverlap(screenBounds, fixture.getAABB(0))) {
+      if ((planck.AABB as any).testOverlap(screenBounds, fixture.getAABB(0))) {
         return true;
       }
 

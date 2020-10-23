@@ -12,6 +12,7 @@
     "yarn": "^1.22.5"
   },
   "dependencies": {
+    "@types/css-font-loading-module": "^0.0.4",
     "eventemitter3": "^4.0.7",
     "pixi.js": "^5.3.3",
     "random-js": "^2.1.0"

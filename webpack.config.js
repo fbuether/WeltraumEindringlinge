@@ -12,10 +12,10 @@ module.exports = {
         exclude: /node_modules/,
       },
       {
-        test: /\.png$/,
+        test: /\.(png|woff2)$/,
         loader: "file-loader",
         options: { name: "[name]-[contenthash].[ext]" },
-      },
+      }
     ],
   },
 

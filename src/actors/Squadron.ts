@@ -28,7 +28,7 @@ export class Squadron extends Actor {
       let x = start + distance * i;
 
       let enemy = new Enemy(engine, new Vector(x, y));
-      scene.add(enemy);
+      this.add(enemy);
     }
   }
 }

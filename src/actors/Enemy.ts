@@ -5,6 +5,7 @@ import {Sprite} from "../engine/components/Sprite";
 import {Engine} from "../engine/Engine";
 import {Loader} from "../engine/Loader";
 import {Body} from "../engine/components/Body";
+import {Random} from "../engine/Random";
 
 import {Vector} from "../engine/Vector";
 import {ShapeGenerator} from "../engine/ShapeGenerator";
@@ -14,7 +15,10 @@ import {Explosion} from "../actors/Explosion";
 let texture = Loader.addSpritesheet(
   require("../../assets/images/3rd/SpaceInvaders-3.png"), {
     frames: {
-      "alien-1-1": { frame: {x: 9, y: 12, w: 33, h: 24 } }
+      "alien-1-1": { frame: {x:  9, y:  12, w: 33, h: 24 } },
+      "alien-2-1": { frame: {x: 12, y:  60, w: 24, h: 24 } },
+      "alien-3-1": { frame: {x: 12, y: 108, w: 27, h: 24 } },
+      "alien-4-1": { frame: {x: 12, y: 156, w: 24, h: 24 } }
     }
   });
 
@@ -31,7 +35,8 @@ export class Enemy extends Actor {
   public constructor(engine: Engine, position: Vector) {
     super("enemy", engine);
 
-    let sprite = new Sprite(engine, this, texture, "alien-1-1");
+    let n = engine.random.fork().int32(1, 4);
+    let sprite = new Sprite(engine, this, texture, "alien-" + n + "-1");
     this.add(sprite);
 
     this.body = new Body(engine, this,

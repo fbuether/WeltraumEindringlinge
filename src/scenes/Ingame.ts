@@ -24,7 +24,7 @@ export class Ingame extends Scene {
     this.add(player);
 
 
-    let squadron = new Squadron(engine, this);
+    this.add(new Squadron(engine, this));
 
 
     // ui.

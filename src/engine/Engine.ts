@@ -6,6 +6,7 @@ import {Actor} from "../engine/Actor";
 import {Renderable} from "../engine/components/Renderable";
 import {Deletable} from "../engine/components/Deletable";
 import {Updatable} from "../engine/components/Updatable";
+import {Body} from "../engine/components/Body";
 
 import {Vector} from "../engine/Vector";
 import {Scene, SceneConstructor} from "../engine/Scene";
@@ -55,9 +56,32 @@ export class Engine {
       displayDiv.appendChild(this.render.view);
     }
 
-    this.physics = planck.World();
+    this.physics = this.setupPhysics();
 
     this.fpsDisplay = document.getElementById("fps");
+  }
+
+  private setupPhysics() {
+    let world = planck.World();
+
+    // bleeeeh. See components/Body:constructor for the setup.
+    let bodyOfFixture = (fixture: planck.Fixture) =>
+        (fixture.getBody() as any)["component"] as Body;
+
+    world.on("pre-solve", (contact: planck.Contact) => {
+      let bodyA = bodyOfFixture(contact.getFixtureA());
+      let bodyB = bodyOfFixture(contact.getFixtureB());
+      if (bodyA === undefined || bodyB === undefined) {
+        throw new Error(`Collision with un-componented body. ${contact}`);
+      }
+
+      this.onNextUpdate(() => {
+        bodyA.handleCollision(bodyB);
+        bodyB.handleCollision(bodyA);
+      });
+    });
+
+    return world;
   }
 
 

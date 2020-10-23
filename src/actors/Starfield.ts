@@ -91,16 +91,26 @@ export class Starfield extends Actor {
     for (let star of this.stars) {
       if (star.position.y > this.engine.render.screen.height) {
         // out of view.
-        this.components.delete(star);
-        this.engine.render.stage.removeChild(star.graphics);
-        this.engine.remove(star);
-        star.graphics.destroy();
+        this.deleteStar(star);
         this.stars.splice(this.stars.indexOf(star), 1);
       }
     }
 
     while (this.stars.length <= Starfield.StarCount) {
       this.stars.push(this.createNewStar(false));
+    }
+  }
+
+  private deleteStar(star: Star) {
+    this.components.delete(star);
+    this.engine.render.stage.removeChild(star.graphics);
+    this.engine.remove(star);
+    star.graphics.destroy();
+  }
+
+  public delete() {
+    for (let star of this.stars) {
+      this.deleteStar(star);
     }
   }
 }

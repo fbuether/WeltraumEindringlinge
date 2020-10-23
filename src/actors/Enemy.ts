@@ -1,3 +1,4 @@
+import * as EventEmitter from "eventemitter3";
 
 import {Actor} from "../engine/Actor";
 import {Sprite} from "../engine/components/Sprite";
@@ -18,8 +19,12 @@ let texture = Loader.addSpritesheet(
   });
 
 
+type Events = "destroyed" | "escaped";
+
 export class Enemy extends Actor {
   private static readonly speed: number = 20;
+
+  public readonly events = new EventEmitter<Events>();
 
   private body: Body;
 
@@ -41,13 +46,14 @@ export class Enemy extends Actor {
     this.body.moveBy(new Vector(0, movement));
 
     if (!this.body.isOnScreen()) {
-      // this.scene.looseGame();
+      this.events.emit("escaped", this);
       this.kill();
     }
   }
 
   public kill() {
     this.engine.add(new Explosion(this.engine, this.body.position));
+    this.events.emit("destroyed", this);
     super.kill();
   }
 }

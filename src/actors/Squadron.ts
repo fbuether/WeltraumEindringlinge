@@ -1,19 +1,22 @@
+import * as EventEmitter from "eventemitter3";
 
 import {Actor} from "../engine/Actor";
 import {Sprite} from "../engine/components/Sprite";
 import {Engine} from "../engine/Engine";
 import {Loader} from "../engine/Loader";
-// import {Body} from "../engine/components/Body";
 
 import {Vector} from "../engine/Vector";
-// import {ShapeGenerator} from "../engine/ShapeGenerator";
 
 import {Enemy} from "../actors/Enemy";
 import {Scene} from "../engine/Scene";
 
 
+type Events = "enemy-destroyed" | "enemy-escaped" | "squad-destroyed";
+
 export class Squadron extends Actor {
-  public constructor(engine: Engine, scene: Scene) {
+  public readonly events = new EventEmitter<Events>();
+
+  public constructor(engine: Engine) {
     super("squadron", engine);
 
     let y = engine.render.screen.top + 100;
@@ -28,8 +31,21 @@ export class Squadron extends Actor {
       let x = start + distance * i;
 
       let enemy = new Enemy(engine, new Vector(x, y));
+      enemy.events.on("destroyed", this.onEnemyDestroyed, this);
+      enemy.events.on("escaped", this.onEnemyEscaped, this);
       this.add(enemy);
     }
+  }
+
+
+  private onEnemyDestroyed(enemy: Enemy) {
+    this.components.delete(enemy);
+    this.events.emit("enemy-destroyed", this, enemy);
+  }
+
+  private onEnemyEscaped(enemy: Enemy) {
+    this.components.delete(enemy);
+    this.events.emit("enemy-escaped", this, enemy);
   }
 }
 

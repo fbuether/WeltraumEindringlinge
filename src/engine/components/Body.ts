@@ -13,7 +13,7 @@ import {Actor} from "../../engine/Actor";
 export class Body extends Component implements Positioned {
   private body: planck.Body;
   private engine: Engine;
-  private eventEmitter: EventEmitter<"collision">;
+  private eventEmitter = new EventEmitter<"collision">();
 
   // Getter/Setter from the outside, so game-scale values.
   get position(): Vector {
@@ -30,7 +30,6 @@ export class Body extends Component implements Positioned {
       position: Vector, isBullet: boolean = false) {
     super("body", parent);
     this.engine = engine;
-    this.eventEmitter = new EventEmitter<"collision">();
 
     let phyPosition = position.clone().mul(Engine.PhysicsScale);
     this.body = engine.physics.createBody({
@@ -45,7 +44,7 @@ export class Body extends Component implements Positioned {
     (this.body as any)["component"] = this;
   }
 
-  public remove() {
+  public delete() {
     this.engine.physics.destroyBody(this.body);
     this.eventEmitter.removeAllListeners();
   }

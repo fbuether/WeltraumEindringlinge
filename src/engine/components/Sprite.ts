@@ -44,7 +44,7 @@ export class Sprite extends Renderable {
   }
 
 
-  public remove() {
+  public delete() {
     this.pxApp.stage.removeChild(this.pxSprite);
   }
 

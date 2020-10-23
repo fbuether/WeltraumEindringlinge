@@ -116,7 +116,7 @@ export class Engine {
     await Gui.loadFonts();
 
     let scene = this.loadScene(sceneConstr);
-    this.add(...scene.getActors());
+    this.add(...scene.getComponents());
     this.startDraw();
   }
 
@@ -151,7 +151,7 @@ export class Engine {
         this.remove(...component.getComponents());
       }
 
-      component.remove();
+      component.delete();
     }
   }
 

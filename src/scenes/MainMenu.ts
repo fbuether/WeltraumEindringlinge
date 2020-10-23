@@ -10,7 +10,7 @@ import {Ingame} from "../scenes/Ingame";
 
 export class MainMenu extends Scene {
   public constructor(engine: Engine) {
-    super(engine);
+    super("main-menu", engine);
 
     this.add(new Starfield(engine));
   }

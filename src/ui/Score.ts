@@ -19,7 +19,7 @@ export class Score extends Gui {
     engine.render.stage.addChild(this.text);
   }
 
-  public remove() {
+  public delete() {
     this.engine.render.stage.removeChild(this.text);
   }
 

@@ -5,15 +5,18 @@ import {Player} from "../actors/Player";
 import {Starfield} from "../actors/Starfield";
 import {Vector} from "../engine/Vector";
 import {Squadron} from "../actors/Squadron";
+import {Enemy} from "../actors/Enemy";
 import {Score} from "../ui/Score";
 
 
 export class Ingame extends Scene {
 
+  private guiScore: Score;
+
   public score = 0;
 
   public constructor(engine: Engine) {
-    super(engine);
+    super("ingame", engine);
 
     this.add(new Starfield(engine));
 
@@ -25,12 +28,19 @@ export class Ingame extends Scene {
     this.add(player);
 
 
-    this.add(new Squadron(engine, this));
+    let squadron = new Squadron(engine);
+    squadron.events.on("enemy-destroyed", this.onEnemyDestroyed, this);
+    this.add(squadron);
 
 
     // ui.
-    this.add(new Score(engine));
+    this.guiScore = new Score(engine);
+    this.add(this.guiScore);
+  }
 
+  private onEnemyDestroyed(squadron: Squadron, enemy: Enemy) {
+    this.score += 1;
+    this.guiScore.onScoreChanged(this.score);
   }
 }
 

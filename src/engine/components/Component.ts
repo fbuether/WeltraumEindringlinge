@@ -23,4 +23,8 @@ export abstract class Component {
 
     return this.parent.getActor();
   }
+
+  public remove(): void {
+    // not abstract to not force overriding.
+  }
 }

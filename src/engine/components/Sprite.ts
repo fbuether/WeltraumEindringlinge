@@ -4,11 +4,10 @@ import {AssetTag} from "../../engine/Loader";
 import {Engine} from "../../engine/Engine";
 import {Positioned} from "../../engine/components/Positioned";
 import {Renderable} from "../../engine/components/Renderable";
-import {Deletable} from "../../engine/components/Deletable";
 import {Component} from "../../engine/components/Component";
 
 
-export class Sprite extends Renderable implements Deletable {
+export class Sprite extends Renderable {
   private image: px.Texture;
   private pxSprite: px.Sprite;
   private pxApp: px.Application;
@@ -45,7 +44,7 @@ export class Sprite extends Renderable implements Deletable {
   }
 
 
-  public onDelete() {
+  public remove() {
     this.pxApp.stage.removeChild(this.pxSprite);
   }
 

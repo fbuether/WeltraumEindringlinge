@@ -7,7 +7,7 @@ let font = require(
 export abstract class Gui extends Actor {
   public static textStyle = {
     fontFamily: "VT323",
-    fontSize: 20,
+    fontSize: 17,
     fill: "white"
   };
 

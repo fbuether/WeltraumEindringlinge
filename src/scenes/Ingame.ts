@@ -5,6 +5,7 @@ import {Player} from "../actors/Player";
 import {Starfield} from "../actors/Starfield";
 import {Vector} from "../engine/Vector";
 import {Squadron} from "../actors/Squadron";
+import {Score} from "../ui/Score";
 
 
 export class Ingame extends Scene {
@@ -28,6 +29,8 @@ export class Ingame extends Scene {
 
 
     // ui.
+    this.add(new Score(engine));
+
   }
 }
 

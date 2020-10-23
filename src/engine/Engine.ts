@@ -4,7 +4,6 @@ import * as planck from "planck-js";
 import {Component} from "../engine/components/Component";
 import {Actor} from "../engine/Actor";
 import {Renderable} from "../engine/components/Renderable";
-import {Deletable} from "../engine/components/Deletable";
 import {Updatable} from "../engine/components/Updatable";
 import {Body} from "../engine/components/Body";
 import {Gui} from "../engine/Gui";
@@ -148,12 +147,11 @@ export class Engine {
       if (component instanceof Updatable) {
         this.updatables.delete(component);
       }
-      if ((component as Deletable).onDelete !== undefined) {
-        (component as Deletable).onDelete();
-      }
       if (component instanceof Actor) {
         this.remove(...component.getComponents());
       }
+
+      component.remove();
     }
   }
 

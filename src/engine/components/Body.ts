@@ -7,11 +7,10 @@ import {Engine} from "../../engine/Engine";
 import {Vector} from "../../engine/Vector";
 import {Positioned} from "../../engine/components/Positioned";
 import {Component} from "../../engine/components/Component";
-import {Deletable} from "../../engine/components/Deletable";
 import {Actor} from "../../engine/Actor";
 
 
-export class Body extends Deletable implements Positioned {
+export class Body extends Component implements Positioned {
   private body: planck.Body;
   private engine: Engine;
   private eventEmitter: EventEmitter<"collision">;
@@ -46,7 +45,7 @@ export class Body extends Deletable implements Positioned {
     (this.body as any)["component"] = this;
   }
 
-  public onDelete() {
+  public remove() {
     this.engine.physics.destroyBody(this.body);
     this.eventEmitter.removeAllListeners();
   }

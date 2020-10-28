@@ -47,7 +47,7 @@ export class Ingame extends Scene {
   }
 
   private onEnemyEscaped(squadron: Squadron, enemy: Enemy) {
-    this.finishGame("You lose", "An enemy sneaked by you!");
+    this.finishGame("YOU LOSE", "An enemy passed by!");
   }
 
   private onSquadDestroyed(squadron: Squadron) {

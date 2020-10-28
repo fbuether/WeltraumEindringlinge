@@ -19,6 +19,7 @@ class Star extends Geometry {
   public constructor(starfield: Starfield, pos: Vector, distance: number) {
     super("star", starfield);
     this.graphics = new px.Graphics();
+    this.graphics.zIndex = -100;
 
     this.position = pos;
     this.size = 2 + (4 - distance);

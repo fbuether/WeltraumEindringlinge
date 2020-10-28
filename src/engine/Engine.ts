@@ -54,6 +54,9 @@ export class Engine {
       sharedTicker: true
     });
 
+    // required for z-sorting.
+    this.render.stage.sortableChildren = true;
+
     // disable pixi ticker
     px.Ticker.shared.autoStart = false;
     px.Ticker.shared.stop();

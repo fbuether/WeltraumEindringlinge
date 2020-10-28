@@ -7,13 +7,14 @@ import {Vector} from "../engine/Vector";
 import {Squadron} from "../actors/Squadron";
 import {Enemy} from "../actors/Enemy";
 import {Score} from "../ui/Score";
+import {Banner} from "../ui/Banner";
 
 
 export class Ingame extends Scene {
-
   private guiScore: Score;
-
   public score = 0;
+
+  private state: "running" | "finished" = "running";
 
   public constructor(engine: Engine) {
     super("ingame", engine);
@@ -30,6 +31,8 @@ export class Ingame extends Scene {
 
     let squadron = new Squadron(engine);
     squadron.events.on("enemy-destroyed", this.onEnemyDestroyed, this);
+    squadron.events.on("enemy-escaped", this.onEnemyEscaped, this);
+    squadron.events.on("squad-destroyed", this.onSquadDestroyed, this);
     this.add(squadron);
 
 
@@ -42,70 +45,34 @@ export class Ingame extends Scene {
     this.score += 1;
     this.guiScore.onScoreChanged(this.score);
   }
-}
 
-
-/*
-    // ui.
-    this.scoreUi.onScoreChanged(this.score);
-    this.addUi(this.scoreUi);
-    this.addUi(new Energy(player));
-
-    // enemies
-    let squadron = new Squadron(
-      this.onSquadronKilled.bind(this),
-      this.onEnemyKilled.bind(this));
-    this.add(squadron);
-
-    // prepare dramatic zoom in.
-    this.camera.zoom(0.1);
-    this.camera.pos = new ex.Vector(0, 0);
-
-    this.state = "ingame";
+  private onEnemyEscaped(squadron: Squadron, enemy: Enemy) {
+    this.finishGame("You lose", "An enemy sneaked by you!");
   }
 
-  private onEnemyKilled() {
-    if (this.state != "ingame") {
-      return;
-    }
-
-    this.score += 1;
-    this.scoreUi.onScoreChanged(this.score);
+  private onSquadDestroyed(squadron: Squadron) {
+    this.finishGame("YOU WIN", "Final score: " +
+        this.score.toString().padStart(5, "0"));
   }
 
-  private onSquadronKilled() {
-    if (this.state != "ingame") {
-      return;
-    }
-
-    let timer = new ex.Timer({
-      interval: 500,
-      repeats: false,
-      fcn: () => {
-        this.removeTimer(timer);
-        this.finishGame();
-      }
-    });
-
-    this.add(timer);
-  }
-
-  private finishGame() {
-    if (this.state != "ingame") {
+  private finishGame(title: string, subtitle: string) {
+    if (this.state != "running") {
       return;
     }
 
     this.state = "finished";
 
-    this.addUi(new Banner("You win!", "Score: " + this.score));
-    this.addUi(new Menu(new Array<Button>(
-      new Button("New Game", () => {
-        Ingame.startGame(this.engine);
-      }),
-      new Button("Return to Menu", () => {
-        this.engine.goToScene("main-menu");
-      })
-    ), false));
+    this.engine.delay(800, () => {
+      this.add(new Banner(this.engine, title, subtitle));
+
+
+// -    this.addUi(new Menu(new Array<Button>(
+// -      new Button("New Game", () => {
+// -        Ingame.startGame(this.engine);
+// -      }),
+// -      new Button("Return to Menu", () => {
+// -        this.engine.goToScene("main-menu");
+// -      })
+    });
   }
 }
-*/

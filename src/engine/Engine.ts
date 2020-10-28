@@ -162,6 +162,7 @@ export class Engine {
 
 
   private nextUpdates = new Array<Function>();
+  private delays = new Array<[number,Function]>();
 
   private doUpdate(delta: number) {
     for (let action of this.nextUpdates) {
@@ -169,6 +170,16 @@ export class Engine {
     }
 
     this.nextUpdates = new Array<Function>();
+
+    for (let delayed of this.delays) {
+      delayed[0] -= delta;
+
+      if (delayed[0] <= 0) {
+        delayed[1]();
+      }
+    }
+
+    this.delays = this.delays.filter(d => d[0] > 0);
 
     for (let updatable of this.updatables) {
       updatable.update(delta);
@@ -183,6 +194,10 @@ export class Engine {
 
   public onNextUpdate(action: Function) {
     this.nextUpdates.push(action);
+  }
+
+  public delay(delta: number, action: Function) {
+    this.delays.push([delta, action]);
   }
 
 

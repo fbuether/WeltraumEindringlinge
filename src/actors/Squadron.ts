@@ -16,18 +16,20 @@ type Events = "enemy-destroyed" | "enemy-escaped" | "squad-destroyed";
 export class Squadron extends Actor {
   public readonly events = new EventEmitter<Events>();
 
+  private count: number;
+
   public constructor(engine: Engine) {
     super("squadron", engine);
 
     let y = engine.render.screen.top + 100;
 
     let distance = 60;
-    let count = 9;
+    this.count = 9;
 
     let start = engine.render.screen.left +
         (engine.render.screen.width / 2) +
-        -(distance * count / 2) + (distance / 2);
-    for (let i = 0; i < count; i++) {
+        -(distance * this.count / 2) + (distance / 2);
+    for (let i = 0; i < this.count; i++) {
       let x = start + distance * i;
 
       let enemy = new Enemy(engine, new Vector(x, y));
@@ -39,12 +41,20 @@ export class Squadron extends Actor {
 
 
   private onEnemyDestroyed(enemy: Enemy) {
+    this.count -= 1;
+
     this.components.delete(enemy);
     this.events.emit("enemy-destroyed", this, enemy);
+
+    if (this.count <= 0) {
+      this.events.emit("squad-destroyed", this);
+      this.kill();
+    }
   }
 
   private onEnemyEscaped(enemy: Enemy) {
     this.components.delete(enemy);
+    enemy.kill();
     this.events.emit("enemy-escaped", this, enemy);
   }
 }

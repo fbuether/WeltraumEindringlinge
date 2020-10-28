@@ -13,8 +13,8 @@ export class Score extends Gui {
     this.text = new px.Text("Score 00000", Gui.textStyle);
 
     let screen = engine.getScreenBounds();
-    this.text.position.x = screen.lowerBound.x + 30;
-    this.text.position.y = screen.lowerBound.y + 20;
+    this.text.position.x = screen.left + 30;
+    this.text.position.y = screen.top + 20;
 
     engine.render.stage.addChild(this.text);
   }

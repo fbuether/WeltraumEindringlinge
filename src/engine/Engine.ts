@@ -16,6 +16,13 @@ import {Random} from "../engine/Random";
 
 
 
+export type ScreenSize = {
+  top: number;
+  bottom: number;
+  left: number;
+  right: number;
+}
+
 
 
 export class Engine {
@@ -94,10 +101,8 @@ export class Engine {
   }
 
 
-  public getScreenBounds(): planck.AABB {
-    return new planck.AABB(
-      new Vector(this.render.screen.left, this.render.screen.top),
-      new Vector(this.render.screen.right, this.render.screen.bottom));
+  public getScreenBounds(): ScreenSize {
+    return this.render.screen;
   }
 
 

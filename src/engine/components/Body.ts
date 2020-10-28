@@ -65,13 +65,30 @@ export class Body extends Component implements Positioned {
   public isOnScreen(): boolean {
     let screenBounds = this.engine.getScreenBounds();
 
+    let worldBounds = new planck.AABB(
+      new Vector(
+        screenBounds.left * Engine.PhysicsScale,
+        screenBounds.top * Engine.PhysicsScale),
+      new Vector(
+        screenBounds.right * Engine.PhysicsScale,
+        screenBounds.bottom * Engine.PhysicsScale));
+
     let fixture = this.body.getFixtureList();
     while (fixture != null) {
-      if ((planck.AABB as any).testOverlap(screenBounds, fixture.getAABB(0))) {
+      // this may be a little slow to do every frame. ah well.
+      let fixtureAABB = new planck.AABB(
+        this.body.getWorldVector(fixture.getAABB(0).lowerBound),
+        this.body.getWorldVector(fixture.getAABB(0).upperBound));
+
+      // this ugly thing here circumvents a missing "static".
+      if (((planck.AABB as unknown) as planck.AABB).testOverlap(
+        worldBounds, fixtureAABB)) {
         return true;
       }
 
-      fixture = fixture.getNext();
+      if (fixture != null) {
+        fixture = fixture.getNext();
+      }
     }
 
     return false;

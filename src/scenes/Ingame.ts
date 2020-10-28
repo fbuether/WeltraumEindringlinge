@@ -23,8 +23,8 @@ export class Ingame extends Scene {
 
     let screen = engine.getScreenBounds();
     let player = new Player(engine, new Vector(
-      screen.lowerBound.x + screen.upperBound.y / 2,
-      screen.upperBound.y - 70));
+      (screen.left + screen.right) / 2,
+      screen.bottom - 70));
     this.add(player);
 
 

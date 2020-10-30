@@ -14,7 +14,7 @@ let spaceInvaderSheet = Loader.addSpritesheet(
       "3": { frame: {x: 99, y: 201, w: 45, h: 33} }
     },
     animations: {
-      explosion: ["1", "2", "3"]
+      "explosion": ["1", "2", "3"]
     }
   });
 

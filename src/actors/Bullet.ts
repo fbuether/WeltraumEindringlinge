@@ -10,9 +10,14 @@ import {ShapeGenerator} from "../engine/ShapeGenerator";
 
 
 let texture = Loader.addSpritesheet(
-  require("../../assets/images/3rd/SpaceInvaders-3.png"), {
+  require("../../assets/images/bullet.png"), {
     frames: {
-      "bullet": { frame: {x: 117, y: 15, w: 3, h: 18 } }
+      "bullet-1": { frame: {x: 3, y: 3, w: 6, h: 21 } },
+      "bullet-2": { frame: {x: 15, y: 3, w: 6, h: 21 } },
+      "bullet-3": { frame: {x: 27, y: 3, w: 6, h: 21 } }
+    },
+    animations: {
+      "bullet": ["bullet-1", "bullet-2", "bullet-3"]
     }
   });
 

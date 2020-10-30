@@ -23,6 +23,21 @@ let texture = Loader.addSpritesheet(
   });
 
 
+let enemyTexture = Loader.addSpritesheet(
+  require("../../assets/images/enemies.png"), {
+    frames: {
+      "small-1": { frame: {x: 0, y: 0, w: 72, h: 48 } },
+      "small-2": { frame: {x: 75, y: 0, w: 72, h: 48 } },
+      "glob-1": { frame: {x: 0, y: 49, w: 24, h: 36 } },
+      "glob-2": { frame: {x: 27, y: 49, w: 24, h: 36 } }
+    },
+    animations: {
+      "small": [ "small-1", "small-2" ],
+      "glob": [ "glob-1", "glob-2" ]
+    }
+  });
+
+
 type Events = "destroyed" | "escaped";
 
 export class Enemy extends Actor {

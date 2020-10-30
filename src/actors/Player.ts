@@ -17,6 +17,24 @@ let texSheet = Loader.addSpritesheet(
     }
   });
 
+let psX = 102;
+let psY = 93;
+let playerSheet = Loader.addSpritesheet(
+  require("../../assets/images/player.png", {
+    frames: {
+      "ship-small":      { frame: { x: psX * 1, y: psY * 0, w: 102, h: 124} },
+      "small-exhaust-1": { frame: { x: psX * 2, y: psY * 0, w: 102, h: 124} },
+      "small-exhaust-2": { frame: { x: psX * 0, y: psY * 1, w: 102, h: 124} },
+      "small-weapon-1":  { frame: { x: psX * 1, y: psY * 1, w: 102, h: 124} },
+      "ship-big":        { frame: { x: psX * 2, y: psY * 1, w: 102, h: 124} },
+      "big-exhaust-1-1": { frame: { x: psX * 0, y: psY * 2, w: 102, h: 124} },
+      "big-exhaust-1-2": { frame: { x: psX * 1, y: psY * 2, w: 102, h: 124} },
+      "big-exhaust-2-1": { frame: { x: psX * 2, y: psY * 2, w: 102, h: 124} },
+      "big-exhaust-2-2": { frame: { x: psX * 0, y: psY * 3, w: 102, h: 124} },
+      "big-weapon-1":    { frame: { x: psX * 1, y: psY * 3, w: 102, h: 124} },
+      "big-weapon-2":    { frame: { x: psX * 2, y: psY * 3, w: 102, h: 124} }
+  });
+
 
 export class Player extends Actor {
   private static readonly speed: number = 240;

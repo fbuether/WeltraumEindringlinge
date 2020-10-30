@@ -9,7 +9,10 @@ It's a game! Control your spaceship, earth last's hope of defense, and shoot dow
 In the game, control your spaceship with `a` and `d` to move left or right. Fire at enemy things using space. Win by destroying everything!
 
 
-You can even play it online: [https://jasminefields.net/studio/WeltraumEindringlinge/](https://jasminefields.net/studio/WeltraumEindringlinge/)
+You can even play it online:
+
+[https://jasminefields.net/studio/WeltraumEindringlinge/](https://jasminefields.net/studio/WeltraumEindringlinge/)
+
 Please note that this page might not carry the newest version.
 
 

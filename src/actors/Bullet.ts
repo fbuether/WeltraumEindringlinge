@@ -28,17 +28,22 @@ export class Bullet extends Actor {
   public constructor(engine: Engine, position: Vector, direction: Vector) {
     super("bullet", engine);
 
-    let sprite = new Sprite(engine, this, texture, "bullet-1");
-    this.add(sprite);
-
     this.body = new Body(engine, this,
-      new ShapeGenerator().generateFromTexture(sprite.texture), position, true);
+      new ShapeGenerator().generateFromSpritesheet(
+        engine, texture, "bullet-1"), position);
     this.body.applyForce(direction);
 
     this.body.onCollision(this.onCollision.bind(this));
-    this.add(this.body);
 
-    sprite.attachTo(this.body);
+    this.add(this.body);
+    this.add(new Sprite(engine, this, {
+      kind: "animated",
+      asset: texture,
+      position: this.body,
+      animation: "bullet",
+      speed: 0.333,
+      loops: true
+    }));
   }
 
   private onCollision(other: Actor) {

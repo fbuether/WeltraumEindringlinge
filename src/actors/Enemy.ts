@@ -39,16 +39,19 @@ export class Enemy extends Actor {
   public constructor(engine: Engine, position: Vector) {
     super("enemy", engine);
 
-    let n = engine.random.fork().int32(1, 2);
-    console.log("small-" + n);
-    let sprite = new Sprite(engine, this, enemyTexture, "small-" + n);
-    this.add(sprite);
-
     this.body = new Body(engine, this,
-      new ShapeGenerator().generateFromTexture(sprite.texture), position);
+      new ShapeGenerator().generateFromSpritesheet(
+        engine, enemyTexture, "small-1"), position);
     this.add(this.body);
 
-    sprite.attachTo(this.body);
+    this.add(new Sprite(engine, this, {
+      kind: "animated",
+      position: this.body,
+      asset: enemyTexture,
+      animation: "small",
+      speed: 0.8,
+      loops: true
+    }));
   }
 
   public update(delta: number) {
@@ -67,60 +70,3 @@ export class Enemy extends Actor {
     super.kill();
   }
 }
-
-
-// import * as ex from "excalibur";
-
-// import {Bullet} from "../actors/bullet";
-// import {getAssets} from "../assets";
-// import {Explosion} from "../actors/explosion";
-// import {IncreaseScoreEvent} from "../actors/increase-score-event";
-
-/*
-export class Enemy extends ex.Actor {
-  private static readonly speed: number = 20;
-  private static readonly firingSpeed: number = 1000; // 1/s
-
-  private onEnemyKilled: () => void;
-
-
-  public constructor(onEnemyKilled: () => void) {
-    super();
-    this.onEnemyKilled = onEnemyKilled;
-  }
-
-
-  public onInitialize(engine: ex.Engine) {
-    let anim = new ex.Animation({
-      engine: engine,
-      loop: true, speed: 900,
-      sprites: getAssets().enemy1
-    });
-
-    this.addDrawing("generic", anim);
-    this.width = 30;
-    this.height = 30;
-    this.body.collider.type = ex.CollisionType.Active;
-  }
-
-
-  public onPreKill() {
-    let explosion = new Explosion();
-    explosion.pos = this.pos;
-    this.scene.add(explosion);
-
-    this.onEnemyKilled();
-  }
-
-
-  public onPostUpdate(engine: ex.Engine, delta: number) {
-    let movement = Enemy.speed * delta / 1000;
-    this.pos = this.pos.add(new ex.Vector(0, movement));
-
-    // if below the screen
-    if (this.isOffScreen && this.pos.y > 0) {
-      this.kill();
-    }
-  }
-}
-*/

@@ -1,14 +1,44 @@
 import * as px from "pixi.js";
 
+import {Vector} from "../../engine/Vector";
 import {AssetTag} from "../../engine/Loader";
 import {Engine} from "../../engine/Engine";
 import {Positioned} from "../../engine/components/Positioned";
 import {Renderable} from "../../engine/components/Renderable";
 import {Component} from "../../engine/components/Component";
+import {Updatable} from "../../engine/components/Updatable";
+
+
+interface StaticSpriteConfig {
+  kind: "static";
+
+  // name of the frame.
+  // if undefined, image contains just one sprite.
+  name?: string;
+}
+
+interface AnimatedSpriteConfig {
+  kind: "animated";
+
+  // name of the animation.
+  animation: string;
+
+  // duration per frame in milliseconds.
+  speed: number;
+
+  loops: boolean;
+
+  // runs only for non-looping animations.
+  onComplete?: () => void;
+}
+
+export type SpriteConfig = (StaticSpriteConfig | AnimatedSpriteConfig) & {
+  asset: AssetTag;
+  position: Vector | Positioned;
+};
 
 
 export class Sprite extends Renderable {
-  private image: px.Texture;
   private pxSprite: px.Sprite;
   private pxApp: px.Application;
 
@@ -16,31 +46,53 @@ export class Sprite extends Renderable {
     return this.pxSprite.texture;
   }
 
-  public constructor(engine: Engine, parent: Component, asset: AssetTag,
-      sheetTextureName: string | null = null) {
+  public constructor(engine: Engine, parent: Component, config: SpriteConfig) {
     super("sprite", parent);
     this.pxApp = engine.render;
 
-    if (sheetTextureName != null) {
-      this.image = engine.loader.getSpritesheet(asset)
-        .sheet.textures[sheetTextureName];
+    if (config.kind == "static") {
+      let texture = config.name !== undefined
+          ? engine.loader.getSpritesheet(config.asset)
+            .sheet.textures[config.name]
+          : engine.loader.getSpritesheet(config.asset).resource.texture;
+
+      this.pxSprite = px.Sprite.from(texture);
     }
     else {
-      this.image = engine.loader.getSprite(asset).resource.texture;
+      let animation = new px.AnimatedSprite(
+        engine.loader.getSpritesheet(config.asset)
+          .sheet.animations[config.animation]);
+
+      animation.animationSpeed = 1 / (1000 * config.speed);
+      animation.loop = config.loops;
+
+      if (config.onComplete) {
+        animation.onComplete = config.onComplete;
+      }
+
+      this.pxSprite = animation;
     }
 
-    this.pxSprite = px.Sprite.from(this.image);
-    this.pxSprite.anchor.set(0.5, 0.5);
+    if (config.position instanceof Vector) {
+      this.pxSprite.x = config.position.x;
+      this.pxSprite.y = config.position.y;
+    }
+    else if (Positioned.isPositioned(config.position)) {
+      this.positionProvider = config.position;
+      this.render();
+    }
 
+    this.pxSprite.anchor.set(0.5, 0.5);
     this.pxApp.stage.addChild(this.pxSprite);
   }
 
 
   private positionProvider: Positioned | null = null;
 
-  public attachTo(positioned: Positioned) {
-    this.positionProvider = positioned;
-    this.render();
+  public update(delta: number) {
+    if (this.pxSprite instanceof px.AnimatedSprite) {
+      this.pxSprite.update(delta);
+    }
   }
 
 

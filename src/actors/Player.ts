@@ -58,14 +58,17 @@ export class Player extends Actor {
   public constructor(engine: Engine, position: Vector) {
     super("player", engine);
 
-    let ship = new Sprite(engine, this, playerSheet, "ship-small");
-    this.add(ship);
-
     this.body = new Body(engine, this,
-      new ShapeGenerator().generateFromTexture(ship.texture), position);
+      new ShapeGenerator().generateFromSpritesheet(
+        engine, playerSheet, "ship-small"), position);
     this.add(this.body);
 
-    ship.attachTo(this.body);
+    this.add(new Sprite(engine, this, {
+      kind: "static",
+      asset: playerSheet,
+      position: this.body,
+      name: "ship-small"
+    }));
   }
 
 

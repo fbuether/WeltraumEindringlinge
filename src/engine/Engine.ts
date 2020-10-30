@@ -138,7 +138,7 @@ export class Engine {
       if (component instanceof Renderable) {
         this.renderables.add(component);
       }
-      if (component instanceof Updatable) {
+      if (component instanceof Updatable || Updatable.isUpdatable(component)) {
         this.updatables.add(component);
       }
       if (component instanceof Actor) {
@@ -152,7 +152,7 @@ export class Engine {
       if (component instanceof Renderable) {
         this.renderables.delete(component);
       }
-      if (component instanceof Updatable) {
+      if (component instanceof Updatable || Updatable.isUpdatable(component)) {
         this.updatables.delete(component);
       }
       if (component instanceof Actor) {

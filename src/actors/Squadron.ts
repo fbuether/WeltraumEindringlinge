@@ -23,8 +23,8 @@ export class Squadron extends Actor {
 
     let y = engine.render.screen.top + 100;
 
-    let distance = 60;
-    this.count = 9;
+    let distance = 90;
+    this.count = 6;
 
     let start = engine.render.screen.left +
         (engine.render.screen.width / 2) +

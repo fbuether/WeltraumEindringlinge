@@ -18,7 +18,7 @@ export class Random {
 
   public int32(min?: number, max?: number): number {
     if (min && max) {
-      return min + (this.source.random_incl() * (max - min));
+      return Math.round(min + (this.source.random_incl() * (max - min)));
     }
     else {
       return this.source.random_int31();

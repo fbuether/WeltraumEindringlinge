@@ -28,7 +28,7 @@ export class Bullet extends Actor {
   public constructor(engine: Engine, position: Vector, direction: Vector) {
     super("bullet", engine);
 
-    let sprite = new Sprite(engine, this, texture, "bullet");
+    let sprite = new Sprite(engine, this, texture, "bullet-1");
     this.add(sprite);
 
     this.body = new Body(engine, this,

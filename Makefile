@@ -1,7 +1,7 @@
 
 
 build:
-	node ./node_modules/.bin/webpack
+	node ./node_modules/.bin/webpack --env.production --env.NODE_ENV=bar --optimize-minimize --progress
 
 
 dev:

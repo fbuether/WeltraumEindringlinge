@@ -1,15 +1,15 @@
 
-import { bool, int32, MersenneTwister19937, Random as Rnd} from "random-js";
+import MersenneTwister = require("mersenne-twister");
 
 
 export class Random {
   private static readonly InitialSeed = 174;
 
-  private source: Rnd;
+  private source: MersenneTwister;
 
   public constructor(seed?: Random) {
-    this.source = new Rnd(MersenneTwister19937.seed(
-      seed ? seed.int32() : Random.InitialSeed));
+    this.source = new MersenneTwister(
+      seed ? seed.int32() : Random.InitialSeed);
   }
 
   public fork(): Random {
@@ -18,18 +18,18 @@ export class Random {
 
   public int32(min?: number, max?: number): number {
     if (min && max) {
-      return this.source.integer(min, max);
+      return min + (this.source.random_incl() * (max - min));
     }
     else {
-      return this.source.int32();
+      return this.source.random_int31();
     }
   }
 
   public bool(): boolean {
-    return this.source.bool();
+    return this.source.random() >= 0.5;
   }
 
   public real(min: number, max: number): number {
-    return this.source.real(min, max);
+    return min + (this.source.random_incl() * (max-min));
   }
 }

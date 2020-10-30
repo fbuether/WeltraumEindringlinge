@@ -1,7 +1,7 @@
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 const path = require("path");
 
-module.exports = {
+module.exports = (env = {}) => ({
   entry: path.resolve(__dirname, "src/main.ts"),
 
   module: {
@@ -19,8 +19,8 @@ module.exports = {
     ],
   },
 
-  devtool: "inline-source-map",
-  mode: "development",
+  devtool: env.production ? "" : "cheap-module-eval-source-map",
+  mode: env.production ? "production" : "development",
 
   resolve: {
     extensions: [".ts", ".js"],
@@ -37,8 +37,6 @@ module.exports = {
     clientLogLevel: "warn"
   },
 
-  watch: true,
-
   plugins: [
     new HtmlWebPackPlugin({
       favicon: "assets/favicon.ico",
@@ -46,15 +44,26 @@ module.exports = {
     }),
   ],
 
+  node: false,
+
   optimization: {
+    runtimeChunk: "single",
     splitChunks: {
+      chunks: "all",
+      maxInitialRequests: Infinity,
+      minSize: 0,
+      minChunks: 1,
       cacheGroups: {
-        commons: {
+        vendor: {
           test: /[\\/]node_modules[\\/]/,
-          name: "lib",
-          chunks: "all",
+          name: function(module) {
+            return "package-" +
+              module.context
+              .match(/[\\/]node_modules[\\/](.*?)([\\/]|$)/)[1]
+              .replace("@", "");
+          },
         },
       },
     },
-  },
-};
+  }
+});

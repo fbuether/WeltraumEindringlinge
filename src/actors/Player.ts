@@ -20,19 +20,25 @@ let texSheet = Loader.addSpritesheet(
 let psX = 102;
 let psY = 93;
 let playerSheet = Loader.addSpritesheet(
-  require("../../assets/images/player.png", {
+  require("../../assets/images/player.png"), {
     frames: {
-      "ship-small":      { frame: { x: psX * 1, y: psY * 0, w: 102, h: 124} },
-      "small-exhaust-1": { frame: { x: psX * 2, y: psY * 0, w: 102, h: 124} },
-      "small-exhaust-2": { frame: { x: psX * 0, y: psY * 1, w: 102, h: 124} },
-      "small-weapon-1":  { frame: { x: psX * 1, y: psY * 1, w: 102, h: 124} },
-      "ship-big":        { frame: { x: psX * 2, y: psY * 1, w: 102, h: 124} },
-      "big-exhaust-1-1": { frame: { x: psX * 0, y: psY * 2, w: 102, h: 124} },
-      "big-exhaust-1-2": { frame: { x: psX * 1, y: psY * 2, w: 102, h: 124} },
-      "big-exhaust-2-1": { frame: { x: psX * 2, y: psY * 2, w: 102, h: 124} },
-      "big-exhaust-2-2": { frame: { x: psX * 0, y: psY * 3, w: 102, h: 124} },
-      "big-weapon-1":    { frame: { x: psX * 1, y: psY * 3, w: 102, h: 124} },
-      "big-weapon-2":    { frame: { x: psX * 2, y: psY * 3, w: 102, h: 124} }
+      "ship-small":      { frame: { x: psX * 1, y: psY * 0, w: 102, h: 93} },
+      "small-exhaust-1": { frame: { x: psX * 2, y: psY * 0, w: 102, h: 93} },
+      "small-exhaust-2": { frame: { x: psX * 0, y: psY * 1, w: 102, h: 93} },
+      "small-weapon-1":  { frame: { x: psX * 1, y: psY * 1, w: 102, h: 93} },
+      "ship-big":        { frame: { x: psX * 2, y: psY * 1, w: 102, h: 93} },
+      "big-exhaust-1-1": { frame: { x: psX * 0, y: psY * 2, w: 102, h: 93} },
+      "big-exhaust-1-2": { frame: { x: psX * 1, y: psY * 2, w: 102, h: 93} },
+      "big-exhaust-2-1": { frame: { x: psX * 2, y: psY * 2, w: 102, h: 93} },
+      "big-exhaust-2-2": { frame: { x: psX * 0, y: psY * 3, w: 102, h: 93} },
+      "big-weapon-1":    { frame: { x: psX * 1, y: psY * 3, w: 102, h: 93} },
+      "big-weapon-2":    { frame: { x: psX * 2, y: psY * 3, w: 102, h: 93} }
+    },
+    animations: {
+      "small-exhaust": ["small-exhaust-1", "small-exhaust-2"],
+      "big-exhaust-1": ["big-exhaust-1-1", "big-exhaust-1-2"],
+      "big-exhaust-2": ["big-exhaust-2-1", "big-exhaust-2-2"],
+    }
   });
 
 
@@ -49,14 +55,14 @@ export class Player extends Actor {
   public constructor(engine: Engine, position: Vector) {
     super("player", engine);
 
-    let sprite = new Sprite(engine, this, texSheet, "player");
-    this.add(sprite);
+    let ship = new Sprite(engine, this, playerSheet, "ship-small");
+    this.add(ship);
 
     this.body = new Body(engine, this,
-      new ShapeGenerator().generateFromTexture(sprite.texture), position);
+      new ShapeGenerator().generateFromTexture(ship.texture), position);
     this.add(this.body);
 
-    sprite.attachTo(this.body);
+    ship.attachTo(this.body);
   }
 
 

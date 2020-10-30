@@ -6,19 +6,22 @@ import {Actor} from "../engine/Actor";
 import {Loader} from "../engine/Loader";
 
 
-let spaceInvaderSheet = Loader.addSpritesheet(
-  require("../../assets/images/3rd/SpaceInvaders-3.png"), {
+let pxW = 72;
+let pxH = 72;
+
+let texture = Loader.addSpritesheet(
+  require("../../assets/images/explosion.png"), {
     frames: {
-      "1": { frame: {x: 99, y: 105, w: 45, h: 33} },
-      "2": { frame: {x: 99, y: 153, w: 45, h: 33} },
-      "3": { frame: {x: 99, y: 201, w: 45, h: 33} }
+      "1": { frame: { x: pxW * 0, y: pxH * 0, w: pxW, h: pxH } },
+      "2": { frame: { x: pxW * 1, y: pxH * 0, w: pxW, h: pxH } },
+      "3": { frame: { x: pxW * 2, y: pxH * 0, w: pxW, h: pxH } },
+      "4": { frame: { x: pxW * 0, y: pxH * 1, w: pxW, h: pxH } },
+      "5": { frame: { x: pxW * 1, y: pxH * 1, w: pxW, h: pxH } }
     },
     animations: {
-      "explosion": ["1", "2", "3"]
+      "explosion": ["1", "2", "3", "4", "5"]
     }
   });
-
-
 
 
 export class Explosion extends Actor {
@@ -37,7 +40,7 @@ export class Explosion extends Actor {
     // let ss = new px.Spritesheet(tex,
     //   engine.getResource(spaceInvaderSheet).data);
 
-    let ss = engine.loader.getSpritesheet(spaceInvaderSheet).sheet;
+    let ss = engine.loader.getSpritesheet(texture).sheet;
 
 
     // ss.parse(() => {});

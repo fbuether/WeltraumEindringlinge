@@ -10,29 +10,23 @@ import {ShapeGenerator} from "../engine/ShapeGenerator";
 import {Key} from "../engine/Keyboard";
 import {Bullet} from "../actors/Bullet";
 
-let texSheet = Loader.addSpritesheet(
-  require("../../assets/images/3rd/SpaceInvaders-3.png"), {
-    frames: {
-      "player": { frame: {x: 204, y: 12, w: 27, h: 30 } }
-    }
-  });
 
-let psX = 102;
-let psY = 93;
-let playerSheet = Loader.addSpritesheet(
+const psX = 102;
+const psY = 93;
+const playerSheet = Loader.addSpritesheet(
   require("../../assets/images/player.png"), {
     frames: {
-      "ship-small":      { frame: { x: psX * 1, y: psY * 0, w: 102, h: 93} },
-      "small-exhaust-1": { frame: { x: psX * 2, y: psY * 0, w: 102, h: 93} },
-      "small-exhaust-2": { frame: { x: psX * 0, y: psY * 1, w: 102, h: 93} },
-      "small-weapon-1":  { frame: { x: psX * 1, y: psY * 1, w: 102, h: 93} },
-      "ship-big":        { frame: { x: psX * 2, y: psY * 1, w: 102, h: 93} },
-      "big-exhaust-1-1": { frame: { x: psX * 0, y: psY * 2, w: 102, h: 93} },
-      "big-exhaust-1-2": { frame: { x: psX * 1, y: psY * 2, w: 102, h: 93} },
-      "big-exhaust-2-1": { frame: { x: psX * 2, y: psY * 2, w: 102, h: 93} },
-      "big-exhaust-2-2": { frame: { x: psX * 0, y: psY * 3, w: 102, h: 93} },
-      "big-weapon-1":    { frame: { x: psX * 1, y: psY * 3, w: 102, h: 93} },
-      "big-weapon-2":    { frame: { x: psX * 2, y: psY * 3, w: 102, h: 93} }
+      "ship-small":      { frame: { x: psX * 1, y: psY * 0, w: psX, h: psY} },
+      "small-exhaust-1": { frame: { x: psX * 2, y: psY * 0, w: psX, h: psY} },
+      "small-exhaust-2": { frame: { x: psX * 0, y: psY * 1, w: psX, h: psY} },
+      "small-weapon-1":  { frame: { x: psX * 1, y: psY * 1, w: psX, h: psY} },
+      "ship-big":        { frame: { x: psX * 2, y: psY * 1, w: psX, h: psY} },
+      "big-exhaust-1-1": { frame: { x: psX * 0, y: psY * 2, w: psX, h: psY} },
+      "big-exhaust-1-2": { frame: { x: psX * 1, y: psY * 2, w: psX, h: psY} },
+      "big-exhaust-2-1": { frame: { x: psX * 2, y: psY * 2, w: psX, h: psY} },
+      "big-exhaust-2-2": { frame: { x: psX * 0, y: psY * 3, w: psX, h: psY} },
+      "big-weapon-1":    { frame: { x: psX * 1, y: psY * 3, w: psX, h: psY} },
+      "big-weapon-2":    { frame: { x: psX * 2, y: psY * 3, w: psX, h: psY} }
     },
     animations: {
       "small-exhaust": ["small-exhaust-1", "small-exhaust-2"],
@@ -40,6 +34,15 @@ let playerSheet = Loader.addSpritesheet(
       "big-exhaust-2": ["big-exhaust-2-1", "big-exhaust-2-2"],
     }
   });
+
+const weaponPoints = {
+  "ship-small": {
+    "weapon-0": [
+      new Vector(-psX/2, -psY/2).add(new Vector(37, 17)),
+      new Vector(-psX/2, -psY/2).add(new Vector(64, 17))
+    ]
+  }
+};
 
 
 export class Player extends Actor {
@@ -71,6 +74,22 @@ export class Player extends Actor {
   }
 
 
+  private fireWeapon() {
+
+    for (let point of weaponPoints["ship-small"]["weapon-0"]) {
+      let point2 = new Vector(point.x, -(this.body.size.y / 2 + 11));
+
+      this.engine.add(new Bullet(this.engine,
+        this.body.position.add(
+          // for now, the position computation is moot, as we do not have pixel-
+          // perfect collision detection.
+          point2
+
+        ), new Vector(0, -0.02)));
+    }
+  }
+
+
   public update(delta: number) {
     let movement = Player.speed * delta / 1000;
 
@@ -93,9 +112,7 @@ export class Player extends Actor {
 
     let fires = this.engine.keyboard.isPressed(Key.Space);
     if (fires && this.lastShot <= 0) {
-      this.engine.add(new Bullet(this.engine,
-        this.body.position.add(new Vector(0, -25)),
-        new Vector(0, -0.02)));
+      this.fireWeapon();
       this.lastShot = Player.firingSpeed;
     }
   }

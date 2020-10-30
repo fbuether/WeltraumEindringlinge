@@ -20,6 +20,33 @@ export class Body extends Component implements Positioned {
     return this.body.getPosition().clone().mul(1 / Engine.PhysicsScale);
   }
 
+  private _size: Vector | null = null;
+  get size(): Vector {
+    if (this._size == null) {
+
+      let fixture = this.body.getFixtureList();
+      if (fixture != null) {
+        let shape = fixture.getShape();
+        if (shape instanceof planck.Box) {
+          let box = shape as planckShape;
+
+          let bb = new planck.AABB();
+          box.computeAABB(bb, new planck.Transform());
+
+          // extents are half-lengths.
+          this._size = bb.getExtents().mul(2 / Engine.PhysicsScale);
+        }
+        else {
+          this._size = Vector.zero();
+        }
+      }
+      else {
+        this._size = Vector.zero();
+      }
+    }
+    return this._size;
+  }
+
   set position(position: Vector) {
     let phyPosition = position.clone().mul(Engine.PhysicsScale);
     this.body.setPosition(phyPosition);
@@ -27,7 +54,7 @@ export class Body extends Component implements Positioned {
 
 
   constructor(engine: Engine, parent: Component, shape: planckShape,
-      position: Vector, isBullet: boolean = false) {
+              position: Vector, isBullet: boolean = false) {
     super("body", parent);
     this.engine = engine;
 

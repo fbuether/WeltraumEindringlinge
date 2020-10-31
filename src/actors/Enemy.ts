@@ -37,6 +37,8 @@ export class Enemy extends TeamedActor {
 
   private body: Body;
 
+  private health: number = 5;
+
   public constructor(engine: Engine, position: Vector) {
     super("enemy", engine, Team.Enemy);
 
@@ -70,7 +72,15 @@ export class Enemy extends TeamedActor {
 
   public damage(amount: number): boolean {
     let consume = this.alive;
-    this.kill();
+
+    this.health -= amount;
+    if (this.health <= 0) {
+      this.kill();
+    }
+    else {
+      // todo: flash this enemy's sprite.
+    }
+
     return consume;
   }
 

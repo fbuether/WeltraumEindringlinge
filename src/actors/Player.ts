@@ -48,7 +48,7 @@ const weaponPoints = {
 
 export class Player extends TeamedActor {
   private static readonly speed: number = 24;
-  private static readonly firingSpeed: number = 1000; // 1/s
+  private static readonly firingSpeed: number = 300;
 
   private health: number = 5;
   private lastShot: number = -1;

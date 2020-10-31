@@ -29,7 +29,7 @@ You can also build a distributable version with `make build`.
 
 This game uses the font `Press Start 2P`, published under the SIL Open Font Licence. See [SIL Licence](assets/fonts/PressStart2P/OFL.txt) for details.
 
-The game uses (adopted versions of) images from the hubble space telescope, available at [https://www.spacetelescope.org/images/archive/category/nebulae/](https://www.spacetelescope.org/images/archive/category/nebulae/), specifically the following:
+The game uses (adopted versions of) images from the Hubble Space Telescope, available at [https://www.spacetelescope.org/images/archive/category/nebulae/](https://www.spacetelescope.org/images/archive/category/nebulae/), specifically the following:
 
 * https://www.spacetelescope.org/images/heic1608a/ (The Bubble Nebula)
 * https://www.spacetelescope.org/images/heic1808a/ (The Lagoon Nebula)

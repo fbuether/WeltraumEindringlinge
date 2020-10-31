@@ -54,7 +54,7 @@ export class Body extends Component implements Positioned {
 
 
   constructor(engine: Engine, parent: Component, shape: planckShape,
-              position: Vector, isBullet: boolean = false) {
+      position: Vector, isBullet: boolean = false) {
     super("body", parent);
     this.engine = engine;
 

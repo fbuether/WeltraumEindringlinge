@@ -94,21 +94,30 @@ export class Player extends Actor {
 
 
   public update(delta: number) {
-    let movement = Player.speed * delta / 1000;
 
+    // input.
+    let movement = Player.speed * delta / 1000;
     let moveRight = this.engine.keyboard.isPressed(Key.D)
         || this.engine.keyboard.isPressed(Key.Right);
     let moveLeft = this.engine.keyboard.isPressed(Key.A)
         || this.engine.keyboard.isPressed(Key.Left);
-    if (moveRight && !moveLeft) {
-      this.body.moveBy(new Vector(movement, 0));
+
+    let xPos = this.body.position.x;
+    let size = this.engine.getScreenBounds();
+    let dist = 80;
+    let canMoveLeft = xPos - dist > size.left;
+    let canMoveRight = xPos + dist < size.right;
+
+
+    if (moveRight && !moveLeft && canMoveRight) {
+      this.body.applyForce(new Vector(movement, 0));
     }
-    else if (moveLeft && !moveRight) {
-      this.body.moveBy(new Vector(-movement, 0));
+
+    if (moveLeft && !moveRight && canMoveLeft) {
+      this.body.applyForce(new Vector(-movement, 0));
     }
 
     // firing.
-
     if (this.lastShot > 0) {
       this.lastShot -= delta;
     }

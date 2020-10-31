@@ -46,6 +46,19 @@ const weaponPoints = {
 };
 
 
+let bulletTexture = Loader.addSpritesheet(
+  require("../../assets/images/bullet.png"), {
+    frames: {
+      "bullet-1": { frame: {x: 3, y: 3, w: 6, h: 21 } },
+      "bullet-2": { frame: {x: 15, y: 3, w: 6, h: 21 } },
+      "bullet-3": { frame: {x: 27, y: 3, w: 6, h: 21 } }
+    },
+    animations: {
+      "bullet": ["bullet-1", "bullet-2", "bullet-3"]
+    }
+  });
+
+
 export class Player extends TeamedActor {
   private static readonly speed: number = 24;
   private static readonly firingSpeed: number = 300;
@@ -91,7 +104,16 @@ export class Player extends TeamedActor {
         position: this.body.position.add(
           // for now, the position computation is moot, as we do not have pixel-
           // perfect collision detection.
-          point2)
+          point2),
+        sprite: {
+          kind: "animated",
+          asset: bulletTexture,
+          animation: "bullet",
+          speed: 0.333,
+          loops: true
+        },
+        shape: new ShapeGenerator().generateFromSpritesheet(
+          this.engine, bulletTexture, "bullet-1")
       }));
     }
   }

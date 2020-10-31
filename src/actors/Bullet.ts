@@ -4,30 +4,25 @@ import {Actor} from "../engine/Actor";
 import {Body} from "../engine/components/Body";
 import {Engine} from "../engine/Engine";
 import {Loader} from "../engine/Loader";
-import {Sprite} from "../engine/components/Sprite";
+import {Sprite, SpriteConfig} from "../engine/components/Sprite";
 
 import {Vector} from "../engine/Vector";
 import {ShapeGenerator} from "../engine/ShapeGenerator";
+import {Shape as planckShape} from "planck-js/lib/shape/index";
 
 
-let texture = Loader.addSpritesheet(
-  require("../../assets/images/bullet.png"), {
-    frames: {
-      "bullet-1": { frame: {x: 3, y: 3, w: 6, h: 21 } },
-      "bullet-2": { frame: {x: 15, y: 3, w: 6, h: 21 } },
-      "bullet-3": { frame: {x: 27, y: 3, w: 6, h: 21 } }
-    },
-    animations: {
-      "bullet": ["bullet-1", "bullet-2", "bullet-3"]
-    }
-  });
-
+type DistributiveOmit<T, K extends keyof any> = T extends any
+  ? Omit<T, K>
+  : never;
 
 interface BulletConfig {
   team: Team;
   position: Vector;
   direction: Vector;
   damage: number;
+
+  shape: planckShape;
+  sprite: DistributiveOmit<SpriteConfig, "position">;
 }
 
 
@@ -41,8 +36,7 @@ export class Bullet extends TeamedActor {
     this._damage = config.damage;
 
     this.body = new Body(engine, this, {
-      shape: new ShapeGenerator().generateFromSpritesheet(
-        engine, texture, "bullet-1"),
+      shape: config.shape,
       position: config.position,
       isBullet: true,
       damping: 0
@@ -55,12 +49,8 @@ export class Bullet extends TeamedActor {
 
     this.add(this.body);
     this.add(new Sprite(engine, this, {
-      kind: "animated",
-      asset: texture,
-      position: this.body,
-      animation: "bullet",
-      speed: 0.333,
-      loops: true
+      ...config.sprite,
+      position: this.body
     }));
   }
 

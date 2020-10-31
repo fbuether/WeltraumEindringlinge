@@ -22,6 +22,8 @@ export class Text extends Gui {
     this.text.position.x = config.position.x;
     this.text.position.y = config.position.y;
 
+    this.text.zIndex = 10;
+
     engine.render.stage.addChild(this.text);
   }
 

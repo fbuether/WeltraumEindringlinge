@@ -11,7 +11,7 @@ import {Gui} from "../engine/Gui";
 import {Vector} from "../engine/Vector";
 import {Scene, SceneConstructor} from "../engine/Scene";
 import {Key, Keyboard} from "../engine/Keyboard";
-import {Loader, AssetTag} from "../engine/Loader";
+import {Loader} from "../engine/Loader";
 import {Random} from "../engine/Random";
 
 

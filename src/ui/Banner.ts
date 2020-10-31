@@ -36,6 +36,10 @@ export class Banner extends Gui {
       this.title.height * 1.5 + this.subtitle.height + 2 * 50);
     this.graphics.endFill();
 
+    this.graphics.zIndex = 10;
+    this.title.zIndex = 11;
+    this.subtitle.zIndex = 12;
+
     engine.render.stage.addChild(this.graphics);
     engine.render.stage.addChild(this.title);
     engine.render.stage.addChild(this.subtitle);

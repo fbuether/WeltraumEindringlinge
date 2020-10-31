@@ -46,7 +46,7 @@ const weaponPoints = {
 };
 
 
-export class Player extends Actor {
+export class Player extends TeamedActor {
   private static readonly speed: number = 24;
   private static readonly firingSpeed: number = 1000; // 1/s
 
@@ -57,7 +57,7 @@ export class Player extends Actor {
 
 
   public constructor(engine: Engine, position: Vector) {
-    super("player", engine);
+    super("player", engine, Team.Player);
 
     this.body = new Body(engine, this, {
       shape: new ShapeGenerator().generateFromSpritesheet(
@@ -133,6 +133,11 @@ export class Player extends Actor {
     }
   }
 
+
+  public damage(amount: number): boolean {
+    console.log("player receives", amount, "damage, but is invincible!");
+    return true;
+  }
 
   public getCharge() {
     return Math.min(1, Math.max(0, 1 - (this.lastShot / 1000)));

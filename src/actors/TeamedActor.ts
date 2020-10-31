@@ -13,6 +13,8 @@ export enum Team {
 export abstract class TeamedActor extends Actor {
   public readonly team: Team;
 
+  protected alive: boolean = true;
+
   constructor(name: string, engine: Engine, team: Team) {
     super(name, engine);
     this.team = team;
@@ -22,4 +24,9 @@ export abstract class TeamedActor extends Actor {
   // returns true if the actor consumed all damage.
   // if it returns false, the damage dealer may continue to deal damage.
   public abstract damage(amount: number): boolean;
+
+  public kill() {
+    super.kill();
+    this.alive = false;
+  }
 }

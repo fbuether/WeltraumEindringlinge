@@ -87,6 +87,8 @@ export class Engine {
         throw new Error(`Collision with un-componented body. ${contact}`);
       }
 
+      contact.setEnabled(false);
+
       this.onNextUpdate(() => {
         bodyA.handleCollision(bodyB);
         bodyB.handleCollision(bodyA);

@@ -1,5 +1,6 @@
 import * as EventEmitter from "eventemitter3";
 
+import {Team, TeamedActor} from "../actors/TeamedActor";
 import {Actor} from "../engine/Actor";
 import {Sprite} from "../engine/components/Sprite";
 import {Engine} from "../engine/Engine";
@@ -29,7 +30,7 @@ let enemyTexture = Loader.addSpritesheet(
 
 type Events = "destroyed" | "escaped";
 
-export class Enemy extends Actor {
+export class Enemy extends TeamedActor {
   private static readonly speed: number = 2;
 
   public readonly events = new EventEmitter<Events>();
@@ -37,7 +38,7 @@ export class Enemy extends Actor {
   private body: Body;
 
   public constructor(engine: Engine, position: Vector) {
-    super("enemy", engine);
+    super("enemy", engine, Team.Enemy);
 
     this.body = new Body(engine, this, {
       shape: new ShapeGenerator().generateFromSpritesheet(
@@ -66,7 +67,18 @@ export class Enemy extends Actor {
     }
   }
 
+
+  public damage(amount: number): boolean {
+    let consume = this.alive;
+    this.kill();
+    return consume;
+  }
+
   public kill() {
+    if (!this.alive) {
+      return;
+    }
+
     this.engine.add(new Explosion(this.engine, this.body.position));
     this.events.emit("destroyed", this);
     super.kill();

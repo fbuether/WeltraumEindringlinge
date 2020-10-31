@@ -48,6 +48,8 @@ export class Engine {
   constructor(keyboard: Keyboard) {
     this.keyboard = keyboard;
 
+    px.settings.SCALE_MODE = px.SCALE_MODES.NEAREST;
+
     this.render = new px.Application({
       width: 800, height: 800,
       antialias: true,
@@ -115,7 +117,9 @@ export class Engine {
   }
 
   private loadScene(scene: SceneConstructor): Scene {
-    return new scene(this);
+    let sceneInstance = new scene(this);
+    this.add(sceneInstance);
+    return sceneInstance;
   }
 
 

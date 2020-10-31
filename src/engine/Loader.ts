@@ -44,7 +44,10 @@ export class Loader {
     }
 
     let sprites = new Map<AssetTag, Sprite>();
-    let ssloaders = new Array<{ file: string, resource: px.LoaderResource, sheet: px.Spritesheet }>();
+    let ssloaders = new Array<{
+      file: string,
+      resource: px.LoaderResource,
+      sheet: px.Spritesheet }>();
 
     await new Promise((resolve, reject) => {
       pxLoader.onError.add(e => reject("pixi Loader failed: " + e));

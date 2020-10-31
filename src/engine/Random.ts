@@ -17,11 +17,12 @@ export class Random {
   }
 
   public int32(min?: number, max?: number): number {
-    if (min && max) {
-      return Math.round(min + (this.source.random_incl() * (max - min)));
+    if (min !== undefined && max !== undefined) {
+      let rnd = this.source.random_excl();
+      return Math.floor(rnd * (max - min + 1) + min);
     }
     else {
-      return this.source.random_int31();
+      return this.source.random_int();
     }
   }
 

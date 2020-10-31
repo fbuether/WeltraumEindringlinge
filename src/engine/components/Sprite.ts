@@ -35,6 +35,8 @@ interface AnimatedSpriteConfig {
 export type SpriteConfig = (StaticSpriteConfig | AnimatedSpriteConfig) & {
   asset: AssetTag;
   position: Vector | Positioned;
+  scale?: Vector;
+  zIndex?: number;
 };
 
 
@@ -46,6 +48,15 @@ export class Sprite extends Renderable {
     return this.pxSprite.texture;
   }
 
+  public get position(): Vector {
+    return new Vector(this.pxSprite.x, this.pxSprite.y);
+  }
+
+  public get size(): Vector {
+    return new Vector(this.pxSprite.width, this.pxSprite.height);
+  }
+
+
   public constructor(engine: Engine, parent: Component, config: SpriteConfig) {
     super("sprite", parent);
     this.pxApp = engine.render;
@@ -54,8 +65,7 @@ export class Sprite extends Renderable {
       let texture = config.name !== undefined
           ? engine.loader.getSpritesheet(config.asset)
             .sheet.textures[config.name]
-          : engine.loader.getSpritesheet(config.asset).resource.texture;
-
+          : engine.loader.getSprite(config.asset).resource.texture;
       this.pxSprite = px.Sprite.from(texture);
     }
     else {
@@ -82,6 +92,14 @@ export class Sprite extends Renderable {
       this.render();
     }
 
+    if (config.scale) {
+      this.pxSprite.scale.x = config.scale.x;
+      this.pxSprite.scale.y = config.scale.y;
+    }
+    if (config.zIndex) {
+      this.pxSprite.zIndex = config.zIndex;
+    }
+
     this.pxSprite.anchor.set(0.5, 0.5);
     this.pxApp.stage.addChild(this.pxSprite);
   }
@@ -93,6 +111,12 @@ export class Sprite extends Renderable {
     if (this.pxSprite instanceof px.AnimatedSprite) {
       this.pxSprite.update(delta);
     }
+  }
+
+
+  public move(position: Vector) {
+    this.pxSprite.x = position.x;
+    this.pxSprite.y = position.y;
   }
 
 

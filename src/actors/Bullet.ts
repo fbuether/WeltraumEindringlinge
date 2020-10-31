@@ -1,4 +1,5 @@
 
+import {Team, TeamedActor} from "../actors/TeamedActor";
 import {Actor} from "../engine/Actor";
 import {Body} from "../engine/components/Body";
 import {Engine} from "../engine/Engine";
@@ -22,16 +23,33 @@ let texture = Loader.addSpritesheet(
   });
 
 
-export class Bullet extends Actor {
+interface BulletConfig {
+  team: Team;
+  position: Vector;
+  direction: Vector;
+  damage: number;
+}
+
+
+export class Bullet extends TeamedActor {
   private body: Body;
+  private _damage: number = 0;
 
-  public constructor(engine: Engine, position: Vector, direction: Vector) {
-    super("bullet", engine);
+  public constructor(engine: Engine, config: BulletConfig) {
+    super("bullet", engine, config.team);
 
-    this.body = new Body(engine, this,
-      new ShapeGenerator().generateFromSpritesheet(
-        engine, texture, "bullet-1"), position);
-    this.body.applyForce(direction);
+    this._damage = config.damage;
+
+    this.body = new Body(engine, this, {
+      shape: new ShapeGenerator().generateFromSpritesheet(
+        engine, texture, "bullet-1"),
+      position: config.position,
+      isBullet: true,
+      damping: 0
+    });
+
+
+    this.body.applyForce(config.direction);
 
     this.body.onCollision(this.onCollision.bind(this));
 
@@ -47,8 +65,21 @@ export class Bullet extends Actor {
   }
 
   private onCollision(other: Actor) {
-    other.kill();
-    this.kill();
+    if (other instanceof TeamedActor && other.team != this.team) {
+      let consumed = other.damage(this._damage);
+      if (consumed) {
+        this.kill();
+      }
+    }
+    else {
+      // unceremoniously kill ourselves for now.
+      this.kill();
+    }
+  }
+
+  public damage(amount: number): boolean {
+    // bullets do not get damaged.
+    return false;
   }
 
   public update(delta: number) {

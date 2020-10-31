@@ -30,7 +30,7 @@ let enemyTexture = Loader.addSpritesheet(
 type Events = "destroyed" | "escaped";
 
 export class Enemy extends Actor {
-  private static readonly speed: number = 20;
+  private static readonly speed: number = 2;
 
   public readonly events = new EventEmitter<Events>();
 
@@ -39,9 +39,11 @@ export class Enemy extends Actor {
   public constructor(engine: Engine, position: Vector) {
     super("enemy", engine);
 
-    this.body = new Body(engine, this,
-      new ShapeGenerator().generateFromSpritesheet(
-        engine, enemyTexture, "small-1"), position);
+    this.body = new Body(engine, this, {
+      shape: new ShapeGenerator().generateFromSpritesheet(
+        engine, enemyTexture, "small-1"),
+      position: position
+    });
     this.add(this.body);
 
     this.add(new Sprite(engine, this, {
@@ -56,7 +58,7 @@ export class Enemy extends Actor {
 
   public update(delta: number) {
     let movement = Enemy.speed * delta / 1000;
-    this.body.moveBy(new Vector(0, movement));
+    this.body.applyForce(new Vector(0, movement));
 
     if (!this.body.isOnScreen()) {
       this.events.emit("escaped", this);

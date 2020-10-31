@@ -1,4 +1,5 @@
 
+import {Team, TeamedActor} from "../actors/TeamedActor";
 import {Actor} from "../engine/Actor";
 import {Sprite} from "../engine/components/Sprite";
 import {Engine} from "../engine/Engine";
@@ -46,7 +47,7 @@ const weaponPoints = {
 
 
 export class Player extends Actor {
-  private static readonly speed: number = 240;
+  private static readonly speed: number = 24;
   private static readonly firingSpeed: number = 1000; // 1/s
 
   private health: number = 5;
@@ -58,9 +59,11 @@ export class Player extends Actor {
   public constructor(engine: Engine, position: Vector) {
     super("player", engine);
 
-    this.body = new Body(engine, this,
-      new ShapeGenerator().generateFromSpritesheet(
-        engine, playerSheet, "ship-small"), position);
+    this.body = new Body(engine, this, {
+      shape: new ShapeGenerator().generateFromSpritesheet(
+        engine, playerSheet, "ship-small"),
+      position: position
+    });
     this.add(this.body);
 
     this.add(new Sprite(engine, this, {
@@ -78,17 +81,18 @@ export class Player extends Actor {
 
 
   private fireWeapon() {
-
     for (let point of weaponPoints["ship-small"]["weapon-0"]) {
       let point2 = new Vector(point.x, -(this.body.size.y / 2 + 11));
 
-      this.engine.add(new Bullet(this.engine,
-        this.body.position.add(
+      this.engine.add(new Bullet(this.engine, {
+        team: Team.Player,
+        damage: 1,
+        direction: new Vector(0, -0.02),
+        position: this.body.position.add(
           // for now, the position computation is moot, as we do not have pixel-
           // perfect collision detection.
-          point2
-
-        ), new Vector(0, -0.02)));
+          point2)
+      }));
     }
   }
 

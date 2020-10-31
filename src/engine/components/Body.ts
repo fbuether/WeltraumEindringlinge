@@ -10,6 +10,15 @@ import {Component} from "../../engine/components/Component";
 import {Actor} from "../../engine/Actor";
 
 
+export interface BodyConfig {
+  shape: planckShape;
+  position: Vector;
+  isBullet?: boolean;
+  damping?: number;
+  force?: Vector;
+}
+
+
 export class Body extends Component implements Positioned {
   private body: planck.Body;
   private engine: Engine;
@@ -53,19 +62,24 @@ export class Body extends Component implements Positioned {
   }
 
 
-  constructor(engine: Engine, parent: Component, shape: planckShape,
-      position: Vector, isBullet: boolean = false) {
+  constructor(engine: Engine, parent: Component, config: BodyConfig) {
     super("body", parent);
     this.engine = engine;
 
-    let phyPosition = position.clone().mul(Engine.PhysicsScale);
+    let phyPosition = config.position.clone().mul(Engine.PhysicsScale);
     this.body = engine.physics.createBody({
       type: "dynamic",
       position: phyPosition,
-      bullet: isBullet
+      bullet: config.isBullet !== undefined && config.isBullet,
+      fixedRotation: true,
+      linearDamping: config.damping !== undefined ? config.damping : 1
     });
 
-    this.body.createFixture(shape);
+    this.body.createFixture(config.shape);
+
+    if (config.force !== undefined) {
+      this.applyForce(config.force.clone());
+    }
 
     // bleeeh. attach us to this body.
     (this.body as any)["component"] = this;
@@ -77,15 +91,15 @@ export class Body extends Component implements Positioned {
   }
 
 
-  public applyForce(direction: Vector): void {
-    let phyForce = direction.mul(Engine.PhysicsScale);
+  public applyForce(delta: Vector): void {
+    let phyForce = delta.mul(Engine.PhysicsScale);
     this.body.applyForceToCenter(phyForce, true);
   }
 
 
-  public moveBy(delta: Vector): void {
+  public applyImpulse(delta: Vector): void {
     let phyDelta = delta.mul(Engine.PhysicsScale);
-    this.body.setTransform(this.body.getPosition().add(phyDelta), 0);
+    this.body.applyLinearImpulse(phyDelta, this.body.getLocalCenter(), true);
   }
 
 

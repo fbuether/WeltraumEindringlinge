@@ -17,6 +17,7 @@ export class Actor extends Updatable {
 
   protected add(component: Component) {
     this.components.add(component);
+    this.engine.add(component);
   }
 
   public getComponents(): ReadonlySet<Component> {

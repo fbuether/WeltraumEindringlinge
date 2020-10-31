@@ -1,4 +1,5 @@
 
+import {Component} from "../engine/components/Component";
 import {Actor} from "../engine/Actor";
 import {Engine} from "../engine/Engine";
 
@@ -24,6 +25,14 @@ export abstract class TeamedActor extends Actor {
   // returns true if the actor consumed all damage.
   // if it returns false, the damage dealer may continue to deal damage.
   public abstract damage(amount: number): boolean;
+
+
+  protected add(component: Component) {
+    if (this.alive) {
+      super.add(component);
+    }
+  }
+
 
   public kill() {
     super.kill();

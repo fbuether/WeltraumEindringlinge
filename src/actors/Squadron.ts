@@ -1,5 +1,7 @@
+import * as planck from "planck-js";
 import * as EventEmitter from "eventemitter3";
 
+import {Random} from "../engine/Random";
 import {Actor} from "../engine/Actor";
 import {Sprite} from "../engine/components/Sprite";
 import {Engine} from "../engine/Engine";
@@ -15,38 +17,95 @@ type Events = "enemy-destroyed" | "enemy-escaped" | "squad-destroyed";
 
 export class Squadron extends Actor {
   public readonly events = new EventEmitter<Events>();
+  private random: Random;
 
   private count: number;
+  private current = 0;
+  private lastSpawn = Number.POSITIVE_INFINITY;
 
-  public constructor(engine: Engine) {
+  public constructor(engine: Engine, count: number) {
     super("squadron", engine);
+    this.random = this.engine.random.fork();
 
-    let y = engine.render.screen.top + 100;
+    this.count = count;
+  }
 
-    let distance = 90;
-    this.count = 6;
 
-    let start = engine.render.screen.left +
-        (engine.render.screen.width / 2) +
-        -(distance * this.count / 2) + (distance / 2);
-    for (let i = 0; i < this.count; i++) {
-      let x = start + distance * i;
+  public update(delta: number) {
+    this.lastSpawn += delta;
 
-      let enemy = new Enemy(engine, new Vector(x, y));
-      enemy.events.on("destroyed", this.onEnemyDestroyed, this);
-      enemy.events.on("escaped", this.onEnemyEscaped, this);
-      this.add(enemy);
+    // on less than 4 spawn up to 3 new, so max 6.
+    if (this.current < 4 && this.lastSpawn >= 3000) {
+      this.engine.delay(this.random.int32(200, 1200), () => {
+        this.spawnEnemy();
+        this.spawnEnemy();
+        this.spawnEnemy();
+      });
+      this.lastSpawn = 0;
     }
+
+    // if last spawn is more than 10 seconds ago, spawn one more.
+    if (this.lastSpawn >= 10000) {
+      this.engine.delay(this.random.int32(200, 1200), () => {
+        this.spawnEnemy();
+      });
+      this.lastSpawn = 0;
+    }
+  }
+
+  private spawnEnemy() {
+    console.log("remaining: ", this.count);
+    if (this.count <= 0) {
+      return;
+    }
+
+    let screen = this.engine.getScreenBounds();
+
+    let hasOverlap = false;
+    let pos = new Vector(0, 0);
+
+    for (let i = 0; i < 10; i++) {
+      let y = screen.top + 60;
+      let x = this.random.int32(screen.left + 60, screen.right - 60);
+      pos = new Vector(x, y);
+
+      let newEnemyShape = new planck.AABB(
+        new Vector(-36, -24).add(pos).mul(Engine.PhysicsScale),
+        new Vector(36, 24).add(pos).mul(Engine.PhysicsScale));
+
+      hasOverlap = false;
+      this.engine.physics.queryAABB(newEnemyShape, () => {
+        hasOverlap = true;
+        return false;
+      });
+
+      if (!hasOverlap) {
+        break;
+      }
+    }
+
+    if (hasOverlap) {
+      console.warn("could not place enemy, too much overlap.");
+      return;
+    }
+
+    let enemy = new Enemy(this.engine, pos);
+    enemy.events.on("destroyed", this.onEnemyDestroyed, this);
+    enemy.events.on("escaped", this.onEnemyEscaped, this);
+    this.add(enemy);
+
+    this.current += 1;
+    this.count -= 1;
   }
 
 
   private onEnemyDestroyed(enemy: Enemy) {
-    this.count -= 1;
+    this.current -= 1;
 
     this.components.delete(enemy);
     this.events.emit("enemy-destroyed", this, enemy);
 
-    if (this.count <= 0) {
+    if (this.count <= 0 && this.current <= 0) {
       this.events.emit("squad-destroyed", this);
       this.kill();
     }

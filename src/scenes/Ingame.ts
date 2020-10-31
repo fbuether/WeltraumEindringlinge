@@ -46,7 +46,7 @@ export class Ingame extends Scene {
     this.add(player);
 
 
-    let squadron = new Squadron(engine);
+    let squadron = new Squadron(engine, 100);
     squadron.events.on("enemy-destroyed", this.onEnemyDestroyed, this);
     squadron.events.on("enemy-escaped", this.onEnemyEscaped, this);
     squadron.events.on("squad-destroyed", this.onSquadDestroyed, this);

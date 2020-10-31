@@ -1,3 +1,4 @@
+import * as EventEmitter from "eventemitter3";
 
 import {Team, TeamedActor} from "../actors/TeamedActor";
 import {Actor} from "../engine/Actor";
@@ -5,6 +6,7 @@ import {Sprite} from "../engine/components/Sprite";
 import {Engine} from "../engine/Engine";
 import {Loader} from "../engine/Loader";
 import {Body} from "../engine/components/Body";
+import {Explosion} from "../actors/Explosion";
 
 import {Vector} from "../engine/Vector";
 import {ShapeGenerator} from "../engine/ShapeGenerator";
@@ -58,16 +60,24 @@ let bulletTexture = Loader.addSpritesheet(
     }
   });
 
+type Events = "destroyed" | "health-changed";
+
 
 export class Player extends TeamedActor {
   private static readonly speed: number = 24;
   private static readonly firingSpeed: number = 300;
 
-  private health: number = 5;
+  public readonly events = new EventEmitter<Events>();
+
+  private _health: number = 6;
   private lastShot: number = -1;
 
   private body: Body;
 
+
+  public get health(): number {
+    return this._health;
+  }
 
   public constructor(engine: Engine, position: Vector) {
     super("player", engine, Team.Player);
@@ -157,8 +167,18 @@ export class Player extends TeamedActor {
 
 
   public damage(amount: number): boolean {
-    console.log("player receives", amount, "damage, but is invincible!");
-    return true;
+    let consumed = this._health > 0;
+
+    this._health -= amount;
+    this.events.emit("health-changed", this);
+
+    if (this._health <= 0) {
+      this.events.emit("destroyed", this);
+      this.kill();
+      this.engine.add(new Explosion(this.engine, this.body.position));
+    }
+
+    return consumed;
   }
 
   public getCharge() {

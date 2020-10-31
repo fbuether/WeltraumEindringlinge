@@ -68,8 +68,6 @@ export class Enemy extends TeamedActor {
     this.energy = engine.random.int32(0, Enemy.maxStartEnergy);
     this.rate = engine.random.real(Enemy.rate[0], Enemy.rate[1]);
     this.speed = engine.random.real(Enemy.speed[0], Enemy.speed[1]);
-
-    console.log(this.energy, this.rate);
   }
 
   public update(delta: number) {
@@ -83,7 +81,6 @@ export class Enemy extends TeamedActor {
 
     this.energy = this.energy + (delta * this.rate);
     if (this.energy >= Enemy.firingEnergy) {
-      console.log("firin at", this.energy);
       this.fire();
       this.energy -= Enemy.firingEnergy;
     }
@@ -130,8 +127,8 @@ export class Enemy extends TeamedActor {
       return;
     }
 
-    this.engine.add(new Explosion(this.engine, this.body.position));
     this.events.emit("destroyed", this);
     super.kill();
+    this.engine.add(new Explosion(this.engine, this.body.position));
   }
 }

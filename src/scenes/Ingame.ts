@@ -1,4 +1,5 @@
 
+import {Gui} from "../engine/Gui";
 import {Sprite} from "../engine/components/Sprite";
 import {Engine} from "../engine/Engine";
 import {Scene} from "../engine/Scene";
@@ -7,7 +8,7 @@ import {Starfield} from "../actors/Starfield";
 import {Vector} from "../engine/Vector";
 import {Squadron} from "../actors/Squadron";
 import {Enemy} from "../actors/Enemy";
-import {Score} from "../ui/Score";
+import {Text} from "../ui/Text";
 import {Banner} from "../ui/Banner";
 import {Loader} from "../engine/Loader";
 
@@ -19,7 +20,8 @@ const backgrounds = [
 
 
 export class Ingame extends Scene {
-  private guiScore: Score;
+  private guiScore: Text;
+  private guiHealth: Text;
   public score = 0;
 
   private backgroundSprite: Sprite;
@@ -36,11 +38,11 @@ export class Ingame extends Scene {
 
     this.add(new Starfield(engine));
 
-
     let screen = engine.getScreenBounds();
     let horizontalCenter = (screen.left + screen.right) / 2;
     let player = new Player(engine, new Vector(horizontalCenter,
       screen.bottom - 70));
+    player.events.on("destroyed", this.onPlayerDestroyed, this);
     this.add(player);
 
 
@@ -52,8 +54,20 @@ export class Ingame extends Scene {
 
 
     // ui.
-    this.guiScore = new Score(engine);
+    this.guiScore = new Text(engine, {
+      position: new Vector(screen.left + 30, screen.top + 20),
+      text: "Score 00000"
+    });
     this.add(this.guiScore);
+
+    this.guiHealth = new Text(engine, {
+      position: new Vector(screen.left + 30, screen.bottom -
+          Gui.textStyle.fontSize - 20),
+      text: "Health 00000"
+    });
+    player.events.on("health-changed", this.onPlayerHealthChanged, this);
+    this.onPlayerHealthChanged(player);
+    this.add(this.guiHealth);
   }
 
 
@@ -93,7 +107,7 @@ export class Ingame extends Scene {
 
   private onEnemyDestroyed(squadron: Squadron, enemy: Enemy) {
     this.score += 1;
-    this.guiScore.onScoreChanged(this.score);
+    this.guiScore.setText("Score " + this.score.toString().padStart(5, "0"));
   }
 
   private onEnemyEscaped(squadron: Squadron, enemy: Enemy) {
@@ -104,6 +118,16 @@ export class Ingame extends Scene {
     this.finishGame("YOU WIN", "Final score: " +
         this.score.toString().padStart(5, "0"));
   }
+
+  private onPlayerHealthChanged(player: Player) {
+    this.guiHealth.setText(
+      "Health " + player.health.toString().padStart(3, "0"));
+  }
+
+  private onPlayerDestroyed(player: Player) {
+    this.finishGame("YOU LOSE", "You have been destroyed.");
+  }
+
 
   private finishGame(title: string, subtitle: string) {
     if (this.state != "running") {

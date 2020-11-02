@@ -70,7 +70,7 @@ export class Enemy extends TeamedActor {
     });
     this.add(this.sprite);
 
-    this.energy = engine.random.int32(0, Enemy.maxStartEnergy);
+    this.energy = engine.random.int(0, Enemy.maxStartEnergy);
     this.rate = engine.random.real(Enemy.rate[0], Enemy.rate[1]);
     this.speed = engine.random.real(Enemy.speed[0], Enemy.speed[1]);
 

@@ -40,7 +40,7 @@ export class Squadron extends Actor {
 
     // on less than 4 spawn up to 3 new, so max 6.
     if (this.current < 4 && this.lastSpawn >= 3000) {
-      this.engine.delay(this.random.int32(200, 1200), () => {
+      this.engine.delay(this.random.int(200, 1200), () => {
         this.spawnEnemy();
         this.spawnEnemy();
         this.spawnEnemy();
@@ -50,7 +50,7 @@ export class Squadron extends Actor {
 
     // if last spawn is more than 10 seconds ago, spawn one more.
     if (this.lastSpawn >= 10000) {
-      this.engine.delay(this.random.int32(200, 1200), () => {
+      this.engine.delay(this.random.int(200, 1200), () => {
         this.spawnEnemy();
       });
       this.lastSpawn = 0;
@@ -69,7 +69,7 @@ export class Squadron extends Actor {
 
     for (let i = 0; i < 10; i++) {
       let y = screen.top + 60;
-      let x = this.random.int32(screen.left + 60, screen.right - 60);
+      let x = this.random.int(screen.left + 60, screen.right - 60);
       pos = new Vector(x, y);
 
       let newEnemyShape = new planck.AABB(

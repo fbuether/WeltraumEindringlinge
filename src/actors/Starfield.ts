@@ -85,7 +85,7 @@ export class Starfield extends Actor {
 
   private createNewStar(everywhere: boolean): Star {
     // three parallax layers, 1 is closest.
-    let distance = this.rnd.int32(1, 3);
+    let distance = this.rnd.int(1, 3);
 
     let height = this.engine.render.screen.height;
     let width = this.engine.render.screen.width;

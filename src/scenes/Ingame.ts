@@ -86,7 +86,7 @@ export class Ingame extends Scene {
   }
 
   private loadNextBackground(): Sprite {
-    let idx = this.engine.random.int32(0, backgrounds.length - 1);
+    let idx = this.engine.random.int(0, backgrounds.length - 1);
     let sprite = new Sprite(this.engine, this, {
       kind: "static",
       asset: backgrounds[idx],

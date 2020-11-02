@@ -22,7 +22,7 @@ export interface BodyConfig {
 export class Body extends Component implements Positioned {
   private body: planck.Body;
   private engine: Engine;
-  private eventEmitter = new EventEmitter<"collision">();
+  public readonly events = new EventEmitter<"collision">();
 
   // Getter/Setter from the outside, so game-scale values.
   get position(): Vector {
@@ -87,7 +87,7 @@ export class Body extends Component implements Positioned {
 
   public delete() {
     this.engine.physics.destroyBody(this.body);
-    this.eventEmitter.removeAllListeners();
+    this.events.removeAllListeners();
   }
 
 
@@ -137,10 +137,6 @@ export class Body extends Component implements Positioned {
 
 
   public handleCollision(other: Body) {
-    this.eventEmitter.emit("collision", other.getActor());
-  }
-
-  public onCollision(handler: (other: Actor) => void) {
-    this.eventEmitter.on("collision", handler);
+    this.events.emit("collision", other.getActor());
   }
 }

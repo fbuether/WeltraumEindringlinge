@@ -30,6 +30,10 @@ export class Squadron extends Actor {
     this.count = count;
   }
 
+  public delete() {
+    this.events.removeAllListeners();
+  }
+
 
   public update(delta: number) {
     this.lastSpawn += delta;
@@ -54,7 +58,6 @@ export class Squadron extends Actor {
   }
 
   private spawnEnemy() {
-    console.log("remaining: ", this.count);
     if (this.count <= 0) {
       return;
     }

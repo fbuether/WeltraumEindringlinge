@@ -45,7 +45,7 @@ export class Bullet extends TeamedActor {
 
     this.body.applyForce(config.direction);
 
-    this.body.onCollision(this.onCollision.bind(this));
+    this.body.events.on("collision", this.onCollision, this);
 
     this.add(this.body);
     this.add(new Sprite(engine, this, {
@@ -54,22 +54,26 @@ export class Bullet extends TeamedActor {
     }));
   }
 
+  public receivesBulletDamage() {
+    return false;
+  }
+
   private onCollision(other: Actor) {
     if (other instanceof TeamedActor && other.team != this.team) {
-      let consumed = other.damage(this._damage);
-      if (consumed) {
-        this.kill();
+      if (other.receivesBulletDamage()) {
+        other.damage(this._damage);
       }
-    }
-    else {
-      // unceremoniously kill ourselves for now.
-      this.kill();
     }
   }
 
   public damage(amount: number): boolean {
-    // bullets do not get damaged.
-    return false;
+    if (amount > 0) {
+      this.engine.onNextUpdate(() => {
+        this.kill();
+      });
+    }
+
+    return (amount <= 1);
   }
 
   public update(delta: number) {

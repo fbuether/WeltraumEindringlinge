@@ -27,6 +27,9 @@ export abstract class TeamedActor extends Actor {
   public abstract damage(amount: number): boolean;
 
 
+  public abstract receivesBulletDamage(): boolean;
+
+
   protected add(component: Component) {
     if (this.alive) {
       super.add(component);
@@ -35,6 +38,10 @@ export abstract class TeamedActor extends Actor {
 
 
   public kill() {
+    if (!this.alive) {
+      return;
+    }
+
     super.kill();
     this.alive = false;
   }

@@ -64,8 +64,9 @@ type Events = "destroyed" | "health-changed";
 
 
 export class Player extends TeamedActor {
-  private static readonly speed: number = 24;
-  private static readonly firingSpeed: number = 300;
+  private static readonly Speed = 24;
+  private static readonly FiringSpeed = 300;
+  private static readonly CollisionDamage = 5;
 
   public readonly events = new EventEmitter<Events>();
 
@@ -87,6 +88,7 @@ export class Player extends TeamedActor {
         engine, playerSheet, "ship-small"),
       position: position
     });
+    this.body.events.on("collision", this.onCollision, this);
     this.add(this.body);
 
     this.sprite = new Sprite(engine, this, {
@@ -96,6 +98,10 @@ export class Player extends TeamedActor {
       name: "ship-small"
     })
     this.add(this.sprite);
+  }
+
+  public delete() {
+    this.events.removeAllListeners();
   }
 
 
@@ -131,9 +137,8 @@ export class Player extends TeamedActor {
 
 
   public update(delta: number) {
-
     // input.
-    let movement = Player.speed * delta / 1000;
+    let movement = Player.Speed * delta / 1000;
     let moveRight = this.engine.keyboard.isPressed(Key.D)
         || this.engine.keyboard.isPressed(Key.Right);
     let moveLeft = this.engine.keyboard.isPressed(Key.A)
@@ -162,10 +167,15 @@ export class Player extends TeamedActor {
     let fires = this.engine.keyboard.isPressed(Key.Space);
     if (fires && this.lastShot <= 0) {
       this.fireWeapon();
-      this.lastShot = Player.firingSpeed;
+      this.lastShot = Player.FiringSpeed;
     }
   }
 
+  private onCollision(other: Actor) {
+    if (other instanceof TeamedActor && other.team != this.team) {
+      other.damage(Player.CollisionDamage);
+    }
+  }
 
   public damage(amount: number): boolean {
     let consumed = this._health > 0;
@@ -182,6 +192,10 @@ export class Player extends TeamedActor {
     }
 
     return consumed;
+  }
+
+  public receivesBulletDamage() {
+    return true;
   }
 
   public getCharge() {

@@ -45,7 +45,7 @@ export class Enemy extends TeamedActor {
   private energy: number = 0;
   private readonly rate: number;
   private readonly speed: number;
-
+  private readonly collisionDamage: number;
 
   private sprite: Sprite;
 
@@ -57,6 +57,7 @@ export class Enemy extends TeamedActor {
         engine, enemyTexture, "small-1"),
       position: position
     });
+    this.body.events.on("collision", this.onCollision, this);
     this.add(this.body);
 
     this.sprite = new Sprite(engine, this, {
@@ -72,7 +73,14 @@ export class Enemy extends TeamedActor {
     this.energy = engine.random.int32(0, Enemy.maxStartEnergy);
     this.rate = engine.random.real(Enemy.rate[0], Enemy.rate[1]);
     this.speed = engine.random.real(Enemy.speed[0], Enemy.speed[1]);
+
+    this.collisionDamage = 2;
   }
+
+  public delete() {
+    this.events.removeAllListeners();
+  }
+
 
   public update(delta: number) {
     let movement = this.speed * delta / 1000;
@@ -120,21 +128,22 @@ export class Enemy extends TeamedActor {
     this.health -= amount;
     if (this.health <= 0) {
       this.events.emit("destroyed", this);
-      this.kill();
-      this.engine.add(new Explosion(this.engine, this.body.position));
-    }
-    else {
-      // todo: flash this enemy's sprite.
+      this.engine.onNextUpdate(() => {
+        this.kill();
+        this.engine.add(new Explosion(this.engine, this.body.position));
+      });
     }
 
     return consume;
   }
 
-  public kill() {
-    if (!this.alive) {
-      return;
-    }
+  public receivesBulletDamage() {
+    return true;
+  }
 
-    super.kill();
+  private onCollision(other: Actor) {
+    if (other instanceof TeamedActor && other.team != this.team) {
+      other.damage(this.collisionDamage);
+    }
   }
 }

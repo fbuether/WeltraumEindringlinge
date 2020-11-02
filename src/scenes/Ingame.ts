@@ -197,14 +197,6 @@ export class Ingame extends Scene {
           screen.left + (screen.right - screen.left) * 3 / 4,
           screen.bottom - 200)
       }));
-
-// -    this.addUi(new Menu(new Array<Button>(
-// -      new Button("New Game", () => {
-// -        Ingame.startGame(this.engine);
-// -      }),
-// -      new Button("Return to Menu", () => {
-// -        this.engine.goToScene("main-menu");
-// -      })
     });
   }
 }

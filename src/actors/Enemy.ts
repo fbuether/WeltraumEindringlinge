@@ -119,7 +119,9 @@ export class Enemy extends TeamedActor {
 
     this.health -= amount;
     if (this.health <= 0) {
+      this.events.emit("destroyed", this);
       this.kill();
+      this.engine.add(new Explosion(this.engine, this.body.position));
     }
     else {
       // todo: flash this enemy's sprite.
@@ -133,8 +135,6 @@ export class Enemy extends TeamedActor {
       return;
     }
 
-    this.events.emit("destroyed", this);
     super.kill();
-    this.engine.add(new Explosion(this.engine, this.body.position));
   }
 }

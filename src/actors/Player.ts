@@ -2,7 +2,7 @@ import * as EventEmitter from "eventemitter3";
 
 import {Team, TeamedActor} from "../actors/TeamedActor";
 import {Actor} from "../engine/Actor";
-import {Sprite} from "../engine/components/Sprite";
+import {Sprite, Effect} from "../engine/components/Sprite";
 import {Engine} from "../engine/Engine";
 import {Loader} from "../engine/Loader";
 import {Body} from "../engine/components/Body";
@@ -73,7 +73,7 @@ export class Player extends TeamedActor {
   private lastShot: number = -1;
 
   private body: Body;
-
+  private sprite: Sprite;
 
   public get health(): number {
     return this._health;
@@ -89,12 +89,13 @@ export class Player extends TeamedActor {
     });
     this.add(this.body);
 
-    this.add(new Sprite(engine, this, {
+    this.sprite = new Sprite(engine, this, {
       kind: "static",
       asset: playerSheet,
       position: this.body,
       name: "ship-small"
-    }));
+    })
+    this.add(this.sprite);
   }
 
 
@@ -168,6 +169,8 @@ export class Player extends TeamedActor {
 
   public damage(amount: number): boolean {
     let consumed = this._health > 0;
+
+    this.sprite.addEffect(Effect.FlashRed);
 
     this._health -= amount;
     this.events.emit("health-changed", this);

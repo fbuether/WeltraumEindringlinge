@@ -205,6 +205,7 @@ export class Engine {
     this.nextUpdates.push(action);
   }
 
+  // delay action by delta milliseconds
   public delay(delta: number, action: Function) {
     this.delays.push([delta, action]);
   }

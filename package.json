@@ -11,6 +11,7 @@
     "yarn": "^1.22.5"
   },
   "dependencies": {
+    "@pixi/filter-color-overlay": "^3.1.1",
     "@types/css-font-loading-module": "^0.0.4",
     "@types/mersenne-twister": "^1.1.2",
     "eventemitter3": "^4.0.7",

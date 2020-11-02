@@ -1,5 +1,7 @@
 import * as px from "pixi.js";
+import {ColorOverlayFilter} from '@pixi/filter-color-overlay';
 
+import {Colour} from "../../engine/Colour";
 import {Vector} from "../../engine/Vector";
 import {AssetTag} from "../../engine/Loader";
 import {Engine} from "../../engine/Engine";
@@ -40,9 +42,19 @@ export type SpriteConfig = (StaticSpriteConfig | AnimatedSpriteConfig) & {
 };
 
 
+export enum Effect {
+  FlashWhite,
+  FlashRed
+};
+
+
+
+
 export class Sprite extends Renderable {
   private pxSprite: px.Sprite;
   private pxApp: px.Application;
+
+  private engine: Engine;
 
   public get texture(): px.Texture {
     return this.pxSprite.texture;
@@ -59,6 +71,8 @@ export class Sprite extends Renderable {
 
   public constructor(engine: Engine, parent: Component, config: SpriteConfig) {
     super("sprite", parent);
+
+    this.engine = engine;
     this.pxApp = engine.render;
 
     if (config.kind == "static") {
@@ -130,5 +144,25 @@ export class Sprite extends Renderable {
       this.pxSprite.x = this.positionProvider.position.x;
       this.pxSprite.y = this.positionProvider.position.y;
     }
+  }
+
+
+  public addEffect(effect: Effect) {
+    if (effect == Effect.FlashWhite) {
+      this.flash(Colour.white);
+    }
+    else if (effect == Effect.FlashRed) {
+      this.flash(Colour.ofRGB(1, 0, 0));
+    }
+  }
+
+
+  private flash(colour: Colour) {
+    this.pxSprite.filters = new Array<px.Filter>(
+      new ColorOverlayFilter(colour.toPixi()));
+
+    this.engine.delay(100, () => {
+      this.pxSprite.filters = new Array<px.Filter>();
+    });
   }
 }

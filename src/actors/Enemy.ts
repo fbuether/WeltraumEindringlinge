@@ -2,7 +2,7 @@ import * as EventEmitter from "eventemitter3";
 
 import {Team, TeamedActor} from "../actors/TeamedActor";
 import {Actor} from "../engine/Actor";
-import {Sprite} from "../engine/components/Sprite";
+import {Sprite, Effect} from "../engine/components/Sprite";
 import {Engine} from "../engine/Engine";
 import {Loader} from "../engine/Loader";
 import {Body} from "../engine/components/Body";
@@ -46,6 +46,9 @@ export class Enemy extends TeamedActor {
   private readonly rate: number;
   private readonly speed: number;
 
+
+  private sprite: Sprite;
+
   public constructor(engine: Engine, position: Vector) {
     super("enemy", engine, Team.Enemy);
 
@@ -56,14 +59,15 @@ export class Enemy extends TeamedActor {
     });
     this.add(this.body);
 
-    this.add(new Sprite(engine, this, {
+    this.sprite = new Sprite(engine, this, {
       kind: "animated",
       position: this.body,
       asset: enemyTexture,
       animation: "small",
       speed: 0.8,
       loops: true
-    }));
+    });
+    this.add(this.sprite);
 
     this.energy = engine.random.int32(0, Enemy.maxStartEnergy);
     this.rate = engine.random.real(Enemy.rate[0], Enemy.rate[1]);
@@ -110,6 +114,8 @@ export class Enemy extends TeamedActor {
 
   public damage(amount: number): boolean {
     let consume = this.alive;
+
+    this.sprite.addEffect(Effect.FlashWhite);
 
     this.health -= amount;
     if (this.health <= 0) {

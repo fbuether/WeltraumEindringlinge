@@ -30,10 +30,12 @@ export abstract class TeamedActor extends Actor {
   public abstract receivesBulletDamage(): boolean;
 
 
-  protected add(component: Component) {
-    if (this.alive) {
-      super.add(component);
+  protected add<T extends Component>(component: T): T {
+    if (!this.alive) {
+      throw new Error("added component to dead team actor.");
     }
+
+    return super.add(component);
   }
 
 

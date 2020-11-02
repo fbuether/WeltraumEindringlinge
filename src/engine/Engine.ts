@@ -13,6 +13,7 @@ import {Scene, SceneConstructor} from "../engine/Scene";
 import {Key, Keyboard} from "../engine/Keyboard";
 import {Loader} from "../engine/Loader";
 import {Random} from "../engine/Random";
+import {Loading} from "../scenes/Loading";
 
 
 
@@ -114,8 +115,14 @@ export class Engine {
 
 
   public toScene(sceneType: SceneConstructor) {
-    this.loadScene(sceneType);
     console.log("switching: ", sceneType);
+    this.unloadEverything();
+    this.loadScene(Loading);
+
+    this.delay(800, () => {
+      this.unloadEverything();
+      this.loadScene(sceneType);
+    });
   }
 
   private loadScene(scene: SceneConstructor): Scene {
@@ -167,6 +174,13 @@ export class Engine {
 
       component.delete();
     }
+  }
+
+  private unloadEverything() {
+    this.remove(...this.updatables);
+    this.remove(...this.renderables);
+    this.nextUpdates = new Array<Function>();
+    this.delays = new Array<[number,Function]>();
   }
 
 

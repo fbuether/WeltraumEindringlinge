@@ -16,8 +16,12 @@ class Star extends Geometry {
 
   public readonly graphics: px.Graphics;
 
-  public constructor(starfield: Starfield, pos: Vector, distance: number) {
+  private engine: Engine;
+
+  public constructor(engine: Engine, starfield: Starfield,
+      pos: Vector, distance: number) {
     super("star", starfield);
+    this.engine = engine;
     this.graphics = new px.Graphics();
     this.graphics.zIndex = -100;
 
@@ -27,6 +31,13 @@ class Star extends Geometry {
 
     let intensity = 0.4 + (0.2 * (4 - distance));
     this.colour = px.utils.rgb2hex([intensity, intensity, intensity]);
+    this.engine.render.stage.addChild(this.graphics);
+  }
+
+  public delete() {
+    this.graphics.clear();
+    this.graphics.destroy();
+    this.engine.render.stage.removeChild(this.graphics);
   }
 
   public render(): void {
@@ -82,9 +93,8 @@ export class Starfield extends Actor {
       this.rnd.real(0, width),
       everywhere ? this.rnd.real(0, height) : 0);
 
-    let star = new Star(this, position, distance);
+    let star = new Star(this.engine, this, position, distance);
     this.engine.add(star);
-    this.engine.render.stage.addChild(star.graphics);
     return star;
   }
 
@@ -92,26 +102,13 @@ export class Starfield extends Actor {
     for (let star of this.stars) {
       if (star.position.y > this.engine.render.screen.height) {
         // out of view.
-        this.deleteStar(star);
         this.stars.splice(this.stars.indexOf(star), 1);
+        this.engine.remove(star);
       }
     }
 
     while (this.stars.length <= Starfield.StarCount) {
       this.stars.push(this.createNewStar(false));
-    }
-  }
-
-  private deleteStar(star: Star) {
-    this.components.delete(star);
-    this.engine.render.stage.removeChild(star.graphics);
-    this.engine.remove(star);
-    star.graphics.destroy();
-  }
-
-  public delete() {
-    for (let star of this.stars) {
-      this.deleteStar(star);
     }
   }
 }

@@ -1,5 +1,6 @@
 import * as px from "pixi.js";
 import {ColorOverlayFilter} from '@pixi/filter-color-overlay';
+import * as EventEmitter from "eventemitter3";
 
 import {Colour} from "../../engine/Colour";
 import {Vector} from "../../engine/Vector";
@@ -39,6 +40,7 @@ export type SpriteConfig = (StaticSpriteConfig | AnimatedSpriteConfig) & {
   position: Vector | Positioned;
   scale?: Vector;
   zIndex?: number;
+  interactive?: boolean;
 };
 
 
@@ -49,10 +51,12 @@ export enum Effect {
 
 
 
+type Events = "mouse-over" | "mouse-out" | "click";
 
 export class Sprite extends Renderable {
   private pxSprite: px.Sprite;
   private pxApp: px.Application;
+  public readonly events = new EventEmitter<Events>();
 
   private engine: Engine;
 
@@ -114,6 +118,21 @@ export class Sprite extends Renderable {
       this.pxSprite.zIndex = config.zIndex;
     }
 
+    if (config.interactive) {
+      this.pxSprite.interactive = true;
+      this.pxSprite.on("mouseover", (event: px.InteractionEvent) => {
+        this.events.emit("mouse-over", this);
+      });
+
+      this.pxSprite.on("mouseout", (event: px.InteractionEvent) => {
+        this.events.emit("mouse-out", this);
+      });
+
+      this.pxSprite.on("mousedown", (event: px.InteractionEvent) => {
+        this.events.emit("click", this);
+      });
+    }
+
     this.pxSprite.anchor.set(0.5, 0.5);
     this.pxApp.stage.addChild(this.pxSprite);
   }
@@ -136,6 +155,7 @@ export class Sprite extends Renderable {
 
   public delete() {
     this.pxApp.stage.removeChild(this.pxSprite);
+    this.events.removeAllListeners();
   }
 
 
@@ -156,6 +176,10 @@ export class Sprite extends Renderable {
     }
   }
 
+
+  public setVisible(visible: boolean) {
+    this.pxSprite.visible = visible;
+  }
 
   private flash(colour: Colour) {
     this.pxSprite.filters = new Array<px.Filter>(

@@ -1,3 +1,6 @@
+import * as px from "pixi.js";
+
+import {Vector} from "../engine/Vector";
 import {Actor} from "../engine/Actor";
 
 let font = require(
@@ -13,6 +16,8 @@ export abstract class Gui extends Actor {
 
   private static initialised: boolean = false;
 
+  private pxObjs = new Array<px.Sprite>();
+
   // called by Engine as part of asset loading.
   public static async loadFonts() {
     if (!Gui.initialised) {
@@ -20,6 +25,26 @@ export abstract class Gui extends Actor {
       await face.load();
       document.fonts.add(face);
       Gui.initialised = true;
+    }
+  }
+
+  protected addText(label: string, position: Vector,
+      config?: px.TextStyle): px.Text {
+
+    let text = new px.Text(label, {
+      ...Gui.textStyle,
+      ...config
+    });
+    text.position.x = position.x;
+    text.position.y = position.y;
+    this.pxObjs.push(text);
+    this.engine.render.stage.addChild(text);
+    return text;
+  }
+
+  public delete() {
+    for (let pxObj of this.pxObjs) {
+      this.engine.render.stage.removeChild(pxObj);
     }
   }
 }

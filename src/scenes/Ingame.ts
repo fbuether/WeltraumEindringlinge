@@ -181,6 +181,8 @@ export class Ingame extends Scene {
       return;
     }
 
+    window.localStorage.setItem("highscore", this.score.toString());
+
     this.state = "finished";
 
     this.engine.delay(800, () => {

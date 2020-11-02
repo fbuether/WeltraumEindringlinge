@@ -11,6 +11,8 @@ import {Enemy} from "../actors/Enemy";
 import {Text} from "../ui/Text";
 import {Banner} from "../ui/Banner";
 import {Loader} from "../engine/Loader";
+import {Button} from "../ui/Button";
+import {MainMenu} from "../scenes/MainMenu";
 
 
 const backgrounds = [
@@ -79,7 +81,6 @@ export class Ingame extends Scene {
 
     if (bsPos.y > this.backgroundMaxY) {
       this.engine.remove(this.backgroundSprite);
-      this.components.delete(this.backgroundSprite);
       this.backgroundSprite = this.loadNextBackground();
     }
   }
@@ -101,7 +102,7 @@ export class Ingame extends Scene {
     ));
 
     this.backgroundMaxY = sprite.size.y/2 + (screen.bottom - screen.top);
-    return sprite;
+    return this.add(sprite);
   }
 
 
@@ -139,6 +140,15 @@ export class Ingame extends Scene {
     this.engine.delay(800, () => {
       this.add(new Banner(this.engine, title, subtitle));
 
+      let screen = this.engine.getScreenBounds();
+
+      this.add(new Button(this.engine, {
+        label: "Exit",
+        action: () => this.engine.toScene(MainMenu),
+        position: new Vector(
+          screen.left + (screen.right - screen.left) * 3 / 4,
+          screen.bottom - 200)
+      }));
 
 // -    this.addUi(new Menu(new Array<Button>(
 // -      new Button("New Game", () => {

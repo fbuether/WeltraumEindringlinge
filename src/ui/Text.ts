@@ -36,4 +36,8 @@ export class Text extends Gui {
     this.text.position.x = position.x;
     this.text.position.y = position.y;
   }
+
+  public setVisible(visible: boolean) {
+    this.text.visible = visible;
+  }
 }

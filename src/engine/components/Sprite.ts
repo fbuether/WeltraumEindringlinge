@@ -29,7 +29,7 @@ interface AnimatedSpriteConfig {
   // duration per frame in milliseconds.
   speed: number;
 
-  loops: boolean;
+  loops?: boolean;
 
   // runs only for non-looping animations.
   onComplete?: () => void;
@@ -92,7 +92,7 @@ export class Sprite extends Renderable {
           .sheet.animations[config.animation]);
 
       animation.animationSpeed = 1 / (1000 * config.speed);
-      animation.loop = config.loops;
+      animation.loop = config.loops !== undefined ? config.loops : true;
 
       if (config.onComplete) {
         animation.onComplete = config.onComplete;

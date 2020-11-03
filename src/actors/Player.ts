@@ -14,46 +14,33 @@ import {Key} from "../engine/Keyboard";
 import {Bullet} from "../actors/Bullet";
 
 
-const psX = 102;
-const psY = 93;
-const playerSheet = Loader.addSpritesheet(
-  require("../../assets/images/player.png"), {
+const playerShipTexture = Loader.addSpritesheet(
+  require("../../assets/images/player-medium.png"), {
     frames: {
-      "ship-small":      { frame: { x: psX * 1, y: psY * 0, w: psX, h: psY} },
-      "small-exhaust-1": { frame: { x: psX * 2, y: psY * 0, w: psX, h: psY} },
-      "small-exhaust-2": { frame: { x: psX * 0, y: psY * 1, w: psX, h: psY} },
-      "small-weapon-1":  { frame: { x: psX * 1, y: psY * 1, w: psX, h: psY} },
-      "ship-big":        { frame: { x: psX * 2, y: psY * 1, w: psX, h: psY} },
-      "big-exhaust-1-1": { frame: { x: psX * 0, y: psY * 2, w: psX, h: psY} },
-      "big-exhaust-1-2": { frame: { x: psX * 1, y: psY * 2, w: psX, h: psY} },
-      "big-exhaust-2-1": { frame: { x: psX * 2, y: psY * 2, w: psX, h: psY} },
-      "big-exhaust-2-2": { frame: { x: psX * 0, y: psY * 3, w: psX, h: psY} },
-      "big-weapon-1":    { frame: { x: psX * 1, y: psY * 3, w: psX, h: psY} },
-      "big-weapon-2":    { frame: { x: psX * 2, y: psY * 3, w: psX, h: psY} }
+      "small-1": {frame: {x:  3, y: 4, w: 12, h: 20} },
+      "small-2": {frame: {x: 21, y: 4, w: 12, h: 20} },
+      "medium-1": {frame: {x: 39, y: 0,  w: 12, h: 29} },
+      "medium-2": {frame: {x:  3, y: 29, w: 12, h: 29} },
+      "medium+-1": {frame: {x: 18, y: 29, w: 18, h: 29} },
+      "medium+-2": {frame: {x: 36, y: 29, w: 18, h: 29} }
     },
     animations: {
-      "small-exhaust": ["small-exhaust-1", "small-exhaust-2"],
-      "big-exhaust-1": ["big-exhaust-1-1", "big-exhaust-1-2"],
-      "big-exhaust-2": ["big-exhaust-2-1", "big-exhaust-2-2"],
+      "small": ["small-1", "small-2"],
+      "medium": ["medium-1", "medium-2"],
+      "medium+": ["medium+-1", "medium+-2"]
     }
   });
 
-const weaponPoints = {
-  "ship-small": {
-    "weapon-0": [
-      new Vector(-psX/2, -psY/2).add(new Vector(37, 17)),
-      new Vector(-psX/2, -psY/2).add(new Vector(64, 17))
-    ]
-  }
+let weaponPoints: { [key: string]: Array<Vector> } = {
+  "small": [new Vector(-5, -10), new Vector(5, -10)]
 };
-
 
 let bulletTexture = Loader.addSpritesheet(
   require("../../assets/images/bullet.png"), {
     frames: {
-      "bullet-1": { frame: {x: 3, y: 3, w: 6, h: 21 } },
-      "bullet-2": { frame: {x: 15, y: 3, w: 6, h: 21 } },
-      "bullet-3": { frame: {x: 27, y: 3, w: 6, h: 21 } }
+      "bullet-1": {frame: {x: 0, y: 0, w: 2, h: 7} },
+      "bullet-2": {frame: {x: 2, y: 0, w: 2, h: 7} },
+      "bullet-3": {frame: {x: 4, y: 0, w: 2, h: 7} }
     },
     animations: {
       "bullet": ["bullet-1", "bullet-2", "bullet-3"]
@@ -85,17 +72,19 @@ export class Player extends TeamedActor {
 
     this.body = new Body(engine, this, {
       shape: new ShapeGenerator().generateFromSpritesheet(
-        engine, playerSheet, "ship-small"),
+        engine, playerShipTexture, "small-1", new Vector(3, 3)),
       position: position
     });
     this.body.events.on("collision", this.onCollision, this);
     this.add(this.body);
 
     this.sprite = new Sprite(engine, this, {
-      kind: "static",
-      asset: playerSheet,
+      kind: "animated",
+      asset: playerShipTexture,
+      animation: "small",
+      speed: 0.5,
       position: this.body,
-      name: "ship-small"
+      scale: new Vector(3, 3)
     })
     this.add(this.sprite);
   }
@@ -111,8 +100,8 @@ export class Player extends TeamedActor {
 
 
   private fireWeapon() {
-    for (let point of weaponPoints["ship-small"]["weapon-0"]) {
-      let point2 = new Vector(point.x, -(this.body.size.y / 2 + 11));
+    for (let point of weaponPoints["small"]) {
+      let point2 = point.clone().mul(3); // for scaling.
 
       this.engine.add(new Bullet(this.engine, {
         team: Team.Player,
@@ -126,11 +115,11 @@ export class Player extends TeamedActor {
           kind: "animated",
           asset: bulletTexture,
           animation: "bullet",
-          speed: 0.333,
-          loops: true
+          scale: new Vector(3, 3),
+          speed: 0.333
         },
         shape: new ShapeGenerator().generateFromSpritesheet(
-          this.engine, bulletTexture, "bullet-1")
+          this.engine, bulletTexture, "bullet-1", new Vector(3, 3))
       }));
     }
   }
@@ -186,6 +175,7 @@ export class Player extends TeamedActor {
     this.events.emit("health-changed", this);
 
     if (this._health <= 0) {
+      this._health = 0;
       this.events.emit("destroyed", this);
       this.kill();
       this.engine.add(new Explosion(this.engine, this.body.position));

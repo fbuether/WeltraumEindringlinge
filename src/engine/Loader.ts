@@ -135,7 +135,7 @@ export class Loader {
 
 
   public static addSpritesheet(file: { default: string },
-      data: PixiSpriteSheetData) {
+      data: PixiSpriteSheetData): string {
     Loader.spritesheets.push({ file: file.default, "data": data });
     return file.default;
   }

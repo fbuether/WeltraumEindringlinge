@@ -5,17 +5,15 @@ import {Body} from "../engine/components/Body";
 import {Engine} from "../engine/Engine";
 import {Loader} from "../engine/Loader";
 import {Sprite, SpriteConfig} from "../engine/components/Sprite";
+import {DistributiveOmit} from "../Types";
 
 import {Vector} from "../engine/Vector";
 import {ShapeGenerator} from "../engine/ShapeGenerator";
 import {Shape as planckShape} from "planck-js/lib/shape/index";
 
 
-type DistributiveOmit<T, K extends keyof any> = T extends any
-  ? Omit<T, K>
-  : never;
 
-interface BulletConfig {
+export interface BulletConfig {
   team: Team;
   position: Vector;
   direction: Vector;

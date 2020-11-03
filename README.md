@@ -27,7 +27,11 @@ You can also build a distributable version with `make build`.
 
 ## Credits
 
+### Press Start 2P
+
 This game uses the font `Press Start 2P`, published under the SIL Open Font Licence. See [SIL Licence](assets/fonts/PressStart2P/OFL.txt) for details.
+
+### Hubble Space Photos
 
 The game uses (adopted versions of) images from the Hubble Space Telescope, available at [https://www.spacetelescope.org/images/archive/category/nebulae/](https://www.spacetelescope.org/images/archive/category/nebulae/), specifically the following:
 
@@ -35,3 +39,8 @@ The game uses (adopted versions of) images from the Hubble Space Telescope, avai
 * https://www.spacetelescope.org/images/heic1808a/ (The Lagoon Nebula)
 
 The images are licenced under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+
+
+### Colour Palette
+
+Most sprites build upon the colour palette `Downgraded 32 Palette` from lospec.com: [https://lospec.com/palette-list/downgraded-32](https://lospec.com/palette-list/downgraded-32).

@@ -44,6 +44,23 @@ let enemyMedium1Texture = Loader.addSpritesheet(
   });
 
 
+let enemyMedium2Texture = Loader.addSpritesheet(
+  require("../../assets/images/enemy-medium-2.png"), {
+    frames: {
+      "ship-1": {frame: {x:  0, y:  0, w: 24, h: 21} },
+      "ship-2": {frame: {x: 24, y:  0, w: 24, h: 21} },
+      "ship-3": {frame: {x:  0, y: 21, w: 24, h: 21} },
+      "ship-4": {frame: {x: 24, y: 21, w: 24, h: 21} },
+      "bullet-1": {frame: {x:  0, y: 42, w: 8, h: 12} },
+      "bullet-2": {frame: {x: 24, y: 42, w: 8, h: 12} }
+    },
+    animations: {
+      "ship": ["ship-1", "ship-2", "ship-3", "ship-4"],
+      "bullet": ["bullet-1", "bullet-2"]
+    }
+  });
+
+
 interface EnemySpec {
   health: number;
   speed: [number, number];
@@ -111,7 +128,7 @@ let enemies: { [key: string]: EnemySpec } = {
       scale: new Vector(3, 3)
     },
     bullet: {
-      maxStartEnergy: 4000,
+      maxStartEnergy: 2000,
       firingEnergy: 5000,
       rechargeRate: [0.4, 1],
 
@@ -130,6 +147,42 @@ let enemies: { [key: string]: EnemySpec } = {
         sprite: "bullet-1",
         scale: new Vector(3, 3)
       },
+    }
+  },
+  "medium-2": {
+    health: 5,
+    speed: [1.4, 1.9],
+    collisionDamage: 2,
+    sprite: {
+      kind: "animated",
+      asset: enemyMedium2Texture,
+      animation: "ship",
+      scale: new Vector(3, 3),
+      speed: 0.4
+    },
+    body: {
+      asset: enemyMedium2Texture,
+      sprite: "ship-1",
+      scale: new Vector(3, 3)
+    },
+    bullet: {
+      maxStartEnergy: 3000,
+      firingEnergy: 6000,
+      rechargeRate: [0.9, 1.1],
+      position: [new Vector(0, 14)],
+      damage: 1,
+      sprite: {
+        kind: "animated",
+        asset: enemyMedium2Texture,
+        animation: "bullet",
+        scale: new Vector(3, 3),
+        speed: 0.6
+      },
+      body: {
+        asset: enemyMedium2Texture,
+        sprite: "bullet-1",
+        scale: new Vector(3, 3)
+      }
     }
   }
 };
@@ -152,7 +205,7 @@ export class Enemy extends TeamedActor {
   public constructor(engine: Engine, position: Vector) {
     super("enemy", engine, Team.Enemy);
 
-    let ship = "medium-1";
+    let ship = "medium-2";
     this.spec = enemies[ship];
 
     this.body = new Body(engine, this, {

@@ -1,18 +1,21 @@
+import * as EventEmitter from "eventemitter3";
 
 import {Gui} from "../engine/Gui";
 import {Sprite} from "../engine/components/Sprite";
 import {Engine} from "../engine/Engine";
 import {Scene} from "../engine/Scene";
-import {Player} from "../actors/Player";
+import {Player, PlayerShipType} from "../actors/Player";
 import {Starfield} from "../actors/Starfield";
 import {Vector} from "../engine/Vector";
-import {Squadron} from "../actors/Squadron";
+import {Squadron, SquadronConfig} from "../actors/Squadron";
 import {Enemy} from "../actors/Enemy";
 import {Text} from "../ui/Text";
 import {Banner} from "../ui/Banner";
 import {Loader} from "../engine/Loader";
 import {Button} from "../ui/Button";
 import {MainMenu} from "../scenes/MainMenu";
+import {Levels} from "../scenes/Levels";
+import {Component} from "../engine/components/Component";
 
 
 let backgrounds = [
@@ -38,9 +41,12 @@ let beamTexture = Loader.addSpritesheet(
   });
 
 
+type Events = "score-changed";
+
 export class Ingame extends Scene {
-  private guiScore: Text;
-  private guiHealth: Text;
+  private readonly events = new EventEmitter<Events>();
+  private uiComponents = new Array<Component>();
+  private player: Player | null = null;
   public score = 0;
 
   private backgroundSprite: Sprite;
@@ -52,72 +58,13 @@ export class Ingame extends Scene {
   public constructor(engine: Engine) {
     super("ingame", engine);
 
-
     this.backgroundSprite = this.loadNextBackground();
     this.add(new Starfield(engine));
 
-    let screen = engine.getScreenBounds();
-
-    // introductory animation.
-    this.engine.delay(800, () => {
-      let horizontalCenter = (screen.left + screen.right) / 2;
-      let playerPos = new Vector(horizontalCenter, screen.bottom - 90);
-
-      let beaming = this.add(new Sprite(engine, this, {
-        kind: "animated",
-        asset: beamTexture,
-        animation: "beam",
-        loops: false,
-        speed: 0.4,
-        position: playerPos,
-        onComplete: () => {
-          engine.remove(beaming);
-        },
-        scale: new Vector(3, 3),
-        zIndex: 3
-      }));
-
-      // on the right moment during beaming...
-      this.engine.delay(4 * 400 + 200, () => this.addPlayer(playerPos));
+    engine.onNextUpdate(() => {
+      Levels[1].run(engine, this);
     });
-
-    this.engine.delay(5000, () => {
-      // start the level.
-      let squadron = new Squadron(engine, 100);
-      squadron.events.on("enemy-destroyed", this.onEnemyDestroyed, this);
-      squadron.events.on("enemy-escaped", this.onEnemyEscaped, this);
-      squadron.events.on("squad-destroyed", this.onSquadDestroyed, this);
-      this.add(squadron);
-    });
-
-    // ui.
-    this.guiScore = this.add(new Text(engine, {
-      position: new Vector(screen.left + 30, screen.top + 20),
-      text: "Score 00000"
-    }));
-
-    this.guiHealth = this.add(new Text(engine, {
-      position: new Vector(screen.left + 30, screen.bottom -
-          Gui.textStyle.fontSize - 20),
-      text: "Health 00000"
-    }));
-
-    this.guiHealth.setVisible(false);
-    this.guiScore.setVisible(false);
   }
-
-  private addPlayer(pos: Vector) {
-    let player = new Player(this.engine, pos);
-    player.events.on("destroyed", this.onPlayerDestroyed, this);
-    this.add(player);
-
-    player.events.on("health-changed", this.onPlayerHealthChanged, this);
-    this.onPlayerHealthChanged(player);
-
-    this.guiHealth.setVisible(true);
-    this.guiScore.setVisible(true);
-  }
-
 
   public update(delta: number) {
     let bsPos = this.backgroundSprite.position;
@@ -152,23 +99,148 @@ export class Ingame extends Scene {
   }
 
 
-  private onEnemyDestroyed(squadron: Squadron, enemy: Enemy) {
-    this.score += 1;
-    this.guiScore.setText("Score " + this.score.toString().padStart(5, "0"));
+  public async spawnSquadron(config: SquadronConfig) {
+    return new Promise<void>((resolve, reject) => {
+      let squad = this.add(new Squadron(this.engine, config));
+      squad.events.on("enemy-destroyed", this.onEnemyDestroyed, this);
+      squad.events.on("enemy-escaped", this.onEnemyEscaped, this);
+      squad.events.on("squad-destroyed", () => { resolve(); });
+    });
   }
 
-  private onEnemyEscaped(squadron: Squadron, enemy: Enemy) {
-    this.finishGame("YOU LOSE", "An enemy passed by!");
+  public async spawnPlayer(shipType: PlayerShipType) {
+    let screen = this.engine.getScreenBounds();
+    let horizontalCenter = (screen.left + screen.right) / 2;
+    let playerPos = new Vector(horizontalCenter, screen.bottom - 90);
+
+    return new Promise<void>((resolve, reject) => {
+
+      let beaming = this.add(new Sprite(this.engine, this, {
+        kind: "animated",
+        asset: beamTexture,
+        animation: "beam",
+        loops: false,
+        speed: 0.4,
+        position: playerPos,
+        onComplete: () => {
+          this.engine.remove(beaming);
+          resolve();
+        },
+        scale: new Vector(3, 3),
+        zIndex: 3
+      }));
+
+      // on the right moment during beaming...
+      this.engine.delay(4 * 400 + 200, () => this.addPlayer(playerPos));
+    });
   }
 
-  private onSquadDestroyed(squadron: Squadron) {
+  private addPlayer(pos: Vector) {
+    let screen = this.engine.getScreenBounds();
+
+    this.player = this.add(new Player(this.engine, pos));
+    this.player.events.on("destroyed", this.onPlayerDestroyed, this);
+
+    this.engine.delay(600, () => {
+      if (this.player != null) {
+        this.player.setReceivesInput(true);
+      }
+    });
+
+    // ui.
+
+    // score display.
+
+    let uiScore = this.add(new Text(this.engine, {
+      position: new Vector(screen.left + 30, screen.top + 20),
+      text: "Score 00000"
+    }));
+    let setScoreDisplay = (score: number) => {
+      uiScore.setText("Score " + score.toString().padStart(5, "0"));
+    };
+
+    this.events.on("score-changed", setScoreDisplay);
+    this.uiComponents.push(uiScore);
+
+    // health display.
+
+    let uiHealth = this.add(new Text(this.engine, {
+      position: new Vector(screen.left + 30, screen.bottom -
+          Gui.textStyle.fontSize - 20),
+      text: "Health 006"
+    }));
+
+    let setHealthDisplay = () => {
+      if (this.player != null) {
+        uiHealth.setText("Health " +
+            this.player.health.toString().padStart(3, "0"));
+      }
+    };
+
+    this.player.events.on("health-changed", setHealthDisplay);
+    setHealthDisplay();
+    this.uiComponents.push(uiHealth);
+  }
+
+  public async removePlayer() {
+    if (this.player == null) {
+      return;
+    }
+
+    this.player.setReceivesInput(false);
+
+    return new Promise<void>((resolve, reject) => {
+      if (this.player == null) {
+        resolve();
+        return;
+      }
+
+      let beaming = this.add(new Sprite(this.engine, this, {
+        kind: "animated",
+        asset: beamTexture,
+        animation: "beam",
+        loops: false,
+        speed: 0.4,
+        position: this.player.position,
+        onComplete: () => {
+          this.engine.remove(beaming);
+          resolve();
+        },
+        scale: new Vector(3, 3),
+        zIndex: 3
+      }));
+
+      this.engine.delay(4 * 400 + 200, () => {
+        if (this.player != null) {
+          this.engine.remove(this.player);
+          this.player = null;
+        }
+
+        for (let component of this.uiComponents) {
+          this.engine.remove(component);
+        }
+
+        this.uiComponents = new Array<Component>();
+      });
+    });
+  }
+
+
+  public win() {
     this.finishGame("YOU WIN", "Final score: " +
         this.score.toString().padStart(5, "0"));
   }
 
-  private onPlayerHealthChanged(player: Player) {
-    this.guiHealth.setText(
-      "Health " + player.health.toString().padStart(3, "0"));
+
+
+
+  private onEnemyDestroyed(squadron: Squadron, enemy: Enemy) {
+    this.score += 1;
+    this.events.emit("score-changed", this.score);
+  }
+
+  private onEnemyEscaped(squadron: Squadron, enemy: Enemy) {
+    this.finishGame("YOU LOSE", "An enemy passed by!");
   }
 
   private onPlayerDestroyed(player: Player) {

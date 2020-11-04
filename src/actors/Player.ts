@@ -47,8 +47,11 @@ let bulletTexture = Loader.addSpritesheet(
     }
   });
 
-type Events = "destroyed" | "health-changed";
 
+export type PlayerShipType = "small" | "medium" | "medium+";
+
+
+type Events = "destroyed" | "health-changed";
 
 export class Player extends TeamedActor {
   private static readonly Speed = 24;
@@ -66,6 +69,11 @@ export class Player extends TeamedActor {
   public get health(): number {
     return this._health;
   }
+
+  public get position(): Vector {
+    return this.body.position;
+  }
+
 
   public constructor(engine: Engine, position: Vector) {
     super("player", engine, Team.Player);
@@ -122,11 +130,27 @@ export class Player extends TeamedActor {
           this.engine, bulletTexture, "bullet-1", new Vector(3, 3))
       }));
     }
+
+    this.lastShot = Player.FiringSpeed;
   }
 
 
+  // enabled after beaming the player into the game.
+  private receivesInput: boolean = false;
+
   public update(delta: number) {
+    this.handleInput(delta);
+
+    if (this.lastShot > 0) {
+      this.lastShot -= delta;
+    }
+  }
+
+  private handleInput(delta: number) {
     // input.
+    if (!this.receivesInput) {
+      return;
+    }
     let movement = Player.Speed * delta / 1000;
     let moveRight = this.engine.keyboard.isPressed(Key.D)
         || this.engine.keyboard.isPressed(Key.Right);
@@ -149,14 +173,9 @@ export class Player extends TeamedActor {
     }
 
     // firing.
-    if (this.lastShot > 0) {
-      this.lastShot -= delta;
-    }
-
     let fires = this.engine.keyboard.isPressed(Key.Space);
     if (fires && this.lastShot <= 0) {
       this.fireWeapon();
-      this.lastShot = Player.FiringSpeed;
     }
   }
 
@@ -188,7 +207,12 @@ export class Player extends TeamedActor {
     return true;
   }
 
-  public getCharge() {
-    return Math.min(1, Math.max(0, 1 - (this.lastShot / 1000)));
+
+  public setReceivesInput(receivesInput: boolean) {
+    this.receivesInput = receivesInput;
   }
+
+  // public getCharge() {
+  //   return Math.min(1, Math.max(0, 1 - (this.lastShot / 1000)));
+  // }
 }

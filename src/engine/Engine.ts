@@ -224,6 +224,12 @@ export class Engine {
     this.delays.push([delta, action]);
   }
 
+  public async waitFor(delay: number): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.delay(delay, resolve);
+    });
+  }
+
 
   private run = true;
   private fpsDisplay: HTMLElement | null = null;

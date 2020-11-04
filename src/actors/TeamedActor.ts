@@ -14,8 +14,6 @@ export enum Team {
 export abstract class TeamedActor extends Actor {
   public readonly team: Team;
 
-  protected alive: boolean = true;
-
   constructor(name: string, engine: Engine, team: Team) {
     super(name, engine);
     this.team = team;
@@ -28,23 +26,4 @@ export abstract class TeamedActor extends Actor {
 
 
   public abstract receivesBulletDamage(): boolean;
-
-
-  protected add<T extends Component>(component: T): T {
-    if (!this.alive) {
-      throw new Error("added component to dead team actor.");
-    }
-
-    return super.add(component);
-  }
-
-
-  public kill() {
-    if (!this.alive) {
-      return;
-    }
-
-    super.kill();
-    this.alive = false;
-  }
 }

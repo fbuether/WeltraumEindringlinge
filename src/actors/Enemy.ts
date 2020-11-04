@@ -90,8 +90,15 @@ interface EnemySpec {
 };
 
 
-let enemies: { [key: string]: EnemySpec } = {
-  "small": {
+export enum EnemyClass {
+  Small,
+  Medium1,
+  Medium2
+}
+
+
+let enemies: Record<EnemyClass, EnemySpec> = {
+  [EnemyClass.Small]: {
     health: 1,
     speed: [6, 8.5],
     collisionDamage: 3,
@@ -110,7 +117,8 @@ let enemies: { [key: string]: EnemySpec } = {
     },
     bullet: null
   },
-  "medium-1": {
+
+  [EnemyClass.Medium1]: {
     health: 4,
     speed: [1.8, 2.4],
     collisionDamage: 2,
@@ -149,7 +157,8 @@ let enemies: { [key: string]: EnemySpec } = {
       },
     }
   },
-  "medium-2": {
+
+  [EnemyClass.Medium2]: {
     health: 5,
     speed: [1.4, 1.9],
     collisionDamage: 2,
@@ -202,11 +211,9 @@ export class Enemy extends TeamedActor {
   private sprite: Sprite;
   private readonly spec: EnemySpec;
 
-  public constructor(engine: Engine, position: Vector) {
+  public constructor(engine: Engine, position: Vector, enemyClass: EnemyClass) {
     super("enemy", engine, Team.Enemy);
-
-    let ship = "medium-2";
-    this.spec = enemies[ship];
+    this.spec = enemies[enemyClass];
 
     this.body = new Body(engine, this, {
       shape: new ShapeGenerator().generateFromSpritesheet(
@@ -289,8 +296,11 @@ export class Enemy extends TeamedActor {
   }
 
   public damage(amount: number): boolean {
-    let consume = this.alive;
+    if (this.health <= 0) {
+      return false;
+    }
 
+    let consume = this.health >= amount;
     this.sprite.addEffect(Effect.FlashWhite);
 
     this.health -= amount;

@@ -10,8 +10,8 @@ import {Engine} from "../engine/Engine";
 let buttonTexture = Loader.addSpritesheet(
   require("../../assets/images/gui.png"), {
     frames: {
-      "button": { frame: {x: 0, y: 0, w: 45, h: 17} },
-      "hover":  { frame: {x: 0, y: 17, w: 45, h: 17} },
+      "button": { frame: {x: 0, y: 0, w: 55, h: 17} },
+      "hover":  { frame: {x: 0, y: 17, w: 55, h: 17} },
     }
   });
 
@@ -26,14 +26,13 @@ interface ButtonConfig {
 export class Button extends Gui {
   private label: px.Text;
   private background: Sprite;
-  private hover: Sprite;
   private action: Function;
 
   public constructor(engine: Engine, config: ButtonConfig) {
     super("Button", engine);
     this.action = config.action;
 
-    let bgX = 45 * 3;
+    let bgX = 55 * 3;
     let bgY = 17 * 3;
     let padd = 14;
 
@@ -44,50 +43,31 @@ export class Button extends Gui {
     this.label = this.addText(config.label, labelPos);
     this.label.zIndex = 10;
 
-    this.background = new Sprite(engine, this, {
+    this.background = this.add(new Sprite(engine, this, {
       kind: "static",
       asset: buttonTexture,
       name: "button",
       position: config.position,
       scale: new Vector(3, 3),
       zIndex: 9,
-      interactive: true
-    });
+      button: true
+    }));
 
-    this.hover = new Sprite(engine, this, {
-      kind: "static",
-      asset: buttonTexture,
-      name: "hover",
-      position: config.position,
-      scale: new Vector(3, 3),
-      zIndex: 9,
-      interactive: true
-    });
-    this.hover.setVisible(false);
-
-    this.background.events.on("mouse-over", () => {
-      this.background.setVisible(false);
-      this.hover.setVisible(true);
-      document.body.style.cursor = "pointer";
-    });
-
-    this.hover.events.on("mouse-out", () => {
-      this.background.setVisible(true);
-      this.hover.setVisible(false);
-      document.body.style.cursor = "default";
-    });
-
-    this.hover.events.on("click", this.onClick, this);
+    this.background.events.on("mouse-over", this.hoverOn, this);
+    this.background.events.on("mouse-out", this.hoverOff, this);
     this.background.events.on("click", this.onClick, this);
+  }
 
-    this.add(this.hover);
-    this.add(this.background);
+  private hoverOn() {
+    this.background.changeTexture("static", buttonTexture, "hover");
+  }
+
+  private hoverOff() {
+    this.background.changeTexture("static", buttonTexture, "button");
   }
 
   private onClick() {
-    this.hover.addEffect(Effect.FlashWhite);
     this.background.addEffect(Effect.FlashWhite);
-    document.body.style.cursor = "default";
     this.engine.delay(100, this.action);
   }
 }

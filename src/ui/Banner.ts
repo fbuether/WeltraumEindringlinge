@@ -9,7 +9,8 @@ export class Banner extends Gui {
   private subtitle: px.Text;
   private graphics: px.Graphics;
 
-  public constructor(engine: Engine, title: string, subtitle: string) {
+  public constructor(engine: Engine, title: string, subtitle: string,
+      yPos: number = 1/3) {
     super("banner", engine);
 
     this.title = new px.Text(title, { ...Gui.textStyle, fontSize: 40 });
@@ -19,7 +20,7 @@ export class Banner extends Gui {
     this.title.position.x =
         (screen.left + screen.right - this.title.width) / 2;
     this.title.position.y =
-        (2 * screen.top + screen.bottom) / 3;
+        screen.top + (screen.bottom - screen.top) * yPos;
 
     this.subtitle.position.x =
         (screen.left + screen.right - this.subtitle.width) / 2;

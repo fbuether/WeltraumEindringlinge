@@ -40,7 +40,7 @@ export type SpriteConfig = (StaticSpriteConfig | AnimatedSpriteConfig) & {
   position: Vector | Positioned;
   scale?: Vector;
   zIndex?: number;
-  interactive?: boolean;
+  button?: boolean;
 };
 
 
@@ -118,8 +118,9 @@ export class Sprite extends Renderable {
       this.pxSprite.zIndex = config.zIndex;
     }
 
-    if (config.interactive) {
+    if (config.button) {
       this.pxSprite.interactive = true;
+      this.pxSprite.buttonMode = true;
       this.pxSprite.on("mouseover", (event: px.InteractionEvent) => {
         this.events.emit("mouse-over", this);
       });
@@ -188,5 +189,19 @@ export class Sprite extends Renderable {
     this.engine.delay(100, () => {
       this.pxSprite.filters = new Array<px.Filter>();
     });
+  }
+
+  public changeTexture(kind: "static" | "animated", asset: AssetTag,
+                       name?: string) {
+    if (kind == "static") {
+      this.pxSprite.texture = name !== undefined
+          ? this.engine.loader.getSpritesheet(asset)
+            .sheet.textures[name]
+          : this.engine.loader.getSprite(asset).resource.texture;
+    }
+    else if (this.pxSprite instanceof px.AnimatedSprite && name !== undefined) {
+        this.pxSprite.textures = this.engine.loader.getSpritesheet(asset)
+          .sheet.animations[name];
+    }
   }
 }

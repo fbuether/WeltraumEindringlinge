@@ -92,6 +92,7 @@ export class MainMenu extends Scene {
       this.stateComponents.push(this.add(new Button(this.engine, {
         label: "Level " + i,
         action: () => this.startLevel(i),
+        enabled: i == 1,
         position: new Vector(
           screen.left + (screen.right - screen.left) / 6
             + (55 * 3 / 2)

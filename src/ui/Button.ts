@@ -11,7 +11,8 @@ let buttonTexture = Loader.addSpritesheet(
   require("../../assets/images/gui.png"), {
     frames: {
       "button": { frame: {x: 0, y: 0, w: 55, h: 17} },
-      "hover":  { frame: {x: 0, y: 17, w: 55, h: 17} },
+      "hover": { frame: {x: 0, y: 17, w: 55, h: 17} },
+      "disabled": { frame: {x: 0, y: 34, w: 55, h: 17} },
     }
   });
 
@@ -20,6 +21,7 @@ interface ButtonConfig {
   label: string;
   action: Function;
   position: Vector;
+  enabled?: boolean;
 }
 
 
@@ -43,19 +45,23 @@ export class Button extends Gui {
     this.label = this.addText(config.label, labelPos);
     this.label.zIndex = 10;
 
+    let enabled = config.enabled === undefined || config.enabled;
+
     this.background = this.add(new Sprite(engine, this, {
       kind: "static",
       asset: buttonTexture,
-      name: "button",
+      name: enabled ? "button" : "disabled",
       position: config.position,
       scale: new Vector(3, 3),
       zIndex: 9,
-      button: true
+      button: enabled
     }));
 
-    this.background.events.on("mouse-over", this.hoverOn, this);
-    this.background.events.on("mouse-out", this.hoverOff, this);
-    this.background.events.on("click", this.onClick, this);
+    if (enabled) {
+      this.background.events.on("mouse-over", this.hoverOn, this);
+      this.background.events.on("mouse-out", this.hoverOff, this);
+      this.background.events.on("click", this.onClick, this);
+    }
   }
 
   private hoverOn() {

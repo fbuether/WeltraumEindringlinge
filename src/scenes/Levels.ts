@@ -56,7 +56,7 @@ async function level1(engine: Engine, game: Game) {
 
   await engine.waitFor(1000);
 
-  await game.spawnSquadron({
+  let smalls = game.spawnSquadron({
     enemyClass: EnemyClass.Small,
     count: 22,
     spawnPackSize: [3,5],
@@ -65,6 +65,19 @@ async function level1(engine: Engine, game: Game) {
     spawnDelay: 4000,
     spawnRandom: [0, 1000]
   });
+
+  let mediums = engine.waitFor(5000).then(() =>
+    game.spawnSquadron({
+      enemyClass: EnemyClass.Medium1,
+      count: 1,
+      spawnPackSize: [1,1],
+      spawnPackLimit: 1,
+      spawnDelay: 0,
+      spawnPackDelay: 0,
+      spawnRandom: [0,0]
+    }));
+
+  await Promise.all([smalls, mediums]);
 
   await engine.waitFor(1600);
   await game.removePlayer();

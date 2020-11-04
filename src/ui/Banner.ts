@@ -13,7 +13,11 @@ export class Banner extends Gui {
       yPos: number = 1/3) {
     super("banner", engine);
 
-    this.title = new px.Text(title, { ...Gui.textStyle, fontSize: 40 });
+    this.title = new px.Text(title, {
+      ...Gui.textStyle,
+      fontSize: 40,
+      lineHeight: 40
+    });
     this.subtitle = new px.Text(subtitle, { ...Gui.textStyle, fontSize: 28 });
 
     let screen = engine.getScreenBounds();

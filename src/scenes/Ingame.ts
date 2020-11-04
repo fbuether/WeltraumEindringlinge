@@ -16,6 +16,7 @@ import {Button} from "../ui/Button";
 import {MainMenu} from "../scenes/MainMenu";
 import {Levels} from "../scenes/Levels";
 import {Component} from "../engine/components/Component";
+import {Dialogue, Character} from "../ui/Dialogue";
 
 
 let backgrounds = [
@@ -221,6 +222,17 @@ export class Ingame extends Scene {
         }
 
         this.uiComponents = new Array<Component>();
+      });
+    });
+  }
+
+  public async showDialogue(char: Character, text: Array<string>) {
+    let dialogue = this.add(new Dialogue(this.engine, char, text));
+
+    return new Promise<void>((resolve, reject) => {
+      dialogue.events.on("finished", () => {
+        this.engine.remove(dialogue);
+        resolve();
       });
     });
   }

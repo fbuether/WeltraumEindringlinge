@@ -11,6 +11,7 @@ export abstract class Gui extends Actor {
   public static textStyle = {
     fontFamily: "VT323",
     fontSize: 17,
+    lineHeight: 21,
     fill: "white"
   };
 

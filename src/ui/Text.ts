@@ -29,7 +29,9 @@ export class Text extends Gui {
   }
 
   public setText(newText: string) {
-    this.text.text = newText;
+    if (this.text.text != newText) {
+      this.text.text = newText;
+    }
   }
 
   public moveTo(position: Vector) {

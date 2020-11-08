@@ -12,7 +12,7 @@ module.exports = (env = {}) => ({
         exclude: /node_modules/,
       },
       {
-        test: /\.(png|woff2)$/,
+        test: /\.(png|woff2|wav)$/,
         loader: "file-loader",
         options: { name: "[name]-[contenthash].[ext]" },
       }

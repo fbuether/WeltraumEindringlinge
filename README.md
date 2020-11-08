@@ -41,6 +41,6 @@ The game uses (adopted versions of) images from the Hubble Space Telescope, avai
 The images are licenced under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
 
 
-### Colour Palette
+### Sounds
 
-Most sprites build upon the colour palette `Downgraded 32 Palette` from lospec.com: [https://lospec.com/palette-list/downgraded-32](https://lospec.com/palette-list/downgraded-32).
+Sound effects have been taken from the `Essential Retro Video Game Sound Effects Collection` by Juhani Junkala, which is licensed under [CC0 License](https://creativecommons.org/publicdomain/zero/1.0/), and available at [OpenGameArt.org](https://opengameart.org/content/512-sound-effects-8-bit-style).

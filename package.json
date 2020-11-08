@@ -16,6 +16,7 @@
     "@types/mersenne-twister": "^1.1.2",
     "eventemitter3": "^4.0.7",
     "mersenne-twister": "^1.1.0",
+    "pixi-sound": "^3.0.5",
     "pixi.js": "^5.3.3"
   }
 }

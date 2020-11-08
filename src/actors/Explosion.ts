@@ -27,21 +27,21 @@ let texture = Loader.addSpritesheet(
 
 
 let soundsSmall = [
-  Loader.addSound(require("../../assets/sounds/explosion-1.wav")),
-  Loader.addSound(require("../../assets/sounds/explosion-2.wav")),
-  Loader.addSound(require("../../assets/sounds/explosion-3.wav")),
-  Loader.addSound(require("../../assets/sounds/explosion-4.wav")),
-  Loader.addSound(require("../../assets/sounds/explosion-5.wav")),
-  Loader.addSound(require("../../assets/sounds/explosion-6.wav"))
+  Loader.addSound(require("../../assets/sounds/explosion-1.wav.opus")),
+  Loader.addSound(require("../../assets/sounds/explosion-2.wav.opus")),
+  Loader.addSound(require("../../assets/sounds/explosion-3.wav.opus")),
+  Loader.addSound(require("../../assets/sounds/explosion-4.wav.opus")),
+  Loader.addSound(require("../../assets/sounds/explosion-5.wav.opus")),
+  Loader.addSound(require("../../assets/sounds/explosion-6.wav.opus"))
 ];
 
 let soundsBig = [
-  Loader.addSound(require("../../assets/sounds/explosion-big-1.wav")),
-  Loader.addSound(require("../../assets/sounds/explosion-big-2.wav")),
-  Loader.addSound(require("../../assets/sounds/explosion-big-3.wav")),
-  Loader.addSound(require("../../assets/sounds/explosion-big-4.wav")),
-  Loader.addSound(require("../../assets/sounds/explosion-big-5.wav")),
-  Loader.addSound(require("../../assets/sounds/explosion-big-6.wav"))
+  Loader.addSound(require("../../assets/sounds/explosion-big-1.wav.opus")),
+  Loader.addSound(require("../../assets/sounds/explosion-big-2.wav.opus")),
+  Loader.addSound(require("../../assets/sounds/explosion-big-3.wav.opus")),
+  Loader.addSound(require("../../assets/sounds/explosion-big-4.wav.opus")),
+  Loader.addSound(require("../../assets/sounds/explosion-big-5.wav.opus")),
+  Loader.addSound(require("../../assets/sounds/explosion-big-6.wav.opus"))
 ];
 
 export enum ExplosionSize {

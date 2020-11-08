@@ -18,7 +18,7 @@ let buttonTexture = Loader.addSpritesheet(
 
 
 let selectSound = Loader.addSound(
-  require("../../assets/sounds/menu-select.wav"));
+  require("../../assets/sounds/menu-select.wav.opus"));
 
 
 interface ButtonConfig {

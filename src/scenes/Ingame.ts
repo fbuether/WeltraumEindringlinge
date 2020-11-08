@@ -43,7 +43,7 @@ let beamTexture = Loader.addSpritesheet(
   });
 
 const beamSound = Loader.addSound(
-  require("../../assets/sounds/beam.wav"));
+  require("../../assets/sounds/beam.wav.opus"));
 
 const music = [
   Loader.addSound(require("../../assets/sounds/music-level-1.opus")),

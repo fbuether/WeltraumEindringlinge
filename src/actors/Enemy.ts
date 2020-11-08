@@ -61,14 +61,14 @@ let enemyMedium2Texture = Loader.addSpritesheet(
   });
 
 const hitSounds = [
-  Loader.addSound(require("../../assets/sounds/hit-1.wav")),
-  Loader.addSound(require("../../assets/sounds/hit-2.wav")),
-  Loader.addSound(require("../../assets/sounds/hit-3.wav"))
+  Loader.addSound(require("../../assets/sounds/hit-1.wav.opus")),
+  Loader.addSound(require("../../assets/sounds/hit-2.wav.opus")),
+  Loader.addSound(require("../../assets/sounds/hit-3.wav.opus"))
 ];
 
 
 const shootSound = Loader.addSound(
-  require("../../assets/sounds/enemy-shoot.wav"));
+  require("../../assets/sounds/enemy-shoot.wav.opus"));
 
 
 interface EnemySpec {

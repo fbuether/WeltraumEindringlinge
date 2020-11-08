@@ -32,11 +32,11 @@ const playerShipTexture = Loader.addSpritesheet(
   });
 
 const shootSound = Loader.addSound(
-  require("../../assets/sounds/player-shoot.wav"));
+  require("../../assets/sounds/player-shoot.wav.opus"));
 
 const hitSounds = [
-  Loader.addSound(require("../../assets/sounds/hit-player-1.wav")),
-  Loader.addSound(require("../../assets/sounds/hit-player-2.wav"))
+  Loader.addSound(require("../../assets/sounds/hit-player-1.wav.opus")),
+  Loader.addSound(require("../../assets/sounds/hit-player-2.wav.opus"))
 ];
 
 

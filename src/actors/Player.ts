@@ -57,7 +57,32 @@ let bulletTexture = Loader.addSpritesheet(
   });
 
 
+interface PlayerShip {
+  animation: string;
+  shape: string;
+  health: number;
+}
+
 export type PlayerShipType = "small" | "medium" | "medium+";
+
+
+let playerShips: Record<PlayerShipType, PlayerShip> = {
+  "small": {
+    animation: "small",
+    shape: "small-1",
+    health: 6
+  },
+  "medium": {
+    animation: "medium",
+    shape: "medium-1",
+    health: 10
+  },
+  "medium+": {
+    animation: "medium+",
+    shape: "medium+-1",
+    health: 12
+  }
+};
 
 
 type Events = "destroyed" | "health-changed";
@@ -69,7 +94,8 @@ export class Player extends TeamedActor {
 
   public readonly events = new EventEmitter<Events>();
 
-  private _health: number = 6;
+  private readonly ship: PlayerShip;
+  private _health: number;
   private lastShot: number = -1;
 
   private body: Body;
@@ -84,12 +110,15 @@ export class Player extends TeamedActor {
   }
 
 
-  public constructor(engine: Engine, position: Vector) {
+  public constructor(engine: Engine, position: Vector, ship: PlayerShipType) {
     super("player", engine, Team.Player);
+
+    this.ship = playerShips[ship];
+    this._health = this.ship.health;
 
     this.body = new Body(engine, this, {
       shape: new ShapeGenerator().generateFromSpritesheet(
-        engine, playerShipTexture, "small-1", new Vector(3, 3)),
+        engine, playerShipTexture, ship + "-1", new Vector(3, 3)),
       position: position
     });
     this.body.events.on("collision", this.onCollision, this);
@@ -98,15 +127,12 @@ export class Player extends TeamedActor {
     this.sprite = new Sprite(engine, this, {
       kind: "animated",
       asset: playerShipTexture,
-      animation: "small",
+      animation: ship,
       speed: 0.5,
       position: this.body,
       scale: new Vector(3, 3)
     })
     this.add(this.sprite);
-
-    this.shootSound = engine.loader.getSound(shootSound);
-    this.shootSound.singleInstance = true;
   }
 
   public delete() {
@@ -119,7 +145,6 @@ export class Player extends TeamedActor {
   }
 
 
-  private shootSound;
   private fireWeapon() {
     for (let point of weaponPoints["small"]) {
       let point2 = point.clone().mul(3); // for scaling.
@@ -143,7 +168,7 @@ export class Player extends TeamedActor {
           this.engine, bulletTexture, "bullet-1", new Vector(3, 3))
       }));
 
-      this.shootSound.play();
+      this.engine.loader.getSound(shootSound).play();
      }
 
     this.lastShot = Player.FiringSpeed;

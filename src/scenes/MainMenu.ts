@@ -78,6 +78,15 @@ export class MainMenu extends Scene {
   }
 
   private createLevelSelect() {
+    let n = 8;
+    let highest = Ingame.getHighestLevel();
+    let available = 2; // adopt when more levels are available.
+
+    // don't level-select when starting for the first time.
+    if (highest == 0) {
+      this.startLevel(1);
+    }
+
     let screen = this.engine.getScreenBounds();
     this.stateComponents.push(this.add(new Text(this.engine, {
       position: new Vector(
@@ -86,13 +95,11 @@ export class MainMenu extends Scene {
       text: "Select Starting Level:"
     })));
 
-    let n = 8;
-
     for (let i = 1; i <= n; i++) {
       this.stateComponents.push(this.add(new Button(this.engine, {
         label: "Level " + i,
         action: () => this.startLevel(i),
-        enabled: i == 1,
+        enabled: i <= (highest+1) && i <= available,
         position: new Vector(
           screen.left + (screen.right - screen.left) / 6
             + (55 * 3 / 2)
@@ -105,6 +112,7 @@ export class MainMenu extends Scene {
   }
 
   private startLevel(num: number) {
+    Ingame.setNextLevel(num);
     this.engine.toScene(Ingame);
   }
 }

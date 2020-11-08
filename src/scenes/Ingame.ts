@@ -67,6 +67,11 @@ export class Ingame extends Scene {
   private backgroundMusic: Sound;
 
   private state: "running" | "finished" = "running";
+  private static level: number;
+
+  public static setNextLevel(level: number) {
+    this.level = level;
+  }
 
   public constructor(engine: Engine) {
     super("ingame", engine);
@@ -75,7 +80,7 @@ export class Ingame extends Scene {
     this.add(new Starfield(engine));
 
     engine.onNextUpdate(() => {
-      Levels[1].run(engine, this);
+      Levels[Ingame.level].run(engine, this);
     });
 
     this.backgroundMusic = engine.loader.getSound(
@@ -137,7 +142,6 @@ export class Ingame extends Scene {
     let playerPos = new Vector(horizontalCenter, screen.bottom - 90);
 
     return new Promise<void>((resolve, reject) => {
-
       let beaming = this.add(new Sprite(this.engine, this, {
         kind: "animated",
         asset: beamTexture,
@@ -156,14 +160,15 @@ export class Ingame extends Scene {
       this.engine.loader.getSound(beamSound).play();
 
       // on the right moment during beaming...
-      this.engine.delay(4 * 400 + 200, () => this.addPlayer(playerPos));
+      this.engine.delay(4 * 400 + 200, () =>
+          this.addPlayer(playerPos, shipType));
     });
   }
 
-  private addPlayer(pos: Vector) {
+  private addPlayer(pos: Vector, shipType: PlayerShipType) {
     let screen = this.engine.getScreenBounds();
 
-    this.player = this.add(new Player(this.engine, pos));
+    this.player = this.add(new Player(this.engine, pos, shipType));
     this.player.events.on("destroyed", this.onPlayerDestroyed, this);
 
     this.engine.delay(600, () => {
@@ -264,9 +269,19 @@ export class Ingame extends Scene {
   }
 
 
+  public static getHighestLevel(): number {
+    let highestLevelStore = window.localStorage.getItem("highestLevel");
+    return highestLevelStore == null
+        ? 0
+        : parseInt(highestLevelStore);
+  }
+
   public win() {
     this.finishGame("YOU WIN", "Final score: " +
         this.score.toString().padStart(5, "0"));
+
+    window.localStorage.setItem("highestLevel",
+      Math.max(Ingame.level, Ingame.getHighestLevel()).toString());
   }
 
 

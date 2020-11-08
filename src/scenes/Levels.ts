@@ -24,6 +24,9 @@ interface Level {
 export const Levels: Record<number, Level> = {
   1: {
     run: level1
+  },
+  2: {
+    run: level2
   }
 };
 
@@ -122,5 +125,49 @@ async function level1(engine: Engine, game: Game) {
   await engine.waitFor(400);
   await game.removePlayer();
   await engine.waitFor(200);
+  game.win();
+}
+
+
+
+async function level2(engine: Engine, game: Game) {
+  await engine.waitFor(500);
+
+  let introText = game.showDialogue(Character.Commander, [
+    "Welcome back, pilot.",
+    "We upgraded your K-21\nto withstand more damage.",
+    "Even so, do not ram Ruffian\nships, please.",
+    "In this mission, you must\ndestroy a group of bombers.",
+    "They have a compliment of\nfighters, so watch out!"
+  ]);
+
+  await engine.waitFor(2000);
+  await game.spawnPlayer("medium");
+  await introText;
+
+  await engine.waitFor(600);
+
+  await game.spawnSquadron({
+    enemyClass: EnemyClass.Medium1,
+    count: 14,
+    spawnPackSize: [2,3],
+    spawnPackLimit: 4,
+    spawnPackDelay: 4000,
+    spawnDelay: 7000,
+    spawnRandom: [0, 1000]
+  });
+
+  await engine.waitFor(2000);
+
+  await game.spawnSquadron({
+    enemyClass: EnemyClass.Medium2,
+    count: 4,
+    spawnPackSize: [1,1],
+    spawnPackLimit: 10,
+    spawnPackDelay: 1000,
+    spawnDelay: 1000,
+    spawnRandom: [0, 200]
+  });
+
   game.win();
 }

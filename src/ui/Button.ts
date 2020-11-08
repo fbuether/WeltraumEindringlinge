@@ -17,6 +17,10 @@ let buttonTexture = Loader.addSpritesheet(
   });
 
 
+let selectSound = Loader.addSound(
+  require("../../assets/sounds/menu-select.wav"));
+
+
 interface ButtonConfig {
   label: string;
   action: Function;
@@ -75,5 +79,6 @@ export class Button extends Gui {
   private onClick() {
     this.background.addEffect(Effect.FlashWhite);
     this.engine.delay(100, this.action);
+    this.engine.loader.getSound(selectSound).play();
   }
 }

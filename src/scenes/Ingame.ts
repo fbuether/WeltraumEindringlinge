@@ -41,6 +41,10 @@ let beamTexture = Loader.addSpritesheet(
     }
   });
 
+const beamSound = Loader.addSound(
+  require("../../assets/sounds/beam.wav"));
+
+
 
 type Events = "score-changed";
 
@@ -131,6 +135,8 @@ export class Ingame extends Scene {
         zIndex: 3
       }));
 
+      this.engine.loader.getSound(beamSound).play();
+
       // on the right moment during beaming...
       this.engine.delay(4 * 400 + 200, () => this.addPlayer(playerPos));
     });
@@ -210,6 +216,8 @@ export class Ingame extends Scene {
         scale: new Vector(3, 3),
         zIndex: 3
       }));
+
+      this.engine.loader.getSound(beamSound).play();
 
       this.engine.delay(4 * 400 + 200, () => {
         if (this.player != null) {

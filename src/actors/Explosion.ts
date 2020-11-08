@@ -26,9 +26,33 @@ let texture = Loader.addSpritesheet(
   });
 
 
+let soundsSmall = [
+  Loader.addSound(require("../../assets/sounds/explosion-1.wav")),
+  Loader.addSound(require("../../assets/sounds/explosion-2.wav")),
+  Loader.addSound(require("../../assets/sounds/explosion-3.wav")),
+  Loader.addSound(require("../../assets/sounds/explosion-4.wav")),
+  Loader.addSound(require("../../assets/sounds/explosion-5.wav")),
+  Loader.addSound(require("../../assets/sounds/explosion-6.wav"))
+];
+
+let soundsBig = [
+  Loader.addSound(require("../../assets/sounds/explosion-big-1.wav")),
+  Loader.addSound(require("../../assets/sounds/explosion-big-2.wav")),
+  Loader.addSound(require("../../assets/sounds/explosion-big-3.wav")),
+  Loader.addSound(require("../../assets/sounds/explosion-big-4.wav")),
+  Loader.addSound(require("../../assets/sounds/explosion-big-5.wav")),
+  Loader.addSound(require("../../assets/sounds/explosion-big-6.wav"))
+];
+
+export enum ExplosionSize {
+  Small,
+  Big
+};
+
+
 export class Explosion extends Actor {
 
-  public constructor(engine: Engine, position: Vector) {
+  public constructor(engine: Engine, position: Vector, size: ExplosionSize) {
     super("explosion", engine);
 
     this.add(new Sprite(engine, this, {
@@ -42,5 +66,9 @@ export class Explosion extends Actor {
         this.kill();
       }
     }));
+
+    let sounds = size == ExplosionSize.Small ? soundsSmall : soundsBig;
+    let i = engine.random.int(0, sounds.length-1);
+    engine.loader.getSound(sounds[i]).play();
   }
 }

@@ -6,7 +6,7 @@ import {Sprite, Effect} from "../engine/components/Sprite";
 import {Engine} from "../engine/Engine";
 import {Loader} from "../engine/Loader";
 import {Body} from "../engine/components/Body";
-import {Explosion} from "../actors/Explosion";
+import {Explosion, ExplosionSize} from "../actors/Explosion";
 
 import {Vector} from "../engine/Vector";
 import {ShapeGenerator} from "../engine/ShapeGenerator";
@@ -21,7 +21,7 @@ const playerShipTexture = Loader.addSpritesheet(
       "small-2": {frame: {x: 21, y: 4, w: 12, h: 20} },
       "medium-1": {frame: {x: 39, y: 0,  w: 12, h: 29} },
       "medium-2": {frame: {x:  3, y: 29, w: 12, h: 29} },
-      "medium+-1": {frame: {x: 18, y: 29, w: 18, h: 29} },
+      "mplayeedium+-1": {frame: {x: 18, y: 29, w: 18, h: 29} },
       "medium+-2": {frame: {x: 36, y: 29, w: 18, h: 29} }
     },
     animations: {
@@ -30,6 +30,15 @@ const playerShipTexture = Loader.addSpritesheet(
       "medium+": ["medium+-1", "medium+-2"]
     }
   });
+
+const shootSound = Loader.addSound(
+  require("../../assets/sounds/player-shoot.wav"));
+
+const hitSounds = [
+  Loader.addSound(require("../../assets/sounds/hit-player-1.wav")),
+  Loader.addSound(require("../../assets/sounds/hit-player-2.wav"))
+];
+
 
 let weaponPoints: { [key: string]: Array<Vector> } = {
   "small": [new Vector(-5, -10), new Vector(5, -10)]
@@ -95,6 +104,9 @@ export class Player extends TeamedActor {
       scale: new Vector(3, 3)
     })
     this.add(this.sprite);
+
+    this.shootSound = engine.loader.getSound(shootSound);
+    this.shootSound.singleInstance = true;
   }
 
   public delete() {
@@ -107,6 +119,7 @@ export class Player extends TeamedActor {
   }
 
 
+  private shootSound;
   private fireWeapon() {
     for (let point of weaponPoints["small"]) {
       let point2 = point.clone().mul(3); // for scaling.
@@ -129,7 +142,9 @@ export class Player extends TeamedActor {
         shape: new ShapeGenerator().generateFromSpritesheet(
           this.engine, bulletTexture, "bullet-1", new Vector(3, 3))
       }));
-    }
+
+      this.shootSound.play();
+     }
 
     this.lastShot = Player.FiringSpeed;
   }
@@ -197,7 +212,12 @@ export class Player extends TeamedActor {
       this._health = 0;
       this.events.emit("destroyed", this);
       this.kill();
-      this.engine.add(new Explosion(this.engine, this.body.position));
+      this.engine.add(new Explosion(this.engine, this.body.position,
+        ExplosionSize.Big));
+    }
+    else {
+      this.engine.loader.getSound(hitSounds[
+        this.engine.random.int(0, hitSounds.length-1)]).play();
     }
 
     return consumed;

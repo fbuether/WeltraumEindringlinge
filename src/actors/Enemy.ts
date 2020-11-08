@@ -11,7 +11,7 @@ import {DistributiveOmit} from "../Types";
 import {Bullet} from "../actors/Bullet";
 import {Vector} from "../engine/Vector";
 import {ShapeGenerator} from "../engine/ShapeGenerator";
-import {Explosion} from "../actors/Explosion";
+import {Explosion, ExplosionSize} from "../actors/Explosion";
 
 
 
@@ -60,6 +60,16 @@ let enemyMedium2Texture = Loader.addSpritesheet(
     }
   });
 
+const hitSounds = [
+  Loader.addSound(require("../../assets/sounds/hit-1.wav")),
+  Loader.addSound(require("../../assets/sounds/hit-2.wav")),
+  Loader.addSound(require("../../assets/sounds/hit-3.wav"))
+];
+
+
+const shootSound = Loader.addSound(
+  require("../../assets/sounds/enemy-shoot.wav"));
+
 
 interface EnemySpec {
   health: number;
@@ -68,8 +78,8 @@ interface EnemySpec {
 
   sprite: DistributiveOmit<SpriteConfig, "position">;
   body: {
-    asset: string;
-    sprite: AssetTag;
+    asset: AssetTag;
+    sprite: string;
     scale: Vector;
   };
   bullet: null | {
@@ -82,11 +92,13 @@ interface EnemySpec {
     damage: number;
     sprite: DistributiveOmit<SpriteConfig, "position">;
     body: {
-      asset: string;
-      sprite: AssetTag;
+      asset: AssetTag;
+      sprite: string;
       scale: Vector;
     };
   };
+
+  explosionSize: ExplosionSize;
 };
 
 
@@ -115,7 +127,8 @@ let enemies: Record<EnemyClass, EnemySpec> = {
       sprite: "1",
       scale: new Vector(3, 3)
     },
-    bullet: null
+    bullet: null,
+    explosionSize: ExplosionSize.Small
   },
 
   [EnemyClass.Medium1]: {
@@ -155,7 +168,8 @@ let enemies: Record<EnemyClass, EnemySpec> = {
         sprite: "bullet-1",
         scale: new Vector(3, 3)
       },
-    }
+    },
+    explosionSize: ExplosionSize.Big
   },
 
   [EnemyClass.Medium2]: {
@@ -192,7 +206,8 @@ let enemies: Record<EnemyClass, EnemySpec> = {
         sprite: "bullet-1",
         scale: new Vector(3, 3)
       }
-    }
+    },
+    explosionSize: ExplosionSize.Big
   }
 };
 
@@ -293,6 +308,8 @@ export class Enemy extends TeamedActor {
           this.spec.bullet.body.scale)
       }));
     }
+
+    this.engine.loader.getSound(shootSound).play();
   }
 
   public damage(amount: number): boolean {
@@ -308,8 +325,13 @@ export class Enemy extends TeamedActor {
       this.events.emit("destroyed", this);
       this.engine.onNextUpdate(() => {
         this.kill();
-        this.engine.add(new Explosion(this.engine, this.body.position));
+        this.engine.add(new Explosion(this.engine, this.body.position,
+          this.spec.explosionSize));
       });
+    }
+    else {
+      this.engine.loader.getSound(hitSounds[
+        this.engine.random.int(0, hitSounds.length-1)]).play();
     }
 
     return consume;

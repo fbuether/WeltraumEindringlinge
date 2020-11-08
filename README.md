@@ -27,6 +27,17 @@ You can also build a distributable version with `make build`.
 
 ## Credits
 
+### Libraries
+
+This project includes code from the following libraries:
+
+* [Pixi.JS](https://www.pixijs.io) (MIT License)
+* [Planck.js](https://github.com/shakiba/planck.js) (Zlib License)
+* [pixi-sound](https://github.com/pixijs/pixi-sound) (MIT License)
+* [EventEmitter3](https://github.com/primus/eventemitter3) (MIT License)
+* [Mersenne-Twister](https://github.com/boo1ean/mersenne-twister) (freely usable, see [http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/MT2002/elicense.html](http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/MT2002/elicense.html))
+
+
 ### Press Start 2P
 
 This game uses the font `Press Start 2P`, published under the SIL Open Font Licence. See [SIL Licence](assets/fonts/PressStart2P/OFL.txt) for details.

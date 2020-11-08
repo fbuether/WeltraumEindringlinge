@@ -1,5 +1,7 @@
 import * as px from "pixi.js";
+import {default as pxs} from "pixi-sound";
 import * as planck from "planck-js";
+
 
 import {Component} from "../engine/components/Component";
 import {Actor} from "../engine/Actor";
@@ -245,6 +247,7 @@ export class Engine {
       if (this.keyboard.isPressed(Key.X)) {
         console.warn("x pressed. canceling animation.");
         this.run = false;
+        pxs.stopAll();
         return;
       }
 

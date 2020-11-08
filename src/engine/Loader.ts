@@ -1,5 +1,5 @@
 import * as px from "pixi.js";
-import {default as pxs} from "pixi-sound";
+import {Sound} from "../engine/Sound";
 
 
 export interface AssetTag {
@@ -69,7 +69,7 @@ export class Loader {
       file: string,
       resource: px.LoaderResource,
       sheet: px.Spritesheet }>();
-    let sounds = new Array<[Tag, pxs.Sound]>();
+    let sounds = new Array<[Tag, Sound]>();
 
     await new Promise((resolve, reject) => {
       pxLoader.onError.add(e => reject("pixi Loader failed: " + e));
@@ -139,11 +139,11 @@ export class Loader {
 
   private sprites: Array<[Tag, Sprite]>;
   private spritesheets: Array<[Tag, Spritesheet]>;
-  private sounds: Array<[Tag, pxs.Sound]>;
+  private sounds: Array<[Tag, Sound]>;
 
   private constructor(sprites: Array<[Tag, Sprite]>,
       spritesheets: Array<[Tag, Spritesheet]>,
-      sounds: Array<[Tag, pxs.Sound]>) {
+      sounds: Array<[Tag, Sound]>) {
     this.sprites = sprites;
     this.spritesheets = spritesheets;
     this.sounds = sounds;
@@ -188,7 +188,7 @@ export class Loader {
     return tag;
   }
 
-  public getSound(tag: AssetTag): pxs.Sound {
+  public getSound(tag: AssetTag): Sound {
     let sound = this.sounds.find(e => e[0].id == (tag as Tag).id);
     if (sound === undefined) {
       throw new Error(`No sound ${tag} has been loaded.`);

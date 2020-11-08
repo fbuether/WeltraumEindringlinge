@@ -17,6 +17,7 @@ import {MainMenu} from "../scenes/MainMenu";
 import {Levels} from "../scenes/Levels";
 import {Component} from "../engine/components/Component";
 import {Dialogue, Character} from "../ui/Dialogue";
+import {Sound} from "../engine/Sound";
 
 
 let backgrounds = [
@@ -44,6 +45,12 @@ let beamTexture = Loader.addSpritesheet(
 const beamSound = Loader.addSound(
   require("../../assets/sounds/beam.wav"));
 
+const music = [
+  Loader.addSound(require("../../assets/sounds/music-level-1.opus")),
+  Loader.addSound(require("../../assets/sounds/music-level-2.opus")),
+  Loader.addSound(require("../../assets/sounds/music-level-3.opus"))
+];
+
 
 
 type Events = "score-changed";
@@ -57,6 +64,7 @@ export class Ingame extends Scene {
   private backgroundSprite: Sprite;
   private static readonly backgroundSpeed = 0.008;
   private backgroundMaxY: number = Number.POSITIVE_INFINITY;
+  private backgroundMusic: Sound;
 
   private state: "running" | "finished" = "running";
 
@@ -69,7 +77,17 @@ export class Ingame extends Scene {
     engine.onNextUpdate(() => {
       Levels[1].run(engine, this);
     });
+
+    this.backgroundMusic = engine.loader.getSound(
+      music[engine.random.int(0, music.length-1)]);
+    this.backgroundMusic.loop = true;
+    this.backgroundMusic.volume = 0.6;
+    this.backgroundMusic.play();
   }
+
+  public delete() {
+    this.backgroundMusic.stop();
+  };
 
   public update(delta: number) {
     let bsPos = this.backgroundSprite.position;

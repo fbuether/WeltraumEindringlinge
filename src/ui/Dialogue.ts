@@ -4,10 +4,10 @@ import * as px from "pixi.js";
 import {Gui} from "../engine/Gui";
 import {Vector} from "../engine/Vector";
 import {Engine} from "../engine/Engine";
-import {Loader, AssetTag} from "../engine/Loader";
+import {Loader} from "../engine/Loader";
 import {Sprite} from "../engine/components/Sprite";
 import {Text} from "../ui/Text";
-
+import {Sound} from "../engine/Sound";
 
 export enum Character {
   Commander
@@ -26,16 +26,26 @@ let charTexture = Loader.addSpritesheet(
   });
 
 
+let sounds = [
+  Loader.addSound(require("../../assets/sounds/talking-blip-1.wav.opus")),
+  Loader.addSound(require("../../assets/sounds/talking-blip-2.wav.opus")),
+  Loader.addSound(require("../../assets/sounds/talking-blip-3.wav.opus")),
+  Loader.addSound(require("../../assets/sounds/talking-blip-4.wav.opus"))
+];
+
+
 type Events = "finished";
 
 export class Dialogue extends Gui {
   private static readonly TimePerChar = 60;
   private static readonly TimeAfterLine = 2000;
+  private static readonly SpaceBreak = 120;
   public readonly events = new EventEmitter<Events>();
 
   private graphics: px.Graphics;
   private uiText: Text;
-  
+  private sound: Sound | null = null;
+
   private text: Array<string>;
 
   private shownIndex = 0;
@@ -111,6 +121,10 @@ export class Dialogue extends Gui {
       this.lineFinished = this.shownChars >= this.text[this.shownIndex].length;
       this.updateText();
       this.progress -= Dialogue.TimePerChar;
+
+      if (this.text[this.shownIndex][this.shownChars-1] == " ") {
+        this.progress -= Dialogue.SpaceBreak;
+      }
     }
   }
 
@@ -118,6 +132,17 @@ export class Dialogue extends Gui {
     if (this.shownIndex >= this.text.length) {
       this.uiText.setText("");
       return;
+    }
+
+    if (this.sound == null) {
+      this.sound = this.engine.loader.getSound(
+        sounds[this.engine.random.int(0, sounds.length-1)]);
+      this.sound.volume = 0.4;
+      this.sound.play({
+        complete: (sound: Sound) => {
+          this.sound = null;
+        }
+      });
     }
 
     this.uiText.setText(this.text[this.shownIndex].substr(0, this.shownChars));

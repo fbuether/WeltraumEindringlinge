@@ -43,4 +43,6 @@ The images are licenced under [CC BY 4.0](https://creativecommons.org/licenses/b
 
 ### Sounds
 
-Sound effects have been taken from the `Essential Retro Video Game Sound Effects Collection` by Juhani Junkala, which is licensed under [CC0 License](https://creativecommons.org/publicdomain/zero/1.0/), and available at [OpenGameArt.org](https://opengameart.org/content/512-sound-effects-8-bit-style).
+Sound effects have been taken from the `Essential Retro Video Game Sound Effects Collection` by Juhani Junkala, which is licensed under the [CC0 License](https://creativecommons.org/publicdomain/zero/1.0/), and available at [OpenGameArt.org](https://opengameart.org/content/512-sound-effects-8-bit-style).
+
+The background music is also from Juhani Junkala from the `5 Chiptunes (Action)`, also licensed under the [CC0 License](https://creativecommons.org/publicdomain/zero/1.0/), available as well as [OpenGameArt.org](https://opengameart.org/content/5-chiptunes-action).

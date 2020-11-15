@@ -168,7 +168,7 @@ export class Player extends TeamedActor {
           this.engine, bulletTexture, "bullet-1", new Vector(3, 3))
       }));
 
-      this.engine.loader.getSound(shootSound).play();
+      this.engine.sound.play(shootSound);
      }
 
     this.lastShot = Player.FiringSpeed;
@@ -231,18 +231,21 @@ export class Player extends TeamedActor {
     this.sprite.addEffect(Effect.FlashRed);
 
     this._health -= amount;
+    if (this._health <= 0) {
+      this._health = 0;
+    }
+
     this.events.emit("health-changed", this);
 
     if (this._health <= 0) {
-      this._health = 0;
       this.events.emit("destroyed", this);
       this.kill();
       this.engine.add(new Explosion(this.engine, this.body.position,
         ExplosionSize.Big));
     }
     else {
-      this.engine.loader.getSound(hitSounds[
-        this.engine.random.int(0, hitSounds.length-1)]).play();
+      this.engine.sound.play(hitSounds[
+        this.engine.random.int(0, hitSounds.length-1)]);
     }
 
     return consumed;

@@ -371,7 +371,7 @@ export class Enemy extends TeamedActor {
       }));
     }
 
-    this.engine.loader.getSound(shootSound).play();
+    this.engine.sound.play(shootSound);
   }
 
   public damage(amount: number): boolean {
@@ -392,8 +392,8 @@ export class Enemy extends TeamedActor {
       });
     }
     else {
-      this.engine.loader.getSound(hitSounds[
-        this.engine.random.int(0, hitSounds.length-1)]).play();
+      this.engine.sound.play(hitSounds[
+        this.engine.random.int(0, hitSounds.length-1)]);
     }
 
     return consume;

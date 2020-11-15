@@ -45,7 +45,7 @@ export class Dialogue extends Gui {
 
   private graphics: px.Graphics;
   private uiText: Text;
-  private sound: Sound | null = null;
+  private sound: boolean = false;
 
   private text: Array<string>;
 
@@ -151,13 +151,14 @@ export class Dialogue extends Gui {
       return;
     }
 
-    if (this.sound == null) {
-      this.sound = this.engine.loader.getSound(
-        sounds[this.engine.random.int(0, sounds.length-1)]);
-      this.sound.volume = 0.4;
-      this.sound.play({
-        complete: (sound: Sound) => {
-          this.sound = null;
+    if (!this.sound) {
+      this.sound = true;
+
+      this.engine.sound.play(
+        sounds[this.engine.random.int(0, sounds.length-1)], {
+        volume: 0.25,
+        onFinished: () => {
+          this.sound = false;
         }
       });
     }

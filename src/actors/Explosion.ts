@@ -70,6 +70,6 @@ export class Explosion extends Actor {
 
     let sounds = size == ExplosionSize.Small ? soundsSmall : soundsBig;
     let i = engine.random.int(0, sounds.length-1);
-    engine.loader.getSound(sounds[i]).play();
+    engine.sound.play(sounds[i]);
   }
 }

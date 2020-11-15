@@ -68,6 +68,10 @@ export class Button extends Gui {
     }
   }
 
+  public setLabel(text: string) {
+    this.label.text = text;
+  }
+
   private hoverOn() {
     this.background.changeTexture("static", buttonTexture, "hover");
   }
@@ -79,6 +83,6 @@ export class Button extends Gui {
   private onClick() {
     this.background.addEffect(Effect.FlashWhite);
     this.engine.delay(100, this.action);
-    this.engine.loader.getSound(selectSound).play();
+    this.engine.sound.play(selectSound);
   }
 }

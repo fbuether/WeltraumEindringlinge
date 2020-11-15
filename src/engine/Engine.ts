@@ -9,8 +9,8 @@ import {Renderable} from "../engine/components/Renderable";
 import {Updatable} from "../engine/components/Updatable";
 import {Body} from "../engine/components/Body";
 import {Gui} from "../engine/Gui";
+import {SoundSystem} from "../engine/SoundSystem";
 
-import {Vector} from "../engine/Vector";
 import {Scene, SceneConstructor} from "../engine/Scene";
 import {Key, Keyboard} from "../engine/Keyboard";
 import {Loader} from "../engine/Loader";
@@ -41,6 +41,8 @@ export class Engine {
   private _loader: Loader | null = null;
 
   public readonly random: Random = new Random();
+
+  public readonly sound: SoundSystem = new SoundSystem(this);
 
 
 

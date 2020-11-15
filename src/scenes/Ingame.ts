@@ -83,11 +83,11 @@ export class Ingame extends Scene {
       Levels[Ingame.level].run(engine, this);
     });
 
-    this.backgroundMusic = engine.loader.getSound(
-      music[engine.random.int(0, music.length-1)]);
-    this.backgroundMusic.loop = true;
-    this.backgroundMusic.volume = 0.6;
-    this.backgroundMusic.play();
+    this.backgroundMusic = engine.sound.play(
+      music[engine.random.int(0, music.length-1)], {
+      loop: true,
+      volume: 0.6
+    });
   }
 
   public delete() {
@@ -157,7 +157,7 @@ export class Ingame extends Scene {
         zIndex: 3
       }));
 
-      this.engine.loader.getSound(beamSound).play();
+      this.engine.sound.play(beamSound);
 
       // on the right moment during beaming...
       this.engine.delay(4 * 400 + 200, () =>
@@ -242,7 +242,7 @@ export class Ingame extends Scene {
         zIndex: 3
       }));
 
-      this.engine.loader.getSound(beamSound).play();
+      this.engine.sound.play(beamSound);
 
       this.engine.delay(4 * 400 + 200, () => {
         if (this.player != null) {

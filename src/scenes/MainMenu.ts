@@ -76,7 +76,21 @@ export class MainMenu extends Scene {
         screen.left + (screen.right - screen.left) / 4,
         (2 * screen.bottom + screen.top) / 3)
     })));
+
+    let soundButton = this.add(new Button(this.engine, {
+      label: this.engine.sound.isEnabled() ? "Sound ON" : "NO Sound",
+      action: () => {
+        this.engine.sound.toggleEnabled();
+        soundButton.setLabel(
+          this.engine.sound.isEnabled() ? "Sound ON" : "NO Sound");
+      },
+      position: new Vector(
+        screen.right - (screen.right - screen.left) / 4 - (55/2),
+        (2 * screen.bottom + screen.top) / 3)
+    }));
+    this.stateComponents.push(soundButton);
   }
+
 
   private createLevelSelect() {
     let n = 8;
@@ -92,7 +106,7 @@ export class MainMenu extends Scene {
       position: new Vector(
         screen.left + (screen.right - screen.left) / 6,
         (screen.bottom + screen.top) / 2),
-      text: "Select Starting Level:"
+      text: "Select Level:"
     })));
 
     for (let i = 1; i <= n; i++) {

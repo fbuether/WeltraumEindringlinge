@@ -8,8 +8,8 @@ import {Loader} from "../engine/Loader";
 import {Sprite} from "../engine/components/Sprite";
 
 
-let pxW = 72;
-let pxH = 72;
+let pxW = 24;
+let pxH = 24;
 
 let texture = Loader.addSpritesheet(
   require("../../assets/images/explosion.png"), {
@@ -61,6 +61,7 @@ export class Explosion extends Actor {
       asset: texture,
       animation: "explosion",
       speed: 0.25,
+      scale: new Vector(3, 3),
       loops: false,
       onComplete: () => {
         this.kill();

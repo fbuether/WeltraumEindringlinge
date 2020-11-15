@@ -3,6 +3,7 @@
 export enum Key {
   A = "a",
   D = "d",
+  O = "o",
   X = "x",
   Left = "ArrowLeft",
   Right = "ArrowRight",

@@ -8,6 +8,7 @@ import {Loader} from "../engine/Loader";
 import {Sprite} from "../engine/components/Sprite";
 import {Text} from "../ui/Text";
 import {Sound} from "../engine/Sound";
+import {Key} from "../engine/Keyboard";
 
 export enum Character {
   Commander
@@ -91,11 +92,27 @@ export class Dialogue extends Gui {
         screen.bottom - (28 * 1.5 * 3) / 2 - 12),
       text: ""
     }));
+
+    this.add(new Text(engine, {
+      position: new Vector(
+        screen.right - 100 - 80,
+        screen.bottom - 12),
+      text: "`O` to skip",
+      style: {
+        fontSize: 10,
+        fill: "#AAAAAA"
+      }
+    }));
   }
 
   public update(delta: number) {
     if (this.finished) {
       return;
+    }
+
+    if (this.engine.keyboard.isPressed(Key.O)) {
+      this.finished = true;
+      this.events.emit("finished");
     }
 
     this.progress += delta;

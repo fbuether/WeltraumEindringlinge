@@ -27,8 +27,13 @@ export const Levels: Record<number, Level> = {
   },
   2: {
     run: level2
+  },
+  3: {
+    run: level3
   }
 };
+
+export const LevelCount = 2;
 
 
 async function level1(engine: Engine, game: Game) {
@@ -88,10 +93,9 @@ async function level1(engine: Engine, game: Game) {
     spawnRandom: [0, 1000]
   });
 
-
   let mediums = engine.waitFor(5000).then(() =>
     game.spawnSquadron({
-      enemyClass: EnemyClass.Medium1,
+      enemyClass: EnemyClass.FighterFront,
       count: 3,
       spawnPackSize: [1,2],
       spawnPackLimit: 2,
@@ -136,19 +140,22 @@ async function level2(engine: Engine, game: Game) {
   let introText = game.showDialogue(Character.Commander, [
     "Welcome back, pilot.",
     "We upgraded your K-21\nto withstand more damage.",
-    "Even so, do not ram Ruffian\nships, please.",
-    "In this mission, you must\ndestroy a group of bombers.",
-    "They have a compliment of\nfighters, so watch out!"
+    "Even so, do not ram into the\nRuffian ships, please.",
+    "Anyway. We detected a group\nof Ruffian bombers approaching.",
+    "A large squadron of\nfighters protects them.",
+    "Take them all out."
   ]);
 
-  await engine.waitFor(2000);
+  await Promise.race([
+    introText,
+    engine.waitFor(5000)]);
   await game.spawnPlayer("medium");
   await introText;
 
   await engine.waitFor(600);
 
   await game.spawnSquadron({
-    enemyClass: EnemyClass.Medium1,
+    enemyClass: EnemyClass.FighterFront,
     count: 14,
     spawnPackSize: [2,3],
     spawnPackLimit: 4,
@@ -159,15 +166,168 @@ async function level2(engine: Engine, game: Game) {
 
   await engine.waitFor(2000);
 
+  await Promise.all([
+    game.spawnSquadron({
+      enemyClass: EnemyClass.FighterFront,
+      count: 7,
+      spawnPackSize: [1,1],
+      spawnPackLimit: 2,
+      spawnPackDelay: 9500,
+      spawnDelay: 5000,
+      spawnRandom: [0, 200]
+    }),
+    game.spawnSquadron({
+      enemyClass: EnemyClass.FighterBack,
+      count: 7,
+      spawnPackSize: [1,1],
+      spawnPackLimit: 2,
+      spawnPackDelay: 1100,
+      spawnDelay: 6000,
+      spawnRandom: [0, 200]
+    })
+  ]);
+
+  await engine.waitFor(1000);
+
   await game.spawnSquadron({
-    enemyClass: EnemyClass.Medium2,
-    count: 4,
+    enemyClass: EnemyClass.Bomber,
+    count: 3,
     spawnPackSize: [1,1],
-    spawnPackLimit: 10,
-    spawnPackDelay: 1000,
-    spawnDelay: 1000,
-    spawnRandom: [0, 200]
+    spawnPackLimit: 1,
+    spawnPackDelay: 400,
+    spawnDelay: 400,
+    spawnRandom: [0, 0]
   });
 
+  await engine.waitFor(2500);
+
+  await Promise.all([
+    game.spawnSquadron({
+      enemyClass: EnemyClass.FighterFront,
+      count: 11,
+      spawnPackSize: [1,1],
+      spawnPackLimit: 1,
+      spawnPackDelay: 2000,
+      spawnDelay: 5000,
+      spawnRandom: [0, 200]
+    }),
+    game.spawnSquadron({
+      enemyClass: EnemyClass.FighterBack,
+      count: 11,
+      spawnPackSize: [1,1],
+      spawnPackLimit: 1,
+      spawnPackDelay: 1000,
+      spawnDelay: 10000,
+      spawnRandom: [0, 1000]
+    }),
+    game.spawnSquadron({
+      enemyClass: EnemyClass.Bomber,
+      count: 6,
+      spawnPackSize: [1,1],
+      spawnPackLimit: 2,
+      spawnPackDelay: 1000,
+      spawnDelay: 20000,
+      spawnRandom: [0, 1000]
+    })
+  ]);
+
+  await engine.waitFor(1000);
+
+  await game.spawnSquadron({
+    enemyClass: EnemyClass.Bomber,
+    count: 6,
+    spawnPackSize: [1,1],
+    spawnPackLimit: 2,
+    spawnPackDelay: 200,
+    spawnDelay: 500,
+    spawnRandom: [0, 100]
+  });
+
+  await engine.waitFor(400);
+
+  await game.spawnSquadron({
+    enemyClass: EnemyClass.Bomber,
+    count: 6,
+    spawnPackSize: [1,1],
+    spawnPackLimit: 2,
+    spawnPackDelay: 200,
+    spawnDelay: 500,
+    spawnRandom: [0, 100]
+  });
+
+  await engine.waitFor(1000);
+
+  await Promise.all([
+    game.spawnSquadron({
+      enemyClass: EnemyClass.FighterFront,
+      count: 3,
+      spawnPackSize: [1,1],
+      spawnPackLimit: 1,
+      spawnPackDelay: 2000,
+      spawnDelay: 5000,
+      spawnRandom: [0, 200]
+    }),
+    engine.waitFor(800).then(() =>
+      game.spawnSquadron({
+        enemyClass: EnemyClass.FighterBack,
+        count: 3,
+        spawnPackSize: [1,1],
+        spawnPackLimit: 1,
+        spawnPackDelay: 1000,
+        spawnDelay: 10000,
+        spawnRandom: [0, 1000]
+      })),
+    game.spawnSquadron({
+      enemyClass: EnemyClass.Small,
+      count: 7,
+      spawnPackSize: [2,4],
+      spawnPackLimit: 4,
+      spawnPackDelay: 3000,
+      spawnDelay: 5000,
+      spawnRandom: [0, 1000]
+    })
+  ]);
+
+  await engine.waitFor(400);
+
+  await game.showDialogue(Character.Commander, [
+    "That was all of them,\nwell done!",
+    "No, wait. There are more."
+  ]);
+
+  await game.spawnSquadron({
+    enemyClass: EnemyClass.Bomber,
+    count: 1,
+    spawnPackSize: [1,1],
+    spawnPackLimit: 2,
+    spawnPackDelay: 200,
+    spawnDelay: 500,
+    spawnRandom: [0, 100]
+  });
+
+  await engine.waitFor(1000);
+
+  await game.showDialogue(Character.Commander, [
+    "Okay, that's it now.\nRadar's empty.",
+    "Get back home."
+  ]);
+
+  await engine.waitFor(400);
+  await game.removePlayer();
+  await engine.waitFor(200);
   game.win();
+}
+
+
+async function level3(engine: Engine, game: Game) {
+  await game.spawnPlayer("medium");
+  await game.spawnSquadron({
+    enemyClass: EnemyClass.Bomber,
+    count: 4,
+    spawnPackSize: [1,1],
+    spawnPackLimit: 1,
+    spawnPackDelay: 200,
+    spawnDelay: 200,
+    spawnRandom: [0, 0]
+  });
 }

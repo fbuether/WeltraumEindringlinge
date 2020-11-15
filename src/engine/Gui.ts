@@ -30,7 +30,7 @@ export abstract class Gui extends Actor {
   }
 
   protected addText(label: string, position: Vector,
-      config?: px.TextStyle): px.Text {
+      config?: Partial<px.TextStyle>): px.Text {
 
     let text = new px.Text(label, {
       ...Gui.textStyle,

@@ -70,17 +70,17 @@ let playerShips: Record<PlayerShipType, PlayerShip> = {
   "small": {
     animation: "small",
     shape: "small-1",
-    health: 6
+    health: 4
   },
   "medium": {
     animation: "medium",
     shape: "medium-1",
-    health: 10
+    health: 6
   },
   "medium+": {
     animation: "medium+",
     shape: "medium+-1",
-    health: 12
+    health: 8
   }
 };
 

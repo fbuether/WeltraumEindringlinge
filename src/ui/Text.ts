@@ -8,6 +8,8 @@ import {Vector} from "../engine/Vector";
 interface TextConfig {
   position: Vector;
   text?: string;
+  zIndex?: number;
+  style?: Partial<px.TextStyle>
 }
 
 
@@ -24,8 +26,8 @@ export class Text extends Gui {
   public constructor(engine: Engine, config: TextConfig) {
     super("score", engine);
 
-    this.text = this.addText(config.text ?? "", config.position);
-    this.text.zIndex = 10;
+    this.text = this.addText(config.text ?? "", config.position, config.style);
+    this.text.zIndex = config.zIndex ?? 10;
   }
 
   public setText(newText: string) {

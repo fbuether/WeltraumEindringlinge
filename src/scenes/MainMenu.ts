@@ -8,6 +8,7 @@ import {Banner} from "../ui/Banner";
 import {Ingame} from "../scenes/Ingame";
 import {Text} from "../ui/Text";
 import {Component} from "../engine/components/Component";
+import {LevelCount} from "../scenes/Levels";
 
 
 enum State {
@@ -69,7 +70,7 @@ export class MainMenu extends Scene {
 
 
     this.stateComponents.push(this.add(new Button(this.engine, {
-      label: "Start",
+      label: Ingame.getHighestLevel() == 0 ? "Start" : "Continue",
       action: () => this.toState(State.LevelSelect),
       position: new Vector(
         screen.left + (screen.right - screen.left) / 4,
@@ -80,7 +81,6 @@ export class MainMenu extends Scene {
   private createLevelSelect() {
     let n = 8;
     let highest = Ingame.getHighestLevel();
-    let available = 2; // adopt when more levels are available.
 
     // don't level-select when starting for the first time.
     if (highest == 0) {
@@ -99,7 +99,7 @@ export class MainMenu extends Scene {
       this.stateComponents.push(this.add(new Button(this.engine, {
         label: "Level " + i,
         action: () => this.startLevel(i),
-        enabled: i <= (highest+1) && i <= available,
+        enabled: i <= (highest+1) && i <= LevelCount,
         position: new Vector(
           screen.left + (screen.right - screen.left) / 6
             + (55 * 3 / 2)

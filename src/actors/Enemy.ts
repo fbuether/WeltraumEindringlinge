@@ -28,37 +28,53 @@ let enemySmallTexture = Loader.addSpritesheet(
     }
   });
 
-
-let enemyMedium1Texture = Loader.addSpritesheet(
-  require("../../assets/images/enemy-medium-1.png"), {
+let fighterFrontTexture = Loader.addSpritesheet(
+  require("../../assets/images/enemy-fighter-front.png"), {
     frames: {
-      "ship-1": { frame: {x: 0 * 20, y: 0, w: 20, h: 21} },
-      "ship-2": { frame: {x: 1 * 20, y: 0, w: 20, h: 21} },
-      "bullet-1": { frame: { x: 0, y: 21, w: 3, h: 6} },
-      "bullet-2": { frame: { x: 5, y: 21, w: 3, h: 6} }
-    },
+      "eff1": {frame: {x:  0, y:  0, w: 23, h: 19} },
+      "eff2": {frame: {x: 23, y:  0, w: 23, h: 19} },
+      "eff3": {frame: {x:  0, y: 19, w: 23, h: 19} },
+      "eff4": {frame: {x: 23, y: 19, w: 23, h: 19} } },
     animations: {
-      "ship": ["ship-1", "ship-2"],
-      "bullet": ["bullet-1", "bullet-2"]
-    }
-  });
+      "eff": ["eff1", "eff2", "eff3", "eff4"] }});
 
+let fighterBackTexture = Loader.addSpritesheet(
+  require("../../assets/images/enemy-fighter-back.png"), {
+    frames: {
+      "efb1": {frame: {x:  0, y:  0, w: 25, h: 20} },
+      "efb2": {frame: {x: 25, y:  0, w: 25, h: 20} },
+      "efb3": {frame: {x:  0, y: 20, w: 25, h: 20} },
+      "efb4": {frame: {x: 25, y: 20, w: 25, h: 20} } },
+    animations: {
+      "efb": ["efb1", "efb2", "efb3", "efb4"] }});
 
-let enemyMedium2Texture = Loader.addSpritesheet(
-  require("../../assets/images/enemy-medium-2.png"), {
+let enemyBomberTexture = Loader.addSpritesheet(
+  require("../../assets/images/enemy-bomber.png"), {
     frames: {
       "ship-1": {frame: {x:  0, y:  0, w: 24, h: 21} },
       "ship-2": {frame: {x: 24, y:  0, w: 24, h: 21} },
       "ship-3": {frame: {x:  0, y: 21, w: 24, h: 21} },
-      "ship-4": {frame: {x: 24, y: 21, w: 24, h: 21} },
-      "bullet-1": {frame: {x:  0, y: 42, w: 8, h: 12} },
-      "bullet-2": {frame: {x: 24, y: 42, w: 8, h: 12} }
+      "ship-4": {frame: {x: 24, y: 21, w: 24, h: 21} }
     },
     animations: {
-      "ship": ["ship-1", "ship-2", "ship-3", "ship-4"],
-      "bullet": ["bullet-1", "bullet-2"]
+      "ship": ["ship-1", "ship-2", "ship-3", "ship-4"]
     }
   });
+
+let bulletTexture = Loader.addSpritesheet(
+  require("../../assets/images/enemy-bullet.png"), {
+    frames: {
+      "bomb-1":   {frame: {x:  0, y:  0, w: 8, h: 12} },
+      "bomb-2":   {frame: {x:  8, y:  0, w: 8, h: 12} },
+      "bullet-1": {frame: {x:  0, y: 12, w: 3, h:  6} },
+      "bullet-2": {frame: {x:  8, y: 12, w: 3, h:  6} } },
+    animations: {
+      "bomb": ["bomb-1", "bomb-2"],
+      "bullet": ["bullet-1", "bullet-2"] }});
+
+
+
+
 
 const hitSounds = [
   Loader.addSound(require("../../assets/sounds/hit-1.wav.opus")),
@@ -88,6 +104,7 @@ interface EnemySpec {
     rechargeRate: [number, number];
 
     position: Array<Vector>;
+    speed: number;
 
     damage: number;
     sprite: DistributiveOmit<SpriteConfig, "position">;
@@ -104,8 +121,9 @@ interface EnemySpec {
 
 export enum EnemyClass {
   Small,
-  Medium1,
-  Medium2
+  FighterFront,
+  FighterBack,
+  Bomber
 }
 
 
@@ -131,40 +149,41 @@ let enemies: Record<EnemyClass, EnemySpec> = {
     explosionSize: ExplosionSize.Small
   },
 
-  [EnemyClass.Medium1]: {
+  [EnemyClass.FighterFront]: {
     health: 4,
-    speed: [1.8, 2.4],
+    speed: [2.4, 3.4],
     collisionDamage: 2,
 
     sprite: {
       kind: "animated",
-      asset: enemyMedium1Texture,
-      animation: "ship",
+      asset: fighterFrontTexture,
+      animation: "eff",
       scale: new Vector(3, 3),
       speed: 0.7
     },
     body: {
-      asset: enemyMedium1Texture,
-      sprite: "ship-1",
+      asset: fighterFrontTexture,
+      sprite: "eff1",
       scale: new Vector(3, 3)
     },
     bullet: {
-      maxStartEnergy: 2000,
+      maxStartEnergy: 4500,
       firingEnergy: 5000,
-      rechargeRate: [0.4, 1],
+      rechargeRate: [0.85, 1],
 
-      position: [new Vector(0, 10)],
+      position: [new Vector(0, 12)],
+      speed: 0.011,
 
       damage: 1,
       sprite: {
         kind: "animated",
-        asset: enemyMedium1Texture,
+        asset: bulletTexture,
         animation: "bullet",
         scale: new Vector(3, 3),
         speed: 0.35
       },
       body: {
-        asset: enemyMedium1Texture,
+        asset: bulletTexture,
         sprite: "bullet-1",
         scale: new Vector(3, 3)
       },
@@ -172,19 +191,61 @@ let enemies: Record<EnemyClass, EnemySpec> = {
     explosionSize: ExplosionSize.Big
   },
 
-  [EnemyClass.Medium2]: {
+  [EnemyClass.FighterBack]: {
+    health: 4,
+    speed: [2.4, 3.4],
+    collisionDamage: 2,
+
+    sprite: {
+      kind: "animated",
+      asset: fighterBackTexture,
+      animation: "efb",
+      scale: new Vector(3, 3),
+      speed: 0.7
+    },
+    body: {
+      asset: fighterBackTexture,
+      sprite: "efb1",
+      scale: new Vector(3, 3)
+    },
+    bullet: {
+      maxStartEnergy: 4500,
+      firingEnergy: 5000,
+      rechargeRate: [0.85, 1],
+
+      position: [new Vector(0, 12)],
+      speed: 0.013,
+
+      damage: 1,
+      sprite: {
+        kind: "animated",
+        asset: bulletTexture,
+        animation: "bullet",
+        scale: new Vector(3, 3),
+        speed: 0.35
+      },
+      body: {
+        asset: bulletTexture,
+        sprite: "bullet-1",
+        scale: new Vector(3, 3)
+      },
+    },
+    explosionSize: ExplosionSize.Big
+  },
+
+  [EnemyClass.Bomber]: {
     health: 5,
     speed: [1.4, 1.9],
     collisionDamage: 2,
     sprite: {
       kind: "animated",
-      asset: enemyMedium2Texture,
+      asset: enemyBomberTexture,
       animation: "ship",
       scale: new Vector(3, 3),
       speed: 0.4
     },
     body: {
-      asset: enemyMedium2Texture,
+      asset: enemyBomberTexture,
       sprite: "ship-1",
       scale: new Vector(3, 3)
     },
@@ -193,17 +254,18 @@ let enemies: Record<EnemyClass, EnemySpec> = {
       firingEnergy: 6000,
       rechargeRate: [0.9, 1.1],
       position: [new Vector(0, 14)],
-      damage: 1,
+      speed: 0.006,
+      damage: 2,
       sprite: {
         kind: "animated",
-        asset: enemyMedium2Texture,
-        animation: "bullet",
+        asset: bulletTexture,
+        animation: "bomb",
         scale: new Vector(3, 3),
         speed: 0.6
       },
       body: {
-        asset: enemyMedium2Texture,
-        sprite: "bullet-1",
+        asset: bulletTexture,
+        sprite: "bomb-1",
         scale: new Vector(3, 3)
       }
     },
@@ -298,7 +360,7 @@ export class Enemy extends TeamedActor {
 
       this.engine.add(new Bullet(this.engine, {
         team: this.team,
-        direction: new Vector(0, 0.006),
+        direction:  new Vector(0, this.spec.bullet.speed),
         position: bulletPoint,
         sprite: this.spec.bullet.sprite,
         damage: this.spec.bullet.damage,

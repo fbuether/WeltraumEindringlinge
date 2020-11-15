@@ -183,7 +183,8 @@ export class Ingame extends Scene {
 
     let uiScore = this.add(new Text(this.engine, {
       position: new Vector(screen.left + 30, screen.top + 20),
-      text: "Score 00000"
+      text: "Score 00000",
+      zIndex: 5
     }));
     let setScoreDisplay = (score: number) => {
       uiScore.setText("Score " + score.toString().padStart(5, "0"));
@@ -197,7 +198,8 @@ export class Ingame extends Scene {
     let uiHealth = this.add(new Text(this.engine, {
       position: new Vector(screen.left + 30, screen.bottom -
           Gui.textStyle.fontSize - 20),
-      text: "Health 006"
+      text: "Health 006",
+      zIndex: 5
     }));
 
     let setHealthDisplay = () => {
